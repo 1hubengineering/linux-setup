@@ -30,6 +30,16 @@ definition. Enter inserts the selection for editing; it does not execute it.
 
 [PNG](assets/command-picker.png) · [SVG](assets/command-picker.svg) · [Usage](terminal.md)
 
+## AI skill manager
+
+Choose an agent, a global or project scope, and a work area to browse skills.
+This menu shows the UI and UX choices available for Codex. Enter the numbers of
+the skills you want, then review the source URLs before confirming installation.
+
+![Skill manager listing UI/UX Pro Max, frontend design, and web design guidelines with their repositories](assets/skill-manager.png)
+
+[PNG](assets/skill-manager.png) · [SVG](assets/skill-manager.svg) · [Usage](developer-workflow.md#ai-skills)
+
 ## How these images are made
 
 The theme previews render the repository's actual Oh My Posh configurations with
@@ -40,6 +50,8 @@ are rendered terminal examples, not screenshots of a personal workstation.
 
 The picker image captures fzf in an isolated Zsh terminal, then renders its
 visible character cells and colors. Capture is cancelled before selection.
+The skill manager image captures the real selection menu in a temporary home
+directory; it stops before any skill is selected or downloaded.
 The window header and dark background belong to the image renderer, not to an
 installed terminal application or desktop theme.
 
@@ -64,6 +76,7 @@ Oh My Posh with `print --data` support. The checked-in images were rendered with
 Oh My Posh 31.9.1. The Python packages are documentation-only dependencies;
 normal installation does not install them.
 
-The script writes three PNG/SVG pairs in `docs/assets/`. Inspect them after
+The script writes four PNG/SVG pairs in `docs/assets/`. To regenerate only the
+skill manager image, add `--skills-only` to the command above. Inspect the images after
 changing a theme, command description, fzf layout, font, or rendering dependency.
 It uses a temporary shell configuration and excludes private local commands.

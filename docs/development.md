@@ -112,7 +112,7 @@ permission from its name alone. Dry runs must not create state or change links.
 
 ## Publishing changes
 
-The upstream repository is [zdevzone/linux-setup](https://github.com/zdevzone/linux-setup).
+The upstream repository is [1hubengineering/linux-setup](https://github.com/1hubengineering/linux-setup).
 Before committing, review the diff and staged file list. Publish only portable
 source/configuration, tests, example values, and documentation. Real dotenv files,
 credentials, private startup files, shell history, downloads, and local manifests

@@ -1,16 +1,15 @@
 # linux-setup
 
-**A portable Linux terminal setup for everyday development.**
+A Linux terminal setup for everyday development. It installs Zsh configuration,
+Oh My Posh, tmux, and command-line tools in your home directory. It also provides
+a command picker, Git profiles, and an optional AI skill manager. The primary
+targets are Ubuntu, Debian, and their WSL environments.
 
-Zsh dotfiles, Oh My Posh themes, an fzf command picker, tmux, and a curated set of
-command-line tools—installed in your home directory, with backups and selective
-uninstall. Built for Ubuntu, Debian, and their WSL environments.
-
-[![Validate setup](https://github.com/zdevzone/linux-setup/actions/workflows/test.yml/badge.svg)](https://github.com/zdevzone/linux-setup/actions/workflows/test.yml)
+[![Validate setup](https://github.com/1hubengineering/linux-setup/actions/workflows/test.yml/badge.svg)](https://github.com/1hubengineering/linux-setup/actions/workflows/test.yml)
 [![Platform: Linux](https://img.shields.io/badge/platform-Linux-2563eb)](docs/installation.md#supported-systems)
 [![Shell: Zsh](https://img.shields.io/badge/shell-Zsh-64748b)](config/zsh/)
 
-[Get started](#get-started) · [What's included](#included-tools) · [Command picker](#find-your-commands) · [Documentation](docs/README.md)
+[Get started](#get-started) · [What you can do](#what-you-can-do) · [Included tools](#included-tools) · [Documentation](docs/README.md)
 
 ## Terminal previews
 
@@ -32,18 +31,9 @@ These are rendered samples using the bundled themes, synthetic prompt context,
 and real command-reference output. Appearance depends on your terminal and font.
 [Switch themes](docs/customization.md#switch-the-prompt-theme) · [Preview gallery and image sources](docs/previews.md)
 
-## Why use it?
-
-- **Carry your setup between machines.** Shared configuration stays in this Git
-  checkout; private device settings stay in your home directory.
-- **Find commands as you work.** Alt+X searches aliases, functions, descriptions,
-  and full commands, then inserts your selection for review.
-- **Start with useful tools.** Search files, navigate projects, review Git changes,
-  manage terminal sessions, and work with JavaScript and Python environments.
-- **Keep installation inspectable.** Preflight checks, dry runs, verified downloads,
-  tracked ownership, and backups explain what the setup changes.
-- **Remove only what you choose.** Uninstall can restore configuration while
-  retaining programs, or remove selected setup-owned tools and caches.
+Shared configuration stays in this checkout; private device settings stay in
+your home directory. The installer backs up existing configuration, verifies
+tool downloads, and can restore files or remove selected setup-owned tools.
 
 ## Get started
 
@@ -52,7 +42,7 @@ clone the repository. Ubuntu/Debian also need APT tools and populated package
 indexes. See [prerequisites](docs/installation.md#before-starting) for fresh devices.
 
 ```sh
-git clone https://github.com/zdevzone/linux-setup.git ~/linux-setup
+git clone https://github.com/1hubengineering/linux-setup.git ~/linux-setup
 cd ~/linux-setup
 ./install.sh --preflight
 ./install.sh --dry-run
@@ -145,12 +135,87 @@ supply arguments. If your terminal intercepts Alt+X, use Escape then x, or type
 
 [All terminal shortcuts](docs/terminal.md) · [Developer workflows](docs/developer-workflow.md) · [Database guide](docs/databases.md)
 
+## What you can do
+
+### Install AI skills
+
+Run `skill-manager` to browse skills by work area for Codex or Claude Code.
+Choose a global or project directory, select the skills you want, and review
+their sources before installing. The same menu lists and removes installed skills
+in the selected directory.
+
+![Skill manager showing UI and UX skills for Codex, with numbered choices and source repositories](docs/assets/skill-manager.png)
+
+```sh
+skill-manager                        # Browse, install, or remove skills
+python3 scripts/skill_manager.py     # Run from an uninstalled checkout
+```
+
+The image shows the actual menu with Codex, global scope, and UI and UX selected.
+No skills were installed for the capture. See [AI skills](docs/developer-workflow.md#ai-skills)
+for installation paths, scope, and removal details.
+
+### Work with GitHub accounts
+
+The installer can help you set a missing Git author name and email, install
+GitHub CLI, and add accounts. You can set up or switch profiles later:
+
+```sh
+./install.sh --github-setup
+git-profile add
+git-profile list
+cd ~/projects/my-repository
+git-profile use my-github-username
+```
+
+Selecting a profile sets the author for that repository and switches the active
+GitHub CLI account for the host. That account is shared across terminal sessions.
+[Git and GitHub profiles](docs/developer-workflow.md#git-and-github-profiles)
+explains HTTPS credentials and SSH authentication.
+
+### Check and run a project
+
+```sh
+dev-check                       # Inspect a project's local prerequisites
+dev-browser doctor              # Check its Playwright setup
+work .                          # Open a tmux session for this directory
+lip 3000                        # Find listeners on port 3000
+serve 8000 ./public             # Serve files on localhost
+```
+
+`dev-check` reports missing tools or dependencies without installing them.
+`lip` inspects listeners; `kip` asks for confirmation before stopping processes.
+See the [developer workflow](docs/developer-workflow.md) and
+[terminal commands](docs/terminal.md#ports-and-local-servers) for more examples.
+
+### Work with PostgreSQL
+
+```sh
+db --connections                # List discovered connection targets
+db                              # Open the database and schema manager
+```
+
+The setup installs the `psql` client when needed. It does not create a database
+server. The [database guide](docs/databases.md) covers connection setup and
+destructive-action confirmations.
+
 ## Make it yours
 
 Shared aliases live in [`config/zsh/aliases.zsh`](config/zsh/aliases.zsh), functions
 in [`config/zsh/functions.zsh`](config/zsh/functions.zsh), and themes in
 [`config/oh-my-posh/`](config/oh-my-posh/). Add a description comment immediately
 above a command definition so the picker can explain it. Run `reload` afterward.
+
+To try an upstream Oh My Posh theme in your current session:
+
+```zsh
+export LINUX_SETUP_POSH_THEME='paradox'
+reload
+```
+
+Add the export to `~/.config/linux-setup-local/zshenv` to keep the selection.
+Theme names need network access; a local theme file can also be used. The
+[customization guide](docs/customization.md#switch-the-prompt-theme) has the details.
 
 Device-specific settings belong in `~/.config/linux-setup-local/zshrc` and
 `zshenv`. Keep credentials, Git identity, SSH keys, and project environment files
@@ -191,7 +256,7 @@ bash -n install.sh uninstall.sh
 python3 -m unittest discover -s tests -v
 ```
 
-Report reproducible issues through [GitHub Issues](https://github.com/zdevzone/linux-setup/issues).
+Report reproducible issues through [GitHub Issues](https://github.com/1hubengineering/linux-setup/issues).
 Include your distribution, architecture, and redacted error output.
 
 The bundled themes are customized from Oh My Posh. Downloaded tools retain their

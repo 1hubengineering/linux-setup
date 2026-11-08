@@ -5,7 +5,9 @@ Run with: uv run --with cairosvg==2.9.1 --with pyte==0.8.2 scripts/render-previe
 Requires zsh, fzf, oh-my-posh, MesloLGM Nerd Font Mono, and Noto Emoji.
 """
 import fcntl
+import argparse
 import html
+import json
 import os
 from pathlib import Path
 import pty
@@ -15,6 +17,7 @@ import shutil
 import signal
 import struct
 import subprocess
+import sys
 import tempfile
 import termios
 import time
@@ -149,8 +152,58 @@ def picker_preview():
             os.waitpid(child, 0)
 
 
+def skill_manager_preview():
+    """Capture the real skill selection menu without installing anything."""
+    catalog = json.loads((ROOT / 'skills.catalog.json').read_text())
+    areas = sorted({area for item in catalog['skills'] if 'codex' in item['agents'] for area in item['areas']})
+    with tempfile.TemporaryDirectory(prefix='linux-setup-skills-preview-') as directory:
+        child, master = pty.fork()
+        if child == 0:
+            environment = sample_environment(directory)
+            environment['HOME'] = directory
+            os.execve(sys.executable, [sys.executable, str(ROOT / 'scripts/skill_manager.py')], environment)
+        try:
+            fcntl.ioctl(master, termios.TIOCSWINSZ, struct.pack('HHHH', 40, COLUMNS, 0, 0))
+            captured = b''
+            offset = 0
+            for prompt, answer in [
+                (b'Choose a number', b'1\n'),  # Install skills
+                (b'Choose a number', b'1\n'),  # Codex
+                (b'Choose a number', b'1\n'),  # Global
+                (b'Choose a number', f"{areas.index('UI and UX') + 1}\n".encode()),
+                (b'Numbers separated by commas', None),
+            ]:
+                deadline = time.monotonic() + 10
+                while prompt not in captured[offset:]:
+                    if time.monotonic() >= deadline:
+                        raise RuntimeError('Skill manager preview did not reach the expected menu')
+                    if select.select([master], [], [], 0.1)[0]:
+                        captured += os.read(master, 65536)
+                offset = len(captured)
+                if answer is not None:
+                    os.write(master, answer)
+            screen = pyte.Screen(COLUMNS, 40)
+            pyte.Stream(screen).feed(captured.decode(errors='replace'))
+            first = next(i for i, row in enumerate(screen.display) if 'Select skills to install' in row)
+            last = max(i for i, row in enumerate(screen.display) if row.strip())
+            cropped = pyte.Screen(COLUMNS, last - first + 2)
+            for y in range(last - first + 1):
+                cropped.buffer[y] = screen.buffer[first + y].copy()
+            render(cropped, 'skill-manager', 'linux-setup  /  skill manager  /  UI and UX')
+            os.write(master, b'\x03')
+        finally:
+            os.kill(child, signal.SIGTERM)
+            os.close(master)
+            os.waitpid(child, 0)
+
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--skills-only', action='store_true', help='Render only the skill manager preview')
+    args = parser.parse_args()
     ASSETS.mkdir(exist_ok=True)
-    theme_previews()
-    picker_preview()
-    print('Rendered quick-term, iterm2, and command-picker previews in docs/assets/')
+    if not args.skills_only:
+        theme_previews()
+        picker_preview()
+    skill_manager_preview()
+    print('Rendered terminal previews in docs/assets/')

@@ -28,7 +28,7 @@ rootless base-tool installation also requires `apt-get`, `dpkg-deb`, and populat
 package indexes.
 
 ```sh
-git clone https://github.com/zdevzone/linux-setup.git ~/linux-setup
+git clone https://github.com/1hubengineering/linux-setup.git ~/linux-setup
 cd ~/linux-setup
 ./install.sh --preflight
 ./install.sh --dry-run
