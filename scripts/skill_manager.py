@@ -100,8 +100,10 @@ def install_skill(item, repository, root, temp):
         return False
     print(f"Downloading {name} from https://github.com/{repository['repo']} at {repository['commit']} ...", flush=True)
     archive = get_archive(repository["repo"], repository["commit"], temp)
-    with tempfile.TemporaryDirectory(prefix="linux-skill-stage-") as staged:
-        stage = Path(staged)
+    root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".linux-skill-stage-", dir=root) as staged:
+        stage = Path(staged) / "payload"
+        stage.mkdir()
         unpack_skill(archive, item, stage)
         if item.get("adapt_uiux"):
             skill = stage / "SKILL.md"
@@ -111,12 +113,15 @@ def install_skill(item, repository, root, temp):
                 raise ValueError("UI/UX Pro Max path format changed; catalog needs review")
             escaped = str(target).replace('\\', '\\\\').replace('"', '\\"').replace('$', '\\$').replace('`', '\\`')
             skill.write_text(text.replace(old, escaped))
-        root.mkdir(parents=True, exist_ok=True)
-        target.mkdir()  # Exclusive: do not replace an existing skill.
+        if target.exists() or target.is_symlink():
+            print(f"Keeping existing skill: {target}")
+            return False
         try:
-            shutil.copytree(stage, target, dirs_exist_ok=True)
-        except BaseException:
-            shutil.rmtree(target)
+            stage.rename(target)
+        except OSError:
+            if target.exists() or target.is_symlink():
+                print(f"Keeping existing skill: {target}")
+                return False
             raise
     print(f"Installed {name}: {target}")
     return True
@@ -172,14 +177,17 @@ def install_menu(catalog, agent, root):
         print(f"  {item['id']}: https://github.com/{repo['repo']}/tree/{repo['commit']}/{item['path']}")
     if not confirm("Install these skills?"):
         return
+    failures = []
     with tempfile.TemporaryDirectory(prefix="linux-skills-download-") as temp:
         for i in selected:
             item = entries[i]
             try:
                 install_skill(item, catalog['repositories'][item['repository']], root, temp)
             except (OSError, ValueError, tarfile.TarError) as error:
+                failures.append(root / item["id"])
                 print(f"Could not install {item['id']}: {error}", file=sys.stderr)
     print("Restart your agent session if it does not discover new skills immediately.")
+    return failures
 
 
 def main():
@@ -187,10 +195,14 @@ def main():
         print("skill-manager requires an interactive terminal.", file=sys.stderr)
         return 1
     catalog = json.loads(CATALOG.read_text())
+    failed = set()
     while True:
         action = choose("AI skill manager", ["Install skills", "Review or remove installed skills", "Exit"])
         if action is None or action == 2:
-            return 0
+            unresolved = sorted(path for path in failed if not (path / "SKILL.md").is_file())
+            if unresolved:
+                print("Incomplete skills: " + ", ".join(map(str, unresolved)) + ". Rerun skill-manager to retry.", file=sys.stderr)
+            return 1 if unresolved else 0
         agent_index = choose("Choose your AI agent", list(AGENTS.values()) + ["Back"])
         if agent_index is None or agent_index == len(AGENTS):
             continue
@@ -211,7 +223,7 @@ def main():
                 continue
             print(f"Skill directory: {root}")
             if action == 0:
-                install_menu(catalog, agent, root)
+                failed.update(install_menu(catalog, agent, root) or [])
             else:
                 remove_skills(root)
             break
@@ -222,7 +234,7 @@ if __name__ == "__main__":
         sys.exit(main())
     except (EOFError, KeyboardInterrupt):
         print("\nCancelled.")
-        sys.exit(0)
+        sys.exit(130)
     except (OSError, ValueError, RuntimeError) as error:
         print(f"skill-manager: {error}", file=sys.stderr)
         sys.exit(1)

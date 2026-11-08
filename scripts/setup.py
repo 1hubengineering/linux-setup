@@ -2,6 +2,8 @@
 """Install pinned terminal tools and link this checkout's configuration."""
 import argparse
 import ctypes
+from contextlib import contextmanager
+import fcntl
 import hashlib
 import json
 import os
@@ -15,6 +17,7 @@ import tarfile
 import tempfile
 import time
 import urllib.request
+import uuid
 import zipfile
 from pathlib import Path, PurePosixPath
 
@@ -30,6 +33,22 @@ CACHE = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "linux-setup"
 BIN = HOME / ".local/bin"
 TOOLS = {"ripgrep": "rg", "oh-my-posh": "oh-my-posh"}
 BASE = ["zsh", "tmux", "file", "git", "curl", "lsof", "psql"]
+
+
+@contextmanager
+def operation_lock():
+    """One installer/uninstaller may change this user's deployment at a time."""
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    with (STATE.parent / ".linux-setup-operation.lock").open("a+") as stream:
+        os.chmod(stream.name, 0o600)
+        try:
+            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError("Another linux-setup install or uninstall is running. Wait for it to finish, then rerun.") from None
+        try:
+            yield
+        finally:
+            fcntl.flock(stream, fcntl.LOCK_UN)
 
 
 def run(args, **kwargs):
@@ -152,6 +171,7 @@ def migrate_legacy():
 class Deployment:
     def __init__(self, read_only=False):
         self.read_only = read_only
+        self.changed = False
         if not read_only:
             STATE.mkdir(parents=True, exist_ok=True)
         self.path = STATE / "deployment.json"
@@ -185,24 +205,41 @@ class Deployment:
         source, target = Path(source).absolute(), Path(target).absolute()
         if source == target:
             return
+        previous = self.state["links"].get(str(target))
         if target.is_symlink() and os.readlink(target) == str(source):
-            if str(target) in self.state["links"] and program:
-                self.state["links"][str(target)]["program"] = program
+            if previous and (program or previous.get("pending")):
+                if program:
+                    previous["program"] = program
+                for field in ("pending", "before", "replace_owned"):
+                    previous.pop(field, None)
                 self.save()
             return
         target.parent.mkdir(parents=True, exist_ok=True)
-        previous = self.state["links"].get(str(target))
         # Repoint links installed by this repository when the checkout is moved.
         owned = previous and target.is_symlink() and os.readlink(target) == previous["source"]
-        backup = previous.get("backup") if owned else None
+        pending = previous and previous.get("pending")
+        missing = not target.exists() and not target.is_symlink()
+        backup = previous.get("backup") if previous and (owned or pending or missing) else None
+        if pending and fingerprint(target) not in ("missing", previous["before"]):
+            raise RuntimeError(f"Keeping a file changed after an interrupted link: {target}")
+        if not pending and not owned and (target.exists() or target.is_symlink()):
+            self.backup_dir.mkdir(parents=True, exist_ok=True)
+            backup = str(self.backup_dir / (uuid.uuid4().hex + "-" + target.name))
+        # Persist the original backup location before moving anything.
+        record = {"source": str(source), "backup": backup, "pending": True,
+                  "before": fingerprint(target), "replace_owned": bool(owned or (pending and previous.get("replace_owned")))}
+        if program:
+            record["program"] = program
+        self.state["links"][str(target)] = record
+        self.save()
         if target.exists() or target.is_symlink():
-            if owned:
+            if record["replace_owned"]:
                 target.unlink()
             else:
-                self.backup_dir.mkdir(parents=True, exist_ok=True)
-                backup_path = self.backup_dir / (str(len(list(self.backup_dir.iterdir()))) + "-" + target.name)
-                shutil.move(str(target), str(backup_path))
-                backup = str(backup_path)
+                if Path(backup).exists() or Path(backup).is_symlink():
+                    raise RuntimeError(f"Backup already exists; keeping {target} and {backup} for review")
+                shutil.move(str(target), backup)
+        self.changed = True
         target.symlink_to(source, target_is_directory=source.is_dir())
         self.state["links"][str(target)] = {"source": str(source), "backup": backup}
         if program:
@@ -230,51 +267,72 @@ class Deployment:
 
 
 def install_base(deploy):
-    missing = [tool for tool in BASE if not shutil.which(tool)]
-    # Replace the earlier rootless Zsh runtime with one managed by linux-setup.
-    legacy = HOME / ".local/share/zsh-runtime"
-    zsh = shutil.which("zsh")
-    if zsh and legacy in Path(zsh).resolve().parents and not Path("/usr/bin/zsh").exists():
-        missing.append("zsh")
+    failures = []
     for name in BASE:
-        if name not in missing and name not in deploy.state["programs"]:
-            deploy.record_program(name, kind="base", owned=False, binaries=[name], executable=shutil.which(name))
-    if not missing:
-        prepare_retained_zsh(deploy)
-        return
-    if not shutil.which("apt-get"):
-        raise RuntimeError(f"Install these with your package manager, then rerun: {' '.join(missing)}")
-    print("Installing base dependencies without sudo:", ", ".join(missing), flush=True)
-    # Keep each base tool's package set independent for selective removal.
-    for name in missing:
-        requested = "postgresql-client" if name == "psql" else name
-        simulation = run(["apt-get", "-s", "--no-install-recommends", "install", requested], capture_output=True, text=True)
-        packages = re.findall(r"^Inst (\S+) \((\S+)", simulation.stdout, re.MULTILINE)
-        if not packages:
-            raise RuntimeError(f"APT found no downloadable packages for {name}; check PATH and refresh APT indexes")
-        folder = DATA / "base" / name
-        runtime = folder / "runtime"
-        previous = deploy.state["programs"].get(name, {})
-        expected = previous.get("fingerprints", {}).get(str(folder))
-        if folder.exists() and (not expected or fingerprint(folder) != expected):
-            raise RuntimeError(f"Keeping modified or untracked base installation: {folder}")
-        runtime.mkdir(parents=True, exist_ok=True)
-        deploy.record_program(name, kind="base", paths=[folder], binaries=[name], version="installing", packages=dict(packages))
         try:
-            with tempfile.TemporaryDirectory(prefix="linux-setup-apt-") as temporary:
+            existing = shutil.which(name)
+            legacy = HOME / ".local/share/zsh-runtime"
+            if name == "zsh" and existing and legacy in Path(existing).resolve().parents and not Path("/usr/bin/zsh").exists():
+                existing = None
+            previous = saved_program(deploy, name)
+            if existing:
+                if not previous:
+                    deploy.record_program(name, kind="base", owned=False, binaries=[name], executable=existing)
+                print(f"{name}: already installed ({existing}); skipping.", flush=True)
+                continue
+            folder = DATA / "base" / name
+            active = previous.get("pending_bundle", {}).get("path") or previous.get("active_path")
+            if active and Path(active).is_relative_to(DATA / "base"):
+                folder = Path(active)
+            wrapper = folder / "bin" / name
+            pending = previous.get("pending_bundle", {})
+            if pending.get("path") == str(folder) and pending.get("fingerprint") == fingerprint(folder) and wrapper.is_file():
+                record_complete(deploy, name, folder, kind="base", version="distro", binaries=[name])
+                previous = saved_program(deploy, name)
+            if previous.get("owned") and previous.get("version") == "distro" and wrapper.is_file():
+                deploy.link(wrapper, BIN / name, program=name)
+                print(f"{name}: already installed; repaired its executable link.", flush=True)
+                continue
+            if not shutil.which("apt-get"):
+                raise RuntimeError(f"Install {name} with your package manager, then rerun ./install.sh")
+            requested = "postgresql-client" if name == "psql" else name
+            simulation = run(["apt-get", "-s", "--no-install-recommends", "--reinstall", "install", requested], capture_output=True, text=True)
+            packages = re.findall(r"^Inst (\S+) \((\S+)", simulation.stdout, re.MULTILINE)
+            if not packages:
+                raise RuntimeError(f"APT found no downloadable packages for {name}; refresh APT indexes and retry")
+            if folder.exists() or folder.is_symlink():
+                folder = folder.with_name(folder.name + "-recovered-" + uuid.uuid4().hex[:8])
+                print(f"{name}: preserving the incomplete previous directory.", flush=True)
+            folder.parent.mkdir(parents=True, exist_ok=True)
+            print(f"Installing {name} without sudo ...", flush=True)
+            with tempfile.TemporaryDirectory(prefix=".install-", dir=folder.parent) as temporary:
+                stage = Path(temporary) / "payload"
+                runtime = stage / "runtime"
+                runtime.mkdir(parents=True)
                 run(["apt-get", "download", *(f"{package}={version}" for package, version in packages)], cwd=temporary)
-                for package in sorted(Path(temporary).glob("*.deb")):
+                archives = sorted(Path(temporary).glob("*.deb"))
+                if not archives:
+                    raise RuntimeError(f"APT did not download packages for {name}")
+                for package in archives:
                     run(["dpkg-deb", "-x", package, runtime])
-            wrapper = write_base_wrapper(name, runtime, folder / "bin")
-            deploy.link(wrapper, BIN / name, program=name)
-        except BaseException:
-            deploy.record_program(name, kind="base", paths=[folder], binaries=[name], version="incomplete", packages=dict(packages), refresh=True)
-            raise
-        deploy.record_program(name, kind="base", paths=[folder], binaries=[name], version="distro", packages=dict(packages), refresh=True)
+                write_base_wrapper(name, runtime, stage / "bin", relocate=(stage, folder))
+                folder = publish_bundle(stage, folder, deploy, name, "base", "distro", [name])
+            record_complete(deploy, name, folder, kind="base", version="distro", binaries=[name], refresh=True, packages=dict(packages))
+            deploy.link(folder / "bin" / name, BIN / name, program=name)
+        except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
+            print(f"{name}: incomplete: {error}. Continuing; rerun ./install.sh to retry.", file=sys.stderr)
+            failures.append(name)
+            item = deploy.state["programs"].setdefault(name, {"owned": True, "kind": "base", "paths": [], "shared": [], "binaries": [name]})
+            item.update(status="incomplete", last_error=str(error))
+            deploy.save()
     prepare_retained_zsh(deploy)
+    return failures
 
 
-def write_base_wrapper(name, runtime, wrappers):
+def write_base_wrapper(name, runtime, wrappers, relocate=None):
+    def location(path):
+        return relocate[1] / path.relative_to(relocate[0]) if relocate else path
+
     libraries = [p for p in (runtime / "usr/lib").glob("*-linux-gnu") if p.is_dir()]
     wrappers.mkdir(parents=True, exist_ok=True)
     if name == "psql":
@@ -287,15 +345,15 @@ def write_base_wrapper(name, runtime, wrappers):
         raise RuntimeError(f"No executable installed for {name}")
     script = "#!/bin/sh\n"
     if libraries:
-        prefix = ":".join(map(str, libraries))
+        prefix = ":".join(str(location(path)) for path in libraries)
         script += f"export LD_LIBRARY_PATH={shlex.quote(prefix)}${{LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}}\n"
     if name == "file":
         magic = next((p for p in [runtime / "usr/lib/file/magic.mgc", runtime / "usr/share/misc/magic.mgc"] if p.is_file() and not p.is_symlink()), None)
         if magic:
-            script += f"export MAGIC={shlex.quote(str(magic))}\n"
+            script += f"export MAGIC={shlex.quote(str(location(magic)))}\n"
     if name == "git":
-        script += f"export GIT_EXEC_PATH={shlex.quote(str(runtime / 'usr/lib/git-core'))}\n"
-        script += f"export GIT_TEMPLATE_DIR={shlex.quote(str(runtime / 'usr/share/git-core/templates'))}\n"
+        script += f"export GIT_EXEC_PATH={shlex.quote(str(location(runtime / 'usr/lib/git-core')))}\n"
+        script += f"export GIT_TEMPLATE_DIR={shlex.quote(str(location(runtime / 'usr/share/git-core/templates')))}\n"
     if name == "zsh":
         bootstrap = wrappers / "zsh-bootstrap"
         bootstrap.mkdir(exist_ok=True)
@@ -311,17 +369,17 @@ def write_base_wrapper(name, runtime, wrappers):
                 target = clean / source.name
                 if source.is_file() and not target.exists() and not target.is_symlink():
                     target.symlink_to(source)
-            completion_fix = f"fpath=({shlex.quote(str(clean))} ${{fpath:#/usr/share/zsh/vendor-completions}})\n"
+            completion_fix = f"fpath=({shlex.quote(str(location(clean)))} ${{fpath:#/usr/share/zsh/vendor-completions}})\n"
         (bootstrap / ".zshenv").write_text(
             "# Runtime support, independent of linux-setup's interactive configuration.\n"
-            + "module_path=(" + " ".join(shlex.quote(str(p)) for p in modules) + " $module_path)\n"
-            + "fpath=(" + " ".join(shlex.quote(str(p)) for p in functions) + " $fpath)\n"
+            + "module_path=(" + " ".join(shlex.quote(str(location(p))) for p in modules) + " $module_path)\n"
+            + "fpath=(" + " ".join(shlex.quote(str(location(p))) for p in functions) + " $fpath)\n"
             + completion_fix
             + 'ZDOTDIR="${_LINUX_SETUP_USER_ZDOTDIR:-$HOME}"\nunset _LINUX_SETUP_USER_ZDOTDIR\n'
             + '[[ -r "$ZDOTDIR/.zshenv" ]] && source "$ZDOTDIR/.zshenv"\nreturn 0\n')
         script += 'export _LINUX_SETUP_USER_ZDOTDIR="${ZDOTDIR:-$HOME}"\n'
-        script += f"export ZDOTDIR={shlex.quote(str(bootstrap))}\n"
-    script += f'exec {shlex.quote(str(binary))} "$@"\n'
+        script += f"export ZDOTDIR={shlex.quote(str(location(bootstrap)))}\n"
+    script += f'exec {shlex.quote(str(location(binary)))} "$@"\n'
     wrapper = wrappers / name
     wrapper.write_text(script)
     wrapper.chmod(0o755)
@@ -341,80 +399,198 @@ def prepare_retained_zsh(deploy):
                               shared=[DATA / "runtime"], binaries=["zsh"], version=item.get("version", "legacy"), refresh=True)
 
 
+def saved_program(deploy, name):
+    return deploy.state["programs"].get(name, {}) if isinstance(deploy.state, dict) else {}
+
+
+def approve_update(name, version, deploy):
+    previous = saved_program(deploy, name)
+    installed = previous.get("version")
+    if not previous.get("owned") or not installed or installed in (version, "installing", "incomplete"):
+        return True
+    if previous.get("requested_version") == version:
+        print(f"{name}: resuming previously approved update to {version}.", flush=True)
+        return True
+    print(f"{name}: already installed ({installed}); pinned update available: {version}.", flush=True)
+    if not sys.stdin.isatty() or not sys.stdout.isatty():
+        print(f"{name}: keeping installed version. Run ./install.sh interactively to approve the update.", flush=True)
+        return False
+    from terminal_ui import confirm
+    if not confirm(f"Update {name} from {installed} to {version}?"):
+        print(f"{name}: update skipped.", flush=True)
+        return False
+    previous["requested_version"] = version
+    deploy.save()
+    return True
+
+
+def repair_program_links(deploy, name):
+    """Keep a declined update usable even if an old executable link is missing."""
+    for target, item in list(deploy.state["links"].items()):
+        if item.get("program") == name and Path(item["source"]).exists():
+            deploy.link(item["source"], target, program=name)
+    previous = saved_program(deploy, name)
+    if previous.get("kind") == "tool" and previous.get("active_path"):
+        for binary in previous.get("binaries", []):
+            source = Path(previous["active_path"]) / binary
+            if source.is_file():
+                deploy.link(source, BIN / binary, program=name)
+
+
+def publish_bundle(stage, destination, deploy, name, kind, version, binaries=()):
+    """Publish complete payloads by rename; keep any incomplete old directory."""
+    if destination.exists() or destination.is_symlink():
+        destination = destination.with_name(destination.name + "-recovered-" + uuid.uuid4().hex[:8])
+        print(f"{name}: keeping the previous directory; preparing a complete replacement.", flush=True)
+    if isinstance(deploy.state, dict):
+        previous = saved_program(deploy, name)
+        deploy.record_program(name, kind=kind, paths=[destination], version=previous.get("version", ""),
+                              binaries=previous.get("binaries", list(binaries)), status="installing",
+                              pending_bundle={"path": str(destination), "fingerprint": fingerprint(stage), "version": version})
+    stage.replace(destination)
+    deploy.changed = True
+    return destination
+
+
+def record_complete(deploy, name, destination, *, kind="tool", version, binaries=(), refresh=False, **metadata):
+    previous = saved_program(deploy, name)
+    pending = previous.get("pending_bundle", {})
+    if pending.get("path") == str(destination) and pending.get("fingerprint") == fingerprint(destination):
+        refresh = True
+    deploy.record_program(name, kind=kind, paths=[destination], version=version, binaries=binaries,
+                          refresh=refresh, active_path=str(destination), status="complete", **metadata)
+    if isinstance(deploy.state, dict):
+        item = deploy.state["programs"][name]
+        item.pop("pending_bundle", None)
+        item.pop("requested_version", None)
+        item.pop("last_error", None)
+        deploy.save()
+
+
+def install_one_tool(name, item, key, deploy):
+    previous = saved_program(deploy, name)
+    existing = find_tool(TOOLS.get(name, name))
+    if existing and not previous.get("owned"):
+        print(f"{name}: already installed ({existing}); skipping external installation.", flush=True)
+        if not previous:
+            deploy.record_program(name, owned=False, binaries=item.get("binaries", [TOOLS.get(name, name)]), executable=existing)
+        return True
+    # Vite+ and uv retain their own supported upgrade workflows.
+    if item.get("install_if_missing") and existing:
+        active = previous.get("active_path")
+        if not active and Path(existing).resolve().is_relative_to(DATA / "tools" / name):
+            active = str(Path(existing).resolve().parent)
+        if active and Path(active).is_relative_to(DATA / "tools" / name):
+            ready = True
+            if name == "vp" and (previous.get("setup_incomplete") or not (CONFIG / "vite-plus/env").is_file()):
+                print("vp: resuming incomplete runtime setup.", flush=True)
+                ready = try_prepare_vp(Path(active) / "vp", deploy)
+            for binary in previous.get("binaries", item.get("binaries", [name])):
+                source = Path(active) / binary
+                if source.is_file():
+                    deploy.link(source, BIN / binary, program=name)
+            print(f"{name}: already installed ({existing}); skipping download.", flush=True)
+            return ready
+        print(f"{name}: already installed ({existing}); skipping.", flush=True)
+        return True
+    if not approve_update(name, item["version"], deploy):
+        repair_program_links(deploy, name)
+        return True
+    asset = item["platforms"].get(key)
+    if not asset:
+        raise RuntimeError(f"No {name} build for {key}")
+    binaries = item.get("binaries", [TOOLS.get(name, name)])
+    destination = DATA / "tools" / name / (item["version"] + "-" + key)
+    pending = previous.get("pending_bundle", {})
+    active = pending.get("path") if pending.get("version") == item["version"] else previous.get("active_path")
+    if active and (previous.get("version") == item["version"] or previous.get("pending_bundle", {}).get("version") == item["version"]):
+        candidate = Path(active)
+        if candidate.is_relative_to(DATA / "tools" / name):
+            destination = candidate
+    stamp = destination / ".sha256"
+    changed = not stamp.is_file() or stamp.read_text().strip() != asset["sha256"] or not all((destination / n).is_file() for n in binaries)
+    if changed:
+        print(f"Downloading {name} {item['version']} ...", flush=True)
+        archive = download(asset["url"], asset["sha256"], asset["name"])
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=".install-", dir=destination.parent) as temporary:
+            stage = Path(temporary) / "payload"
+            stage.mkdir()
+            if item.get("preserve_bundle"):
+                extract_plugin(archive, stage, strip_root=False)
+                for binary in binaries:
+                    (stage / binary).chmod(0o755)
+            elif asset["name"].endswith((".tar.gz", ".zip", ".tgz")):
+                extract_executables(archive, stage, binaries)
+            else:
+                shutil.copy2(archive, stage / binaries[0])
+                (stage / binaries[0]).chmod(0o755)
+            (stage / ".sha256").write_text(asset["sha256"] + "\n")
+            destination = publish_bundle(stage, destination, deploy, name, "tool", item["version"], binaries)
+    else:
+        print(f"{name}: already installed ({item['version']}); skipping download.", flush=True)
+    metadata = {}
+    if name == "vp" and (changed or not previous or previous.get("pending_bundle")):
+        metadata["setup_incomplete"] = True
+    record_complete(deploy, name, destination, version=item["version"], binaries=binaries, refresh=changed, **metadata)
+    ready = True
+    if name == "vp":
+        if changed or saved_program(deploy, name).get("setup_incomplete") or not (CONFIG / "vite-plus/env").is_file():
+            ready = try_prepare_vp(destination / "vp", deploy)
+        if changed:
+            deploy.record_program(name, paths=[destination], version=item["version"], binaries=binaries, refresh=True)
+    for binary in binaries:
+        deploy.link(destination / binary, BIN / binary, program=name)
+    return ready
+
+
+def install_one_plugin(name, item, deploy):
+    if not approve_update(name, item["commit"], deploy):
+        repair_program_links(deploy, name)
+        return
+    previous = saved_program(deploy, name)
+    destination = DATA / "plugins" / name / item["commit"]
+    pending = previous.get("pending_bundle", {})
+    active = pending.get("path") if pending.get("version") == item["commit"] else previous.get("active_path")
+    if active and (previous.get("version") == item["commit"] or previous.get("pending_bundle", {}).get("version") == item["commit"]):
+        candidate = Path(active)
+        if candidate.is_relative_to(DATA / "plugins" / name):
+            destination = candidate
+    stamp = destination / ".sha256"
+    changed = not stamp.is_file() or stamp.read_text().strip() != item["sha256"]
+    if changed:
+        print(f"Downloading {name} {item['version']} ...", flush=True)
+        archive = download(item["url"], item["sha256"], name + ".tar.gz")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=".install-", dir=destination.parent) as temporary:
+            stage = Path(temporary) / "payload"
+            extract_plugin(archive, stage)
+            (stage / ".sha256").write_text(item["sha256"] + "\n")
+            destination = publish_bundle(stage, destination, deploy, name, "plugin", item["commit"])
+    else:
+        print(f"{name}: already installed; skipping download.", flush=True)
+    record_complete(deploy, name, destination, kind="plugin", version=item["commit"], refresh=changed)
+    deploy.link(destination, DATA / "plugins" / name / "current", program=name)
+
+
 def install_tools(lock, key, deploy):
     failures = []
-    for name, item in lock["tools"].items():
-        if item.get("install_if_missing"):
-            existing = find_tool(TOOLS.get(name, name))
-            if existing:
-                # An incomplete Vite+ runs its bootstrap even for --version.
-                # Repair it before probing the executable, so that a missing
-                # runtime library cannot prevent the retry from starting.
-                pending = (name == "vp" and Path(existing).resolve().is_relative_to(DATA / "tools/vp")
-                           and ((isinstance(deploy.state, dict) and deploy.state["programs"].get("vp", {}).get("setup_incomplete"))
-                                or not (CONFIG / "vite-plus/env").is_file()))
-                if pending:
-                    if not try_prepare_vp(Path(existing), deploy):
-                        failures.append("Vite+")
-                else:
-                    run([existing, "--version"], capture_output=True, text=True)
-                print(f"{name}: keeping existing installation ({existing})", flush=True)
-                if isinstance(deploy.state, dict) and name not in deploy.state["programs"]:
-                    deploy.record_program(name, owned=False, binaries=item.get("binaries", [name]), executable=existing)
-                continue
-        asset = item["platforms"].get(key)
-        if not asset:
-            raise RuntimeError(f"No {name} build for {key}")
-        binaries = item.get("binaries", [TOOLS.get(name, name)])
-        destination = DATA / "tools" / name / (item["version"] + "-" + key)
-        stamp = destination / ".sha256"
-        changed = not stamp.exists() or stamp.read_text().strip() != asset["sha256"] or not all((destination / n).exists() for n in binaries)
-        if changed:
-            print(f"Downloading {name} {item['version']} ...", flush=True)
-            archive = download(asset["url"], asset["sha256"], asset["name"])
-            with tempfile.TemporaryDirectory(prefix="linux-setup-tool-") as temporary:
-                stage = Path(temporary)
-                if item.get("preserve_bundle"):
-                    extract_plugin(archive, stage, strip_root=False)
-                    for binary in binaries:
-                        (stage / binary).chmod(0o755)
-                elif asset["name"].endswith((".tar.gz", ".zip", ".tgz")):
-                    extract_executables(archive, stage, binaries)
-                else:
-                    shutil.copy2(archive, stage / binaries[0])
-                    (stage / binaries[0]).chmod(0o755)
-                destination.mkdir(parents=True, exist_ok=True)
-                if item.get("preserve_bundle"):
-                    shutil.copytree(stage, destination, dirs_exist_ok=True, symlinks=True)
-                else:
-                    for binary in binaries:
-                        shutil.copy2(stage / binary, destination / binary)
-                stamp.write_text(asset["sha256"] + "\n")
-        deploy.record_program(name, paths=[destination], version=item["version"], binaries=binaries, refresh=changed)
-        if name == "vp":
-            # Generate the official shell environment and runtime/PM shims.
-            # Point them at the durable binary store, not a removable config link.
-            if not try_prepare_vp(destination / "vp", deploy):
-                failures.append("Vite+")
-            if changed:
-                deploy.record_program(name, paths=[destination], version=item["version"], binaries=binaries, refresh=True)
-        for binary in binaries:
-            deploy.link(destination / binary, BIN / binary, program=name)
-        print(f"{name}: {item['version']}", flush=True)
-    for name, item in lock["plugins"].items():
-        destination = DATA / "plugins" / name / item["commit"]
-        stamp = destination / ".sha256"
-        changed = not stamp.exists() or stamp.read_text().strip() != item["sha256"]
-        if changed:
-            print(f"Downloading {name} {item['version']} ...", flush=True)
-            archive = download(item["url"], item["sha256"], name + ".tar.gz")
-            with tempfile.TemporaryDirectory(prefix="linux-setup-plugin-") as temporary:
-                stage = Path(temporary)
-                extract_plugin(archive, stage)
-                shutil.copytree(stage, destination, dirs_exist_ok=True, symlinks=True)
-            stamp.write_text(item["sha256"] + "\n")
-        deploy.record_program(name, kind="plugin", paths=[destination], version=item["commit"], refresh=changed)
-        deploy.link(destination, DATA / "plugins" / name / "current", program=name)
+    entries = [(name, item, "tool") for name, item in lock["tools"].items()]
+    entries += [(name, item, "plugin") for name, item in lock["plugins"].items()]
+    for name, item, kind in entries:
+        try:
+            if kind == "tool":
+                if not install_one_tool(name, item, key, deploy):
+                    failures.append("Vite+" if name == "vp" else name)
+            else:
+                install_one_plugin(name, item, deploy)
+        except (OSError, RuntimeError, subprocess.CalledProcessError, tarfile.TarError, zipfile.BadZipFile) as error:
+            print(f"{name}: incomplete: {error}. Continuing; rerun ./install.sh to retry.", file=sys.stderr)
+            failures.append(name)
+            if isinstance(deploy.state, dict):
+                program = deploy.state["programs"].setdefault(name, {"owned": True, "kind": kind, "paths": [], "shared": [], "binaries": []})
+                program.update(status="incomplete", last_error=str(error))
+                deploy.save()
     return failures
 
 
@@ -435,6 +611,7 @@ def try_prepare_vp(executable, deploy):
         return False
     if real:
         deploy.state["programs"]["vp"].pop("setup_incomplete", None)
+        deploy.changed = True
         deploy.save()
     return True
 
@@ -444,6 +621,14 @@ def ensure_vp_libatomic(deploy):
     directory = DATA / "tools/vp/libatomic"
     library = directory / "libatomic.so.1"
     if library.is_file():
+        pending = saved_program(deploy, "vp").get("pending_libatomic")
+        if pending and pending == fingerprint(directory):
+            item = saved_program(deploy, "vp")
+            deploy.record_program("vp", paths=[directory], version=item.get("version", ""),
+                                  binaries=item.get("binaries", ["vp"]), refresh=True)
+            item = saved_program(deploy, "vp")
+            item.pop("pending_libatomic", None)
+            deploy.save()
         return directory
     try:
         ctypes.CDLL("libatomic.so.1")
@@ -452,10 +637,9 @@ def ensure_vp_libatomic(deploy):
         pass
     if not shutil.which("apt-get") or not shutil.which("dpkg-deb"):
         raise RuntimeError("Node requires libatomic.so.1; install your distribution's libatomic package and retry")
-    if directory.exists():
-        raise RuntimeError(f"Keeping incomplete or untracked library directory: {directory}")
     print("Installing Node's libatomic dependency without sudo ...", flush=True)
-    with tempfile.TemporaryDirectory(prefix="linux-setup-libatomic-") as temporary:
+    directory.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".install-libatomic-", dir=directory.parent) as temporary:
         stage = Path(temporary)
         run(["apt-get", "download", "libatomic1"], cwd=stage)
         packages = list(stage.glob("*.deb"))
@@ -466,12 +650,24 @@ def ensure_vp_libatomic(deploy):
         candidates = list(extracted.glob("usr/lib/*/libatomic.so.1")) + list(extracted.glob("lib/*/libatomic.so.1"))
         if len(candidates) != 1 or not candidates[0].is_file():
             raise RuntimeError("libatomic1 package does not contain a usable libatomic.so.1")
-        directory.mkdir(parents=True)
-        shutil.copy2(candidates[0].resolve(), library)
+        complete = stage / "complete"
+        complete.mkdir()
+        shutil.copy2(candidates[0].resolve(), complete / library.name)
+        if directory.exists() or directory.is_symlink():
+            retained = directory.with_name("libatomic-incomplete-" + uuid.uuid4().hex[:8])
+            directory.rename(retained)
+            print(f"Keeping incomplete library directory at {retained}.", flush=True)
+        if isinstance(deploy.state, dict):
+            item = deploy.state["programs"]["vp"]
+            deploy.record_program("vp", paths=[directory], version=item.get("version", ""),
+                                  binaries=item.get("binaries", ["vp"]), pending_libatomic=fingerprint(complete))
+        complete.replace(directory)
     if isinstance(deploy.state, dict):
         item = deploy.state["programs"]["vp"]
         deploy.record_program("vp", paths=[directory], version=item.get("version", ""),
                               binaries=item.get("binaries", ["vp"]), refresh=True)
+        deploy.state["programs"]["vp"].pop("pending_libatomic", None)
+        deploy.save()
     return directory
 
 
@@ -651,7 +847,7 @@ def doctor():
 
 
 def install_gh(lock, key, deploy):
-    install_tools({"tools": {"gh": lock["optional_tools"]["gh"]}, "plugins": {}}, key, deploy)
+    return install_tools({"tools": {"gh": lock["optional_tools"]["gh"]}, "plugins": {}}, key, deploy)
 
 
 def github_setup(lock, key, deploy):
@@ -660,7 +856,8 @@ def github_setup(lock, key, deploy):
     configure_identity()
     if not find_tool("gh"):
         if ask_yes("Install GitHub CLI (gh)?", default=True):
-            install_gh(lock, key, deploy)
+            if install_gh(lock, key, deploy):
+                raise RuntimeError("GitHub CLI installation did not finish; rerun ./install.sh --github-setup")
         else:
             print("You can install it later with ./install.sh --install-gh.")
             return
@@ -671,7 +868,7 @@ def github_setup(lock, key, deploy):
     print("Manage accounts later with git-profile (add, switch, list, or remove).")
 
 
-def main():
+def _main():
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--config-only", action="store_true", help="Link configuration without downloading tools")
@@ -707,8 +904,7 @@ def main():
     key = platform_key()
     lock = json.loads((ROOT / "tools.lock.json").read_text())
     if args.install_gh:
-        install_gh(lock, key, Deployment())
-        return 0
+        return 1 if install_gh(lock, key, Deployment()) else 0
     if args.github_setup:
         if not sys.stdin.isatty():
             raise RuntimeError("GitHub setup requires an interactive terminal.")
@@ -725,37 +921,32 @@ def main():
         print(f"Platform: {key}\nCheckout: {ROOT}\nConfiguration link: {CONFIG / 'linux-setup'}\nExecutables: {BIN}\nData: {DATA}\nBackups: {STATE / 'backups'}")
         print("Tools:", ", ".join(lock["tools"]))
         print("Plugins:", ", ".join(lock["plugins"]))
+        print("Existing programs are kept. Managed tool/plugin updates require interactive confirmation.")
+        print("Incomplete work is retried; completed tools and verified downloads are reused.")
         print("Vite+ and uv are installed only when absent; existing installations are kept.")
         print("Base tools use the host package manager; existing files are backed up.")
         return 0
     migrate_legacy()
     deploy = Deployment()
     BIN.mkdir(parents=True, exist_ok=True)
-    failures = []
+    installation = InstallationRun(deploy, "configuration" if args.config_only else "full")
     if not args.config_only:
-        install_base(deploy)
-        failures = install_tools(lock, key, deploy)
-    install_config(deploy)
+        installation.step("base tools", lambda: install_base(deploy))
+        installation.step("tools and plugins", lambda: install_tools(lock, key, deploy))
+    installation.step("configuration", lambda: install_config(deploy))
     if not args.skip_mcp:
-        install_mcp(deploy)
+        installation.step("Codex integration", lambda: install_mcp(deploy))
     if not args.config_only and sys.stdin.isatty():
-        from git_profiles import configure_identity
-        configure_identity()
-        if not deploy.state.get("github_setup_prompted"):
-            github_setup(lock, key, deploy)
-            deploy.state["github_setup_prompted"] = True
-            deploy.save()
-        if not deploy.state.get("skills_setup_prompted"):
-            from git_profiles import ask_yes
-            if ask_yes("Would you like to install AI skills?"):
-                result = subprocess.run([sys.executable, str(ROOT / "scripts/skill_manager.py")])
-                if result.returncode:
-                    print("Skill manager did not complete; rerun skill-manager when ready.")
-            deploy.state["skills_setup_prompted"] = True
-            deploy.save()
+        installation.step("GitHub and skills", lambda: interactive_setup(lock, key, deploy))
+    failures = installation.finish()
     if failures:
-        print("\nSetup finished with incomplete tools: " + ", ".join(failures), file=sys.stderr)
-    print(f"\nInstalled from {ROOT}\nBackups: {STATE / 'backups'}")
+        print("\nSetup finished with incomplete steps: " + ", ".join(failures), file=sys.stderr)
+        print("Rerun ./install.sh to retry; completed tools and backups will be reused.", file=sys.stderr)
+    elif not deploy.changed:
+        print("\nAlready installed; configuration and executable links checked.")
+    else:
+        print(f"\nSetup complete from {ROOT}")
+    print(f"Backups: {STATE / 'backups'}")
     zsh = shutil.which("zsh")
     if zsh:
         # The calling shell may not yet have ~/.local/bin in its PATH.
@@ -765,6 +956,73 @@ def main():
     from next_steps import print_guide
     print_guide(zsh)
     return 1 if failures else 0
+
+
+class InstallationRun:
+    """Durable step journal; reruns recheck links and reuse completed artifacts."""
+    def __init__(self, deploy, mode):
+        self.deploy = deploy
+        self.failures = []
+        self.record = deploy.state.setdefault("installations", {}).setdefault(mode, {"steps": {}})
+        if self.record.get("status") in ("running", "incomplete"):
+            print("Resuming incomplete setup; completed tools will be kept.", flush=True)
+        elif self.record.get("status") == "complete":
+            print("Setup is already installed; checking for repairs and approved updates.", flush=True)
+        self.record.update(status="running")
+        deploy.save()
+
+    def step(self, name, action):
+        self.record["current_step"] = name
+        self.record["steps"][name] = {"status": "running"}
+        self.deploy.save()
+        failure_detail = None
+        try:
+            failures = action() or []
+        except (KeyboardInterrupt, EOFError):
+            self.record["steps"][name] = {"status": "incomplete", "error": "Interrupted"}
+            self.record["status"] = "incomplete"
+            self.deploy.save()
+            raise
+        except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
+            print(f"{name}: incomplete: {error}. Continuing with other steps.", file=sys.stderr)
+            failures = [name]
+            failure_detail = str(error)
+        self.record["steps"][name] = {"status": "incomplete" if failures else "complete", "failures": failures}
+        if failure_detail:
+            self.record["steps"][name]["error"] = failure_detail
+        self.failures.extend(failures)
+        self.deploy.save()
+
+    def finish(self):
+        self.record.update(status="incomplete" if self.failures else "complete", failures=self.failures)
+        self.record.pop("current_step", None)
+        self.deploy.save()
+        return self.failures
+
+
+def interactive_setup(lock, key, deploy):
+    from git_profiles import configure_identity, ask_yes
+    configure_identity()
+    if not deploy.state.get("github_setup_prompted"):
+        github_setup(lock, key, deploy)
+        deploy.state["github_setup_prompted"] = True
+        deploy.save()
+    if not deploy.state.get("skills_setup_prompted"):
+        if ask_yes("Would you like to install AI skills?"):
+            result = subprocess.run([sys.executable, str(ROOT / "scripts/skill_manager.py")])
+            if result.returncode:
+                print("Skill manager did not complete; rerun setup or skill-manager when ready.")
+                return ["AI skills"]
+        deploy.state["skills_setup_prompted"] = True
+        deploy.save()
+    return []
+
+
+def main():
+    if any(flag in sys.argv[1:] for flag in ("--help", "-h", "--preflight", "--dry-run", "--check")):
+        return _main()
+    with operation_lock():
+        return _main()
 
 
 if __name__ == "__main__":

@@ -422,7 +422,7 @@ def parser():
     return result
 
 
-def main(argv=None):
+def _main(argv=None):
     args = parser().parse_args(argv)
     try:
         if args.yes and not (args.keep_tools or args.remove or args.all_tools or args.cache or args.resume or args.list or args.dry_run):
@@ -495,6 +495,18 @@ def main(argv=None):
         print("\nCancelled. If operations had started, inspect the saved report and use --resume.")
         return 130
     except (OSError, ValueError, RuntimeError, subprocess.CalledProcessError) as error:
+        print("linux-setup uninstall: " + visible(error), file=sys.stderr)
+        return 1
+
+
+def main(argv=None):
+    arguments = sys.argv[1:] if argv is None else argv
+    if any(flag in arguments for flag in ("--help", "-h", "--list", "--dry-run")):
+        return _main(arguments)
+    try:
+        with setup.operation_lock():
+            return _main(arguments)
+    except (OSError, RuntimeError) as error:
         print("linux-setup uninstall: " + visible(error), file=sys.stderr)
         return 1
 

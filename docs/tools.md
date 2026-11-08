@@ -24,9 +24,11 @@
 
 `tools.lock.json` pins upstream release versions, URLs, SHA-256 checksums, and
 plugin commits. Downloads are verified before installation. Repeated installs
-reuse verified downloads and installed versions. Base packages follow the target
-OS's repositories. This reproduces the
-configuration and pinned tools, rather than freezing the entire operating system.
+reuse verified downloads and installed versions. Updates to managed tools and
+plugins require confirmation; external programs are kept. See
+[rerun and recovery](recovery.md). Base packages follow the target OS's repositories.
+The lockfile records the terminal tools and plugins; keep project dependencies
+in each project's own lockfile.
 
 Vite+ and uv are **installed only when missing**. Existing installations and their
 versions are preserved, including Vite+'s current and older installation locations and uv's older

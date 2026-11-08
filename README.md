@@ -44,6 +44,10 @@ existing configuration. It offers GitHub account setup and AI skills during an
 interactive first run. Move through menus with **arrow keys**, toggle multiple
 choices with **Space**, and press **Enter** to confirm. **Esc** goes back.
 
+Rerun `./install.sh` after a failed or interrupted installation. Completed tools
+are kept; available pinned updates require confirmation. See
+[rerun and recovery](docs/recovery.md).
+
 [Installation details and supported systems](docs/installation.md) ·
 [Fix unreadable icons or set the default shell](docs/fonts-and-shell.md)
 

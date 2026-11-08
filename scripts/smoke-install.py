@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise real install/uninstall/reinstall in a disposable home (network required)."""
 import argparse
+import json
 import os
 from pathlib import Path
 import shutil
@@ -33,6 +34,19 @@ def main():
             print("SMOKE:", " ".join(map(str, command)), flush=True)
             subprocess.run(list(map(str, command)), cwd=ROOT, env=environment, check=True)
         run(ROOT / "install.sh", "--skip-mcp")
+        # Rerunning must leave artifacts, backups, and original link records intact.
+        manifest = root / ".local/state/linux-setup/deployment.json"
+        first = json.loads(manifest.read_text())
+        repeated = subprocess.run([str(ROOT / "install.sh"), "--skip-mcp"], cwd=ROOT, env=environment,
+                                  check=True, capture_output=True, text=True)
+        print(repeated.stdout, end="", flush=True)
+        assert "already installed" in repeated.stdout.lower(), "Rerun did not explain reused installation"
+        assert "Downloading " not in repeated.stdout, "Rerun downloaded a completed tool"
+        second = json.loads(manifest.read_text())
+        assert first["links"] == second["links"], "Rerun changed link ownership or original backups"
+        for name, item in first["programs"].items():
+            assert item.get("fingerprints") == second["programs"][name].get("fingerprints"), "Rerun changed " + name
+        assert second["installations"]["full"]["status"] == "complete", "Rerun did not finish"
         run(ROOT / "install.sh", "--check")
         run("dev-check", "--help")
         run("dev-browser", "--help")
@@ -57,7 +71,7 @@ def main():
         assert not (root / ".local/bin/bat").exists(), "All-tools removal left bat"
         run(ROOT / "install.sh", "--skip-mcp")
         run(ROOT / "install.sh", "--check")
-        print("SMOKE PASSED: fresh install, keep-tools, selective removal/cache cleanup, all-tools removal, reinstall", flush=True)
+        print("SMOKE PASSED: fresh install, repeat install, keep-tools, selective removal/cache cleanup, all-tools removal, reinstall", flush=True)
 
 
 if __name__ == "__main__":

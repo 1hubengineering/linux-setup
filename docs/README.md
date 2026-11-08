@@ -18,7 +18,8 @@
 | Navigate files, use keyboard shortcuts, manage tmux sessions or ports | [Terminal commands](terminal.md) |
 | Check a project or set up browser testing | [Developer workflow](developer-workflow.md) |
 | Manage PostgreSQL databases and schemas | [Database manager](databases.md) |
-| Update or repair your installation | [Installation](installation.md#update-an-existing-installation) and [troubleshooting](troubleshooting.md) |
+| Rerun setup, resume after a failure, or approve updates | [Rerun and recovery](recovery.md) |
+| Diagnose a tool or shell problem | [Troubleshooting](troubleshooting.md) |
 | Remove setup or selected tools | [Uninstall and recovery](uninstall.md) |
 
 ## Reference and customization

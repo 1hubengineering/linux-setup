@@ -120,7 +120,7 @@ class InstallFailureTests(unittest.TestCase):
             failures = setup.install_tools(lock, "linux-x86_64", self.deploy)
         self.assertEqual(failures, [])
         prepare.assert_called_once()
-        self.assertEqual([call.args[0][0] for call in probe.call_args_list], [str(setup.BIN / "uv")])
+        probe.assert_not_called()
         self.assertNotIn("setup_incomplete", self.deploy.state["programs"]["vp"])
 
     def test_missing_libatomic_is_extracted_and_passed_to_vite_setup(self):
@@ -146,6 +146,37 @@ class InstallFailureTests(unittest.TestCase):
         self.assertEqual(env["LD_LIBRARY_PATH"].split(":")[0], str(directory))
         self.assertEqual(commands[-1][0], [executable, "env", "setup"])
 
+    def test_libatomic_retry_preserves_an_incomplete_old_directory(self):
+        directory = setup.DATA / "tools/vp/libatomic"
+        old = self.write(directory / "partial", "keep this earlier extraction")
+        self.deploy.record_program("vp", binaries=["vp"], version="1")
+        def command(args, **kwargs):
+            if args[:2] == ["apt-get", "download"]:
+                self.write(Path(kwargs["cwd"]) / "libatomic.deb", "package")
+            elif args[:2] == ["dpkg-deb", "-x"]:
+                self.write(Path(args[3]) / "usr/lib/x86_64-linux-gnu/libatomic.so.1", "library")
+        with patch.object(setup.ctypes, "CDLL", side_effect=OSError("missing")), \
+             patch.object(setup.shutil, "which", return_value="/usr/bin/tool"), patch.object(setup, "run", side_effect=command):
+            self.assertEqual(setup.ensure_vp_libatomic(self.deploy), directory)
+        retained = list(directory.parent.glob("libatomic-incomplete-*/partial"))
+        self.assertEqual(len(retained), 1)
+        self.assertEqual(retained[0].read_text(), "keep this earlier extraction")
+        self.assertEqual((directory / "libatomic.so.1").read_text(), "library")
+        self.assertEqual(self.deploy.state["programs"]["vp"]["fingerprints"][str(directory)], setup.fingerprint(directory))
+
+    def test_libatomic_published_before_interruption_has_inventory_repaired(self):
+        directory = setup.DATA / "tools/vp/libatomic"
+        self.deploy.record_program("vp", paths=[directory], version="1", binaries=["vp"])
+        self.write(directory / "libatomic.so.1", "library")
+        self.deploy.state["programs"]["vp"]["pending_libatomic"] = setup.fingerprint(directory)
+        self.deploy.save()
+        deploy = setup.Deployment()
+        with patch.object(setup, "run") as commands:
+            self.assertEqual(setup.ensure_vp_libatomic(deploy), directory)
+        commands.assert_not_called()
+        self.assertNotIn("pending_libatomic", deploy.state["programs"]["vp"])
+        self.assertEqual(deploy.state["programs"]["vp"]["fingerprints"][str(directory)], setup.fingerprint(directory))
+
     def test_interrupted_vp_inventory_is_reconciled_without_mutating_dry_run(self):
         executable = self.write(setup.DATA / "tools/vp/1/vp", "binary")
         environment = self.write(setup.CONFIG / "vite-plus/env", "original environment")
@@ -168,9 +199,10 @@ class InstallFailureTests(unittest.TestCase):
         self.assertNotIn("pending_external", writable.state["programs"]["vp"])
         self.assertEqual(writable.state["programs"]["vp"]["external_files"][str(environment)]["backup"], str(backup))
 
-    def test_partial_base_extraction_is_recorded_and_user_edits_block_retry(self):
+    def test_partial_base_extraction_is_not_published_and_retry_preserves_old_files(self):
         folder = setup.DATA / "base/psql"
-        partial = folder / "runtime/usr/share/partial"
+        partial = self.write(folder / "runtime/usr/share/partial", "user customization after earlier failed install")
+        fail = True
 
         def installation_step(command, **kwargs):
             if command[:2] == ["apt-get", "-s"]:
@@ -179,25 +211,29 @@ class InstallFailureTests(unittest.TestCase):
                 self.write(Path(kwargs["cwd"]) / "client.deb", "fake package")
                 return Mock()
             if command[:2] == ["dpkg-deb", "-x"]:
-                self.write(partial, "partially extracted artifact")
-                raise subprocess.CalledProcessError(2, command)
+                stage = Path(command[-1])
+                self.write(stage / "usr/share/partial", "partially extracted artifact")
+                if fail:
+                    raise subprocess.CalledProcessError(2, command)
+                binary = self.write(stage / "usr/lib/postgresql/18/bin/psql", "#!/bin/sh\nexit 0\n")
+                binary.chmod(0o755)
+                return Mock()
             self.fail("Unexpected command: " + repr(command))
 
         lookup = lambda name: None if name in ("psql", "zsh") else "/usr/bin/" + name
         with patch.object(setup, "BASE", ["psql"]), patch.object(setup.shutil, "which", side_effect=lookup), patch.object(setup, "run", side_effect=installation_step):
-            with self.assertRaises(subprocess.CalledProcessError):
-                setup.install_base(self.deploy)
-        item = self.deploy.state["programs"]["psql"]
-        self.assertEqual(item["version"], "incomplete")
-        self.assertEqual(item["fingerprints"][str(folder)], setup.fingerprint(folder))
+            self.assertEqual(setup.install_base(self.deploy), ["psql"])
+        self.assertEqual(self.deploy.state["programs"]["psql"]["status"], "incomplete")
         self.assertFalse((setup.BIN / "psql").exists())
-
-        partial.write_text("user customization after failed install")
-        with patch.object(setup, "BASE", ["psql"]), patch.object(setup.shutil, "which", side_effect=lookup), patch.object(setup, "run", side_effect=installation_step) as command:
-            with self.assertRaises(RuntimeError):
-                setup.install_base(self.deploy)
-        self.assertTrue(all(call.args[0][:2] == ["apt-get", "-s"] for call in command.call_args_list))
-        self.assertEqual(partial.read_text(), "user customization after failed install")
+        self.assertEqual(list(folder.parent.glob(".install-*")), [])
+        fail = False
+        with patch.object(setup, "BASE", ["psql"]), patch.object(setup.shutil, "which", side_effect=lookup), patch.object(setup, "run", side_effect=installation_step):
+            self.assertEqual(setup.install_base(setup.Deployment()), [])
+        self.assertEqual(partial.read_text(), "user customization after earlier failed install")
+        subprocess.run([str(setup.BIN / "psql")], check=True)
+        with patch.object(setup, "BASE", ["psql"]), patch.object(setup.shutil, "which", side_effect=lookup), patch.object(setup, "run") as commands:
+            self.assertEqual(setup.install_base(setup.Deployment()), [])
+        commands.assert_not_called()
 
 
 if __name__ == "__main__":

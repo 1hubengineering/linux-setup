@@ -82,8 +82,8 @@ current user's home directory.
 ## What gets installed
 
 The [included tools reference](tools.md) lists the included programs.
-Already available base programs are reused. Existing Vite+ and uv installations
-are preserved. Fresh Vite+/uv installations use the lockfile versions.
+Already available programs are reused, including external installations.
+Fresh Vite+/uv installations use the lockfile versions.
 
 Zsh is installed automatically when it is missing during a normal `./install.sh`
 run on Ubuntu/Debian. Its packages and runtime files stay in your user directory,
@@ -166,6 +166,11 @@ cd ~/linux-setup
 git pull --ff-only
 ./install.sh
 ```
+
+Completed tools report that they are already installed. If a managed tool or
+plugin has a new pinned version, an interactive run asks before updating it;
+non-interactive runs keep the installed version. Rerunning also retries incomplete
+steps after a failure or interruption. See [rerun and recovery](recovery.md).
 
 On success, run `exec zsh`. For configuration changes without tool downloads,
 use `./install.sh --config-only --skip-mcp`. Existing Vite+ and uv versions are

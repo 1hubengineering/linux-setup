@@ -202,13 +202,14 @@ class BaseToolTests(unittest.TestCase):
                 (Path(kwargs["cwd"]) / "zsh.deb").write_text("test package")
                 return Mock()
             if command[:2] == ["dpkg-deb", "-x"]:
-                self.assertEqual(command[-1], runtime)
-                binary = runtime / "usr/bin/zsh"
+                staged_runtime = command[-1]
+                self.assertNotEqual(staged_runtime, runtime)
+                binary = staged_runtime / "usr/bin/zsh"
                 binary.parent.mkdir(parents=True)
                 binary.write_text('#!/bin/sh\nprintf "%s\\n" "$ZDOTDIR" "$@"\n')
                 binary.chmod(0o755)
-                (runtime / "usr/lib/x86_64-linux-gnu/zsh/5.9").mkdir(parents=True)
-                (runtime / "usr/share/zsh/functions/Completion").mkdir(parents=True)
+                (staged_runtime / "usr/lib/x86_64-linux-gnu/zsh/5.9").mkdir(parents=True)
+                (staged_runtime / "usr/share/zsh/functions/Completion").mkdir(parents=True)
                 return Mock()
             self.fail("Unexpected command: " + repr(command))
 
@@ -245,26 +246,26 @@ class BaseToolTests(unittest.TestCase):
             entry.write_text("#!/bin/sh\nexit 0\n")
             entry.chmod(0o755)
 
-        with patch.object(sys, "argv", ["setup.py", "--skip-mcp"]), patch.dict(os.environ, {"PATH": "/usr/bin:/bin"}), patch("preflight.check", return_value=[]), patch.object(setup, "migrate_legacy"), patch.object(setup, "install_base", side_effect=install_base) as base, patch.object(setup, "install_tools", return_value=[]), patch.object(setup, "install_config"), patch("sys.stdout", new_callable=io.StringIO) as output:
+        with patch.object(sys, "argv", ["setup.py", "--skip-mcp"]), patch.dict(os.environ, {"PATH": "/usr/bin:/bin"}), patch("preflight.check", return_value=[]), patch.object(setup, "migrate_legacy"), patch.object(setup, "install_base", side_effect=install_base) as base, patch.object(setup, "install_tools", return_value=[]), patch.object(setup, "install_config", return_value=None), patch("sys.stdout", new_callable=io.StringIO) as output:
             self.assertEqual(setup.main(), 0)
         base.assert_called_once()
         self.assertIn("Run: exec " + shlex.quote(str(setup.BIN / "zsh")), output.getvalue())
 
     def test_vite_setup_failure_still_installs_config_and_returns_failure(self):
         with patch.object(sys, "argv", ["setup.py", "--skip-mcp"]), patch("preflight.check", return_value=[]), \
-             patch.object(setup, "migrate_legacy"), patch.object(setup, "install_base"), \
+             patch.object(setup, "migrate_legacy"), patch.object(setup, "install_base", return_value=[]), \
              patch.object(setup, "install_tools", return_value=["Vite+"]), \
-             patch.object(setup, "install_config") as config, patch("sys.stderr", new_callable=io.StringIO) as errors:
+             patch.object(setup, "install_config", return_value=None) as config, patch("sys.stderr", new_callable=io.StringIO) as errors:
             self.assertEqual(setup.main(), 1)
         config.assert_called_once()
-        self.assertIn("incomplete tools: Vite+", errors.getvalue())
+        self.assertIn("incomplete steps: Vite+", errors.getvalue())
 
     def test_first_interactive_install_offers_skills_once(self):
         import git_profiles
         terminal = Mock()
         terminal.isatty.return_value = True
         self.deploy.state['github_setup_prompted'] = True
-        with patch.object(sys, 'argv', ['setup.py', '--skip-mcp']), patch.object(sys, 'stdin', terminal), patch.dict(os.environ, {'PATH': '/usr/bin:/bin'}), patch('preflight.check', return_value=[]), patch.object(setup, 'Deployment', return_value=self.deploy), patch.object(setup, 'migrate_legacy'), patch.object(setup, 'install_base'), patch.object(setup, 'install_tools', return_value=[]), patch.object(setup, 'install_config'), patch.object(git_profiles, 'configure_identity'), patch.object(git_profiles, 'ask_yes', return_value=True) as ask, patch.object(setup.subprocess, 'run', return_value=Mock(returncode=0)) as run:
+        with patch.object(sys, 'argv', ['setup.py', '--skip-mcp']), patch.object(sys, 'stdin', terminal), patch.dict(os.environ, {'PATH': '/usr/bin:/bin'}), patch('preflight.check', return_value=[]), patch.object(setup, 'Deployment', return_value=self.deploy), patch.object(setup, 'migrate_legacy'), patch.object(setup, 'install_base', return_value=[]), patch.object(setup, 'install_tools', return_value=[]), patch.object(setup, 'install_config', return_value=None), patch.object(git_profiles, 'configure_identity'), patch.object(git_profiles, 'ask_yes', return_value=True) as ask, patch.object(setup.subprocess, 'run', return_value=Mock(returncode=0)) as run:
             self.assertEqual(setup.main(), 0)
             self.assertEqual(setup.main(), 0)
         ask.assert_called_once_with('Would you like to install AI skills?')
@@ -281,7 +282,7 @@ class ManagerTests(unittest.TestCase):
             setup.install_tools(managers, "linux-x86_64", deploy)
         download.assert_not_called()
         deploy.link.assert_not_called()
-        self.assertEqual(run.call_args_list, [unittest.mock.call(["/existing/vp", "--version"], capture_output=True, text=True), unittest.mock.call(["/existing/uv", "--version"], capture_output=True, text=True)])
+        run.assert_not_called()
 
     def test_absent_managers_install_uvx_and_prepare_vite_environment(self):
         with tempfile.TemporaryDirectory() as tmp:

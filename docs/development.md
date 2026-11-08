@@ -33,8 +33,9 @@ python3 scripts/smoke-install.py
 ```
 
 The smoke script uses a disposable home with isolated XDG paths and Git settings.
-It performs a fresh install, checks retained Zsh/uv/Vite+ after configuration-only
-uninstall, removes a selected program and test cache, removes remaining managed
+It performs a fresh install, reruns it to check artifact and backup reuse, then
+checks retained Zsh/uv/Vite+ after configuration-only uninstall, removes a selected
+program and test cache, removes remaining managed
 programs, reinstalls, and runs the doctor again. It skips MCP registration and
 does not change the account's login shell. Network access is required for release
 downloads and runtime setup. The temporary installation is removed when it exits.
@@ -50,8 +51,10 @@ This copies regular files into the disposable cache; it does not delete or
 modify the source cache. Artifacts remain subject to the installer's checksum
 verification. Vite+ bootstrap setup may still need network access.
 
-Unit tests additionally cover interrupted operations, changed paths, external
-programs, retained shared libraries, and login-shell protection. Verify the
+Unit tests additionally cover interruption during bundle activation and backup,
+failed downloads followed by retry, update approval and retry, missing companion
+links, concurrent-operation locking, changed paths, external programs, retained
+shared libraries, and login-shell protection. Verify the
 keyboard UI separately in a real terminal, including Enter with no boxes checked.
 
 CI is configured to run the unit suite with Python 3.9 and 3.12 on Ubuntu and
@@ -95,6 +98,10 @@ The lockfile contains release versions, artifact URLs, SHA-256 hashes, and plugi
 commits. Update plugin tags, commits, URLs, and hashes together. Never suppress a
 checksum failure as a shortcut to making an installation pass.
 
+When a pinned managed tool or plugin changes, interactive installation asks for
+confirmation before updating; non-interactive installation keeps its version.
+An approved update is recorded so interruption does not require another prompt.
+
 Vite+ and uv are installed only when absent; an existing installation is kept
 even after a lockfile update. Use their supported update workflow when you
 intentionally want to upgrade an existing manager. Project runtime versions and
@@ -107,8 +114,12 @@ uninstaller to remove them. Reused programs are external. Shared runtime paths
 need consumer tracking. Generated integrations outside the main storage directory
 need enough information to detect subsequent edits and restore original content.
 
-Manifest writes and uninstall progress must survive interruptions. New migration
-logic must preserve original backups, private configuration, and recovery files.
+Manifest writes and install/uninstall progress must survive interruptions.
+Stage new bundles on the destination filesystem and publish them by rename.
+Record backup destinations before moving original files. Keep completed tool
+artifacts on retries, and hold the shared operation lock during mutations.
+Migration logic must preserve original backups, private configuration, and
+recovery files.
 When ownership is uncertain, report and retain the path rather than infer
 permission from its name alone. Dry runs must not create state or change links.
 

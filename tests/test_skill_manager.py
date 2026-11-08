@@ -56,6 +56,23 @@ class SkillManagerTests(unittest.TestCase):
             self.assertEqual(fetch.call_count, 1)
         self.assertEqual((target / 'demo/SKILL.md').read_text(), 'my version')
 
+    def test_interrupted_extraction_never_exposes_a_partial_skill(self):
+        archive = self.archive({'repo/skills/demo/SKILL.md': 'complete skill', 'repo/skills/demo/tool.py': 'print(1)'})
+        root = self.root / 'skills'
+        item = {'id': 'demo', 'path': 'skills/demo'}
+        repository = {'repo': 'org/repo', 'commit': 'a' * 40}
+        def interrupted(archive, item, stage):
+            (stage / 'SKILL.md').write_text('partial')
+            self.assertFalse((root / 'demo').exists())
+            raise KeyboardInterrupt
+        with patch.object(manager, 'get_archive', return_value=archive), patch.object(manager, 'unpack_skill', side_effect=interrupted):
+            with self.assertRaises(KeyboardInterrupt):
+                manager.install_skill(item, repository, root, self.root)
+        self.assertEqual(manager.list_installed(root), [])
+        with patch.object(manager, 'get_archive', return_value=archive):
+            self.assertTrue(manager.install_skill(item, repository, root, self.root))
+        self.assertEqual((root / 'demo/SKILL.md').read_text(), 'complete skill')
+
     def test_uiux_search_paths_point_to_actual_skill(self):
         archive = self.archive({'repo/skill/SKILL.md': 'python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py"'})
         item = {'id': 'ui-ux-pro-max', 'path': 'skill', 'adapt_uiux': True}
@@ -111,6 +128,25 @@ class SkillManagerTests(unittest.TestCase):
         self.assertEqual(len(labels), 2)
         self.assertTrue(labels[0].startswith("shared"))
         self.assertTrue(labels[1].startswith("web"))
+
+    def test_menu_failure_is_reported_on_exit_and_successful_retry_clears_it(self):
+        root = self.root / "skills"
+        failure = root / "demo"
+        def retry(*args):
+            failure.mkdir(parents=True)
+            (failure / "SKILL.md").write_text("complete")
+            return []
+        for retry_in_session in (False, True):
+            with self.subTest(retry=retry_in_session):
+                choices = [0, 0, 0, 0, 0, 0, 2] if retry_in_session else [0, 0, 0, 2]
+                outcomes = [[failure], retry] if retry_in_session else [[failure]]
+                def installation(*args):
+                    outcome = outcomes.pop(0)
+                    return outcome(*args) if callable(outcome) else outcome
+                with patch.object(manager.sys.stdin, "isatty", return_value=True), \
+                     patch.object(manager, "choose", side_effect=choices), patch.object(manager, "destination", return_value=root), \
+                     patch.object(manager, "install_menu", side_effect=installation):
+                    self.assertEqual(manager.main(), 0 if retry_in_session else 1)
 
     def test_catalog_pins_repositories_and_valid_skill_paths(self):
         catalog = json.loads(manager.CATALOG.read_text())
