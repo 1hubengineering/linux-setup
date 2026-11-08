@@ -32,13 +32,13 @@ definition. Enter inserts the selection for editing; it does not execute it.
 
 ## AI skill manager
 
-Choose an agent, a global or project scope, and a work area to browse skills.
-This menu shows the UI and UX choices available for Codex. Enter the numbers of
+Choose an agent, a global or project scope, and one or more work areas to browse skills.
+This menu shows the UI and UX choices available for Codex. Use arrows to move and Space to select
 the skills you want, then review the source URLs before confirming installation.
 
 ![Skill manager listing UI/UX Pro Max, frontend design, and web design guidelines with their repositories](assets/skill-manager.png)
 
-[PNG](assets/skill-manager.png) · [SVG](assets/skill-manager.svg) · [Usage](developer-workflow.md#ai-skills)
+[PNG](assets/skill-manager.png) · [SVG](assets/skill-manager.svg) · [Usage](skills.md)
 
 ## How these images are made
 

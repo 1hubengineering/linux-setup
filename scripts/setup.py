@@ -655,7 +655,7 @@ def install_gh(lock, key, deploy):
 
 
 def github_setup(lock, key, deploy):
-    from git_profiles import add_profile, ask_yes, configure_identity
+    from git_profiles import add_profiles, ask_yes, configure_identity
 
     configure_identity()
     if not find_tool("gh"):
@@ -666,9 +666,9 @@ def github_setup(lock, key, deploy):
             return
     if any(os.environ.get(name) for name in ("GH_TOKEN", "GITHUB_TOKEN")):
         print("GH_TOKEN or GITHUB_TOKEN is set and can override saved GitHub CLI accounts.")
-    while ask_yes("Add a GitHub account and author profile?"):
-        add_profile()
-    print("Manage accounts later with git-profile add, list, and use.")
+    if ask_yes("Add a GitHub account and author profile?"):
+        add_profiles()
+    print("Manage accounts later with git-profile (add, switch, list, or remove).")
 
 
 def main():
@@ -762,12 +762,17 @@ def main():
         print(f"Run: exec {shlex.quote(zsh)}\nThen: dev-doctor")
     else:
         print("Zsh is not installed. Run ./install.sh without --config-only to install missing tools.")
+    from next_steps import print_guide
+    print_guide(zsh)
     return 1 if failures else 0
 
 
 if __name__ == "__main__":
     try:
         sys.exit(main())
+    except (KeyboardInterrupt, EOFError):
+        print("\nSetup stopped. Rerun ./install.sh to continue.", file=sys.stderr)
+        sys.exit(1)
     except (RuntimeError, OSError, subprocess.CalledProcessError) as error:
         print(f"linux-setup: {error}", file=sys.stderr)
         sys.exit(1)

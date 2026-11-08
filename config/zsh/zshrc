@@ -59,6 +59,7 @@ if [[ -r "$_dev_plugin_dir/zsh-autosuggestions/current/zsh-autosuggestions.zsh" 
   source "$_dev_plugin_dir/zsh-autosuggestions/current/zsh-autosuggestions.zsh"
 fi
 
+[[ -r "$XDG_CONFIG_HOME/linux-setup-local/theme.zsh" ]] && source "$XDG_CONFIG_HOME/linux-setup-local/theme.zsh"
 if (( $+commands[oh-my-posh] )); then
   eval "$(oh-my-posh init zsh --config "${LINUX_SETUP_POSH_THEME:-$LINUX_SETUP_DIR/config/oh-my-posh/quick-term.omp.json}")"
 fi

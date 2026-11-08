@@ -1,33 +1,42 @@
-# Documentation
+# User guides
 
 [Project overview](../README.md) · [Terminal previews](previews.md)
 
-Start with installation, then choose a guide for the task you want to do.
+## Start here
 
-| Guide | What you will find |
+1. [Install or update linux-setup](installation.md). Update and upgrade Linux before your first clone.
+2. [Install a font and set your default shell](fonts-and-shell.md). Use the Windows instructions for WSL.
+3. [Find your commands](commands.md). Start with Alt+X or `devcommands`.
+
+## Everyday tasks
+
+| What you want to do | Guide |
 | --- | --- |
-| [Installation and migration](installation.md) | Supported systems, prerequisites, first install, file locations, default shell, migration |
-| [Terminal commands](terminal.md) | Keyboard shortcuts, Alt+X command picker, navigation, tmux, ports and local servers |
-| [Developer workflow](developer-workflow.md) | GitHub profiles, AI skills, project checks, browser testing, and shortcuts |
-| [Included tools](tools.md) | Installed tools, Vite+, uv, version pinning, optional previews |
-| [Themes and customization](customization.md) | Theme switching, shared configuration, private device settings, repository layout |
-| [PostgreSQL manager](databases.md) | Connection discovery, database/schema actions, confirmations, recovery |
-| [Uninstall and recovery](uninstall.md) | Selective removal, retained programs, caches, backups and login-shell protection |
-| [Troubleshooting](troubleshooting.md) | Downloads, missing libraries, completion, and known platform issues |
-| [Development and maintenance](development.md) | Tests, isolated install lifecycle checks, lockfile updates, publishing |
-| [Preview gallery](previews.md) | Prompt, command picker, and skill manager images; how to regenerate them |
+| Choose, change, or reset a prompt theme | [Themes](themes.md) |
+| Add a GitHub account, share author details, switch accounts, or remove a profile | [GitHub accounts](github-accounts.md) |
+| Install or remove skills for your agent and work areas | [AI skills](skills.md) |
+| Navigate files, use keyboard shortcuts, manage tmux sessions or ports | [Terminal commands](terminal.md) |
+| Check a project or set up browser testing | [Developer workflow](developer-workflow.md) |
+| Manage PostgreSQL databases and schemas | [Database manager](databases.md) |
+| Update or repair your installation | [Installation](installation.md#update-an-existing-installation) and [troubleshooting](troubleshooting.md) |
+| Remove setup or selected tools | [Uninstall and recovery](uninstall.md) |
 
-## Where to make a change
+## Reference and customization
 
-| Change | Location |
-| --- | --- |
-| Shared aliases | [`config/zsh/aliases.zsh`](../config/zsh/aliases.zsh) |
-| Shell functions | [`config/zsh/functions.zsh`](../config/zsh/functions.zsh) |
-| Alt+X picker | [`config/zsh/command-picker.zsh`](../config/zsh/command-picker.zsh), [`scripts/command_catalog.py`](../scripts/command_catalog.py) |
-| Prompt themes | [`config/oh-my-posh/`](../config/oh-my-posh/) |
-| Portable commands | [`bin/`](../bin/) and [`scripts/`](../scripts/) |
-| Tool versions and checksums | [`tools.lock.json`](../tools.lock.json) |
-| Private settings | `~/.config/linux-setup-local/zshrc` and `zshenv` on your device |
+- [Included tools](tools.md): what is installed, optional dependencies, Vite+, and uv.
+- [Customization](customization.md): private settings, shared commands, and repository layout.
+- [Preview gallery](previews.md): theme and menu images with capture instructions.
+- [Development](development.md): validation, ownership rules, lockfile updates, and contributions.
 
-Keep credentials, machine-specific paths, and real project environment files out
-of the checkout. Follow [development guidance](development.md) when contributing.
+## Menu controls
+
+Use Up/Down to move and Enter to choose. Lists with multiple selections use Space
+to toggle an item, Ctrl+A to select all, and Ctrl+D to clear all. Enter with
+nothing checked selects nothing. Esc returns without applying that selection;
+menus also offer Back or Exit where appropriate. With fzf 0.58 or newer, type to
+filter the choices. When fzf is absent or older, the Python fallback uses the
+same selection keys without search and supports `q` to go back. Normal setup
+installs a compatible fzf.
+
+Names, email addresses, and project paths are text fields. Administrative tools,
+GitHub CLI login, and destructive-action confirmations may have their own prompts.

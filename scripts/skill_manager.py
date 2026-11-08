@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Browse, install, and remove local skills for Codex and Claude Code."""
 import json
-import os
 from pathlib import Path, PurePosixPath
 import re
 import shutil
@@ -10,51 +9,14 @@ import tarfile
 import tempfile
 import urllib.request
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from terminal_ui import choose, choose_many, confirm
+
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "skills.catalog.json"
 AGENTS = {"codex": "Codex", "claude": "Claude Code"}
 MAX_ARCHIVE = 150 * 1024 * 1024
 MAX_SKILL = 80 * 1024 * 1024
-
-
-def choose(title, options):
-    print("\n" + title)
-    for i, label in enumerate(options, 1):
-        print(f"  {i}. {label}")
-    while True:
-        answer = input("Choose a number (or q to cancel): ").strip().lower()
-        if answer in ("q", ""):
-            return None
-        if answer.isdigit() and 1 <= int(answer) <= len(options):
-            return int(answer) - 1
-        print("Choose one of the displayed numbers.")
-
-
-def choose_many(title, options):
-    print("\n" + title)
-    for i, label in enumerate(options, 1):
-        print(f"  {i}. {label}")
-    while True:
-        answer = input("Numbers separated by commas (or Enter to cancel): ").strip()
-        if not answer or answer.lower() == "q":
-            return []
-        try:
-            numbers = [int(part.strip()) for part in answer.replace(" ", ",").split(",") if part.strip()]
-            if not numbers or any(n < 1 or n > len(options) for n in numbers):
-                raise ValueError
-            return list(dict.fromkeys(n - 1 for n in numbers))
-        except ValueError:
-            print("Enter numbers from the list, separated by commas.")
-
-
-def confirm(prompt):
-    while True:
-        answer = input(prompt + " [y/N] ").strip().lower()
-        if answer in ("", "n", "no"):
-            return False
-        if answer in ("y", "yes"):
-            return True
-        print("Please answer yes or no.")
 
 
 def destination(agent, scope, project=None):
@@ -193,10 +155,11 @@ def remove_skills(root):
 def install_menu(catalog, agent, root):
     available = [item for item in catalog['skills'] if agent in item['agents']]
     areas = sorted({area for item in available for area in item['areas']})
-    area = choose("Choose your area", areas + ["All skills"])
-    if area is None:
+    selected_areas = choose_many("Choose your work areas (select one or more)", areas + ["All skills"])
+    if not selected_areas:
         return
-    entries = available if area == len(areas) else [item for item in available if areas[area] in item['areas']]
+    chosen_areas = {areas[index] for index in selected_areas if index < len(areas)}
+    entries = available if len(areas) in selected_areas else [item for item in available if chosen_areas.intersection(item['areas'])]
     labels = [f"{item['id']} — {item['description']} ({catalog['repositories'][item['repository']]['repo']})" for item in entries]
     selected = choose_many("Select skills to install", labels)
     if not selected:
@@ -228,28 +191,30 @@ def main():
         action = choose("AI skill manager", ["Install skills", "Review or remove installed skills", "Exit"])
         if action is None or action == 2:
             return 0
-        agent_index = choose("Choose your AI agent", list(AGENTS.values()))
-        if agent_index is None:
+        agent_index = choose("Choose your AI agent", list(AGENTS.values()) + ["Back"])
+        if agent_index is None or agent_index == len(AGENTS):
             continue
         agent = list(AGENTS)[agent_index]
-        scope = choose("Choose the scope", ["Global (all projects)", "Project"])
-        if scope is None:
-            continue
-        project = None
-        if scope == 1:
-            project = input("Existing project directory (absolute path, or . for current directory): ").strip()
-            if not project:
+        while True:
+            scope = choose("Choose the scope", ["Global (all projects)", "Project", "Back"])
+            if scope is None or scope == 2:
+                break
+            project = None
+            if scope == 1:
+                project = input("Existing project directory (absolute path, or . for current directory; blank goes back): ").strip()
+                if not project:
+                    continue
+            try:
+                root = destination(agent, "global" if scope == 0 else "project", project)
+            except ValueError as error:
+                print(error)
                 continue
-        try:
-            root = destination(agent, "global" if scope == 0 else "project", project)
-        except ValueError as error:
-            print(error)
-            continue
-        print(f"Skill directory: {root}")
-        if action == 0:
-            install_menu(catalog, agent, root)
-        else:
-            remove_skills(root)
+            print(f"Skill directory: {root}")
+            if action == 0:
+                install_menu(catalog, agent, root)
+            else:
+                remove_skills(root)
+            break
 
 
 if __name__ == "__main__":
@@ -258,6 +223,6 @@ if __name__ == "__main__":
     except (EOFError, KeyboardInterrupt):
         print("\nCancelled.")
         sys.exit(0)
-    except (OSError, ValueError, json.JSONDecodeError) as error:
+    except (OSError, ValueError, RuntimeError) as error:
         print(f"skill-manager: {error}", file=sys.stderr)
         sys.exit(1)

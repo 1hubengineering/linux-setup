@@ -27,12 +27,25 @@ repository; a downloaded ZIP is another way to obtain the files. On Ubuntu/Debia
 rootless base-tool installation also requires `apt-get`, `dpkg-deb`, and populated
 package indexes.
 
+Update and upgrade Ubuntu/Debian **before cloning**. Review the package changes
+and restart if Linux requests it. Run this inside Ubuntu when using WSL:
+
+```sh
+sudo apt update && sudo apt upgrade
+sudo apt install --no-install-recommends git curl ca-certificates python3
+```
+
+Then clone and install as your normal user:
+
 ```sh
 git clone https://github.com/1hubengineering/linux-setup.git ~/linux-setup
 cd ~/linux-setup
-./install.sh --preflight
-./install.sh --dry-run
-./install.sh
+./install.sh --preflight && ./install.sh --dry-run && ./install.sh
+```
+
+After installation succeeds:
+
+```sh
 export PATH="$HOME/.local/bin:$PATH"
 exec zsh
 linux-doctor
@@ -68,7 +81,7 @@ current user's home directory.
 
 ## What gets installed
 
-The [README tool table](../README.md#included-tools) lists the included programs.
+The [included tools reference](tools.md) lists the included programs.
 Already available base programs are reused. Existing Vite+ and uv installations
 are preserved. Fresh Vite+/uv installations use the lockfile versions.
 
@@ -87,12 +100,14 @@ values and an existing `gh` installation are preserved. Non-interactive runs,
 preflight, dry runs, and configuration-only runs do not prompt. You can revisit
 the account flow with `./install.sh --github-setup`, or install just the optional
 CLI with `./install.sh --install-gh`. The GitHub CLI download is pinned and
-checksum-verified like the other managed tools.
+checksum-verified like the other managed tools. See [GitHub accounts](github-accounts.md)
+for sharing author details, adding another profile, switching, and removal.
 
 The first interactive installation also offers the optional AI skill manager.
-Choose Codex or Claude Code, an area of work, and global or project scope. You
+Choose Codex or Claude Code, one or more work areas, and global or project scope.
+Use arrows to move, Space to toggle choices, and Enter to confirm. Esc goes back. You
 can skip this step and run `skill-manager` later. See
-[AI skills](developer-workflow.md#ai-skills) for sources and removal.
+[AI skills](skills.md) for sources and removal.
 
 The PostgreSQL dependency is the `psql` client only. Installing it does not create
 a database cluster or start a server. Your applications retain responsibility for
@@ -142,28 +157,34 @@ so uninstallation keeps uncertain resources and reports them for review.
 To move a checkout later, move/copy it to its persistent destination and rerun
 `./install.sh` there to repair managed links. Open a new shell afterward.
 
-## Default shell
+## Update an existing installation
 
-Installing Zsh and setting the account's login shell are separate operations.
-Inspect the installed executable first:
+From your persistent installation checkout:
 
 ```sh
-command -v zsh
+cd ~/linux-setup
+git pull --ff-only
+./install.sh
 ```
 
-Use that absolute path. If it is missing from `/etc/shells`, an administrator must
-register it. Then run `chsh -s /absolute/path/to/zsh` and authenticate when asked.
-Log out and back in for the account change to take effect.
+On success, run `exec zsh`. For configuration changes without tool downloads,
+use `./install.sh --config-only --skip-mcp`. Existing Vite+ and uv versions are
+preserved; upgrade those managers through their own supported commands.
 
-If you choose the managed `~/.local/bin/zsh`, removing it later requires switching
-the account to another registered shell first. The uninstaller checks this.
+## Default shell
+
+At the end of setup, the installer prints your actual Zsh path, any required
+registration in `/etc/shells`, and the `chsh -s` command. Follow the
+[default-shell guide](fonts-and-shell.md#make-zsh-your-default-shell), or run
+`linux-setup-guide` to show those instructions again. The installer does not
+change your login shell automatically.
 
 ## Optional terminal features
 
-Choose a Nerd Font in the terminal emulator that renders your session. With WSL
-or SSH, that is normally the Windows/desktop client, not the remote Linux host.
-One font installation option on a local desktop is
-`oh-my-posh font install meslo`; select it in the terminal settings afterward.
+The completion guide detects WSL, SSH, or local Linux and explains where to
+install a Nerd Font. [Font instructions](fonts-and-shell.md#fix-missing-prompt-icons)
+include PowerShell commands for Windows and shell commands for Linux, followed
+by selecting the installed font in your terminal settings.
 
 Extra Yazi previews use optional tools:
 

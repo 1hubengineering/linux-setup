@@ -167,11 +167,11 @@ def skill_manager_preview():
             captured = b''
             offset = 0
             for prompt, answer in [
-                (b'Choose a number', b'1\n'),  # Install skills
-                (b'Choose a number', b'1\n'),  # Codex
-                (b'Choose a number', b'1\n'),  # Global
-                (b'Choose a number', f"{areas.index('UI and UX') + 1}\n".encode()),
-                (b'Numbers separated by commas', None),
+                (b'AI skill manager', b'\r'),  # Install skills
+                (b'Choose your AI agent', b'\r'),  # Codex
+                (b'Choose the scope', b'\r'),  # Global
+                (b'Choose your work areas', b'\x1b[B' * areas.index('UI and UX') + b' \r'),
+                (b'Select skills to install', None),
             ]:
                 deadline = time.monotonic() + 10
                 while prompt not in captured[offset:]:
@@ -181,10 +181,16 @@ def skill_manager_preview():
                         captured += os.read(master, 65536)
                 offset = len(captured)
                 if answer is not None:
+                    time.sleep(0.2)
                     os.write(master, answer)
+            # The prompt is drawn before fzf finishes drawing its result rows.
+            deadline = time.monotonic() + 0.5
+            while time.monotonic() < deadline:
+                if select.select([master], [], [], 0.05)[0]:
+                    captured += os.read(master, 65536)
             screen = pyte.Screen(COLUMNS, 40)
             pyte.Stream(screen).feed(captured.decode(errors='replace'))
-            first = next(i for i, row in enumerate(screen.display) if 'Select skills to install' in row)
+            first = max(0, next(i for i, row in enumerate(screen.display) if 'Select skills to install' in row) - 1)
             last = max(i for i, row in enumerate(screen.display) if row.strip())
             cropped = pyte.Screen(COLUMNS, last - first + 2)
             for y in range(last - first + 1):

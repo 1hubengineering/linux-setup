@@ -19,7 +19,9 @@ python3 -m unittest discover -s tests -v
 ./uninstall.sh --keep-tools --dry-run
 ```
 
-Tests cover archive validation, installation/restore behavior, helper parsing,
+Tests cover real key input in fzf and the Python terminal fallback, account
+profile reuse/removal, theme selection, environment-specific guidance,
+archive validation, installation/restore behavior, helper parsing,
 process handling, and uninstall safety. Destructive uninstall tests use isolated
 temporary directories and mocked account changes. Do not test full removal on a
 working personal setup just to validate a code change.

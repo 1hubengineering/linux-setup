@@ -41,58 +41,11 @@ def atomic_json(path, value):
 
 
 def choose(title, choices, multi=False):
-    """Return opaque choice IDs; input labels never become executable shell text."""
-    if not choices:
-        return [] if multi else None
-    fzf = shutil.which("fzf")
-    if fzf:
-        args = [fzf, "--read0", "--print0", "--delimiter=\t", "--with-nth=2..", "--height=70%", "--layout=reverse", "--border", "--prompt=" + title + " > "]
-        if multi:
-            args += ["--multi", "--marker=☑", "--header=Space: toggle  Enter: accept  Ctrl-A: all  Ctrl-D: none  Esc: cancel", "--bind=space:toggle+down,ctrl-a:select-all,ctrl-d:deselect-all"]
-            # fzf normally accepts the focused row when zero rows are checked.
-            # Emit an explicit sentinel so Enter truly keeps every unchecked item.
-            args += ["--with-shell=/bin/sh -c", '--bind=enter:transform:if [ "${FZF_SELECT_COUNT:-0}" = 0 ]; then printf "%s" "print(__NONE__)+accept"; else printf "%s" accept; fi']
-        else:
-            args += ["--header=Arrows: move  Enter: select  Esc: cancel"]
-        environment = dict(os.environ, FZF_DEFAULT_OPTS="", FZF_DEFAULT_OPTS_FILE="")
-        payload = "".join(f"{i}\t{visible(label)}\0" for i, (label, _) in enumerate(choices))
-        result = subprocess.run(args, input=payload, text=True, stdout=subprocess.PIPE, env=environment)
-        if result.returncode in (1, 130):
-            raise KeyboardInterrupt
-        if result.returncode:
-            raise RuntimeError("The selection menu failed; rerun with explicit command-line options")
-        selected = []
-        for row in result.stdout.split("\0"):
-            if row == "__NONE__":
-                return []
-            if row:
-                selected.append(choices[int(row.split("\t", 1)[0])][1])
-        return selected if multi else (selected[0] if selected else None)
-    selected = set()
-    while True:
-        print("\n" + title)
-        for index, (label, _) in enumerate(choices, 1):
-            print(f" {index:2}. [{'x' if index in selected else ' '}] {visible(label)}")
-        instruction = "Numbers toggle, a selects all, n clears, Enter accepts, q cancels: " if multi else "Number to select, q cancels: "
-        answer = input(instruction).strip().lower()
-        if answer == "q":
-            raise KeyboardInterrupt
-        if multi and not answer:
-            return [choices[n - 1][1] for n in sorted(selected)]
-        if multi and answer in ("a", "n"):
-            selected = set(range(1, len(choices) + 1)) if answer == "a" else set()
-            continue
-        try:
-            numbers = [int(n) for n in answer.replace(",", " ").split()]
-            if not numbers or any(n < 1 or n > len(choices) for n in numbers):
-                raise ValueError
-            if not multi:
-                if len(numbers) != 1:
-                    raise ValueError
-                return choices[numbers[0] - 1][1]
-            selected.symmetric_difference_update(numbers)
-        except ValueError:
-            print("Choose one of the displayed numbers.")
+    from terminal_ui import select
+    result = select(title, choices, multi=multi)
+    if result is None:
+        raise KeyboardInterrupt
+    return result
 
 
 def cache_options(programs):

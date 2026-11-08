@@ -274,17 +274,20 @@ class UninstallTests(unittest.TestCase):
         self.assertEqual(report["unresolved"], [])
         self.assertEqual(journal["status"], "complete")
 
-    def test_selection_fallback_returns_checked_values(self):
-        with patch.object(uninstall.shutil, "which", return_value=None), patch("builtins.input", side_effect=["1 2", "2", ""]), patch("sys.stdout", new_callable=io.StringIO):
+    def test_selection_uses_shared_keyboard_menu(self):
+        with patch("terminal_ui.select", return_value=["b"]) as select:
             values = uninstall.choose("Remove", [("one", "a"), ("two", "b")], multi=True)
-        self.assertEqual(values, ["a"])
+        self.assertEqual(values, ["b"])
+        select.assert_called_once_with("Remove", [("one", "a"), ("two", "b")], multi=True)
 
-    def test_fzf_enter_without_checks_keeps_everything(self):
-        output = SimpleNamespace(returncode=0, stdout="__NONE__\0" + "0\tone\0")
-        with patch.object(uninstall.shutil, "which", return_value="fzf"), patch.object(uninstall.subprocess, "run", return_value=output) as run:
-            values = uninstall.choose("Remove", [("one", "a")], multi=True)
-        self.assertEqual(values, [])
-        self.assertIn("FZF_SELECT_COUNT", " ".join(run.call_args.args[0]))
+    def test_enter_without_checks_keeps_everything(self):
+        with patch("terminal_ui.select", return_value=[]):
+            self.assertEqual(uninstall.choose("Remove", [("one", "a")], multi=True), [])
+
+    def test_cancel_shared_menu_aborts_uninstall(self):
+        with patch("terminal_ui.select", return_value=None):
+            with self.assertRaises(KeyboardInterrupt):
+                uninstall.choose("Remove", [("one", "a")], multi=True)
 
     def test_modified_program_tree_is_retained(self):
         path, _, item = self.program("fd")

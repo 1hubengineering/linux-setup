@@ -129,13 +129,12 @@ runtime while it remains the account's login shell.
 
 ## Missing icons or previews
 
-Square boxes in the prompt usually indicate the terminal is not using a Nerd
-Font. Install and select the font on the device rendering the terminal. With WSL
-or SSH this may be the Windows/desktop client rather than Linux.
+Run `linux-setup-guide` for font instructions matched to your environment. For
+WSL, install and select the font in Windows Terminal. Local Linux desktops use
+the Linux font installer. See [Fonts and shell](fonts-and-shell.md) for the
+PowerShell and Linux commands.
 
-Yazi video/PDF/archive previews need optional `ffmpeg`, Poppler, and 7-Zip
-packages. Their absence does not mean the base terminal setup failed. See
-[installation](installation.md#optional-terminal-features).
+For extra Yazi file previews, see [optional terminal features](installation.md#optional-terminal-features).
 
 ## Live PostgreSQL tests need more than psql
 

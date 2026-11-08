@@ -17,9 +17,8 @@ the previous configuration where it is still safe to do so.
 In a program list, a checked item means **remove**; an unchecked item means
 **keep**. Move with the arrow keys, toggle with Space, and accept with Enter.
 Ctrl-A selects all and Ctrl-D clears all. Escape cancels. Programs start
-unchecked. If fzf is unavailable, the text fallback displays numbered `[ ]`/`[x]`
-choices: enter numbers to toggle them, `a` for all, `n` for none, Enter to accept,
-or `q` to cancel.
+unchecked. If fzf is unavailable, the Python terminal fallback uses the same
+arrow, Space, and Enter controls; `q` also cancels.
 
 Caches have their own checkbox list and also start unchecked. You can remove a
 program and keep its cache, or keep the program and clear a listed cache. The

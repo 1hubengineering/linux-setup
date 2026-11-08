@@ -55,6 +55,8 @@ comment directly above each `alias name='command'` or `name() { ... }`, then
 their corresponding tools installed. See the [workflow guide](developer-workflow.md)
 for the included command groups and examples.
 
+## tmux and project sessions
+
 tmux keeps **Ctrl-B** as the prefix. After the prefix, press `|` or `-` to split,
 `h/j/k/l` to switch panes, `c` for a new window, `r` to reload config, and `d` to
 detach. `work` names sessions by project directory plus a short path hash, so two

@@ -79,10 +79,10 @@ class SkillManagerTests(unittest.TestCase):
         skill = self.root / 'demo'
         skill.mkdir()
         (skill / 'SKILL.md').write_text('my content')
-        with patch('builtins.input', side_effect=['1', 'n']):
+        with patch.object(manager, 'choose_many', return_value=[0]), patch.object(manager, 'confirm', return_value=False):
             manager.remove_skills(self.root)
         self.assertTrue(skill.exists())
-        with patch('builtins.input', side_effect=['1', 'y']):
+        with patch.object(manager, 'choose_many', return_value=[0]), patch.object(manager, 'confirm', return_value=True):
             manager.remove_skills(self.root)
         self.assertFalse(skill.exists())
 
@@ -93,10 +93,24 @@ class SkillManagerTests(unittest.TestCase):
         directory = self.root / 'skills'
         directory.mkdir()
         (directory / 'linked').symlink_to(target, target_is_directory=True)
-        with patch('builtins.input', side_effect=['1', 'y']):
+        with patch.object(manager, 'choose_many', return_value=[0]), patch.object(manager, 'confirm', return_value=True):
             manager.remove_skills(directory)
         self.assertFalse((directory / 'linked').is_symlink())
         self.assertEqual((target / 'SKILL.md').read_text(), 'keep')
+
+    def test_multiple_work_areas_union_skills_without_duplicates(self):
+        catalog = {"skills": [
+            {"id": "shared", "description": "Shared", "areas": ["Web", "UI"], "agents": ["codex"], "repository": "demo"},
+            {"id": "web", "description": "Web", "areas": ["Web"], "agents": ["codex"], "repository": "demo"},
+            {"id": "other", "description": "Other", "areas": ["Ops"], "agents": ["codex"], "repository": "demo"},
+            {"id": "claude", "description": "Claude", "areas": ["Web"], "agents": ["claude"], "repository": "demo"}],
+            "repositories": {"demo": {"repo": "example/demo"}}}
+        with patch.object(manager, "choose_many", side_effect=[[1, 2], []]) as pick:
+            manager.install_menu(catalog, "codex", self.root)
+        labels = pick.call_args_list[1].args[1]
+        self.assertEqual(len(labels), 2)
+        self.assertTrue(labels[0].startswith("shared"))
+        self.assertTrue(labels[1].startswith("web"))
 
     def test_catalog_pins_repositories_and_valid_skill_paths(self):
         catalog = json.loads(manager.CATALOG.read_text())

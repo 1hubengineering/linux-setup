@@ -4,34 +4,9 @@
 
 ## Switch the prompt theme
 
-The default is `quick-term`. Both bundled themes are Oh My Posh configurations
-for Zsh; the `iterm2` name does not require the iTerm2 application.
-
-| Theme | Appearance | Configuration |
-| --- | --- | --- |
-| Quick-term | Orange accents, two-line prompt, duration and clock, compact command history | [`quick-term.omp.json`](../config/oh-my-posh/quick-term.omp.json) |
-| iTerm2 | Blue and lime segments, exit-status color, rocket prompt, contextual segments | [`iterm2.omp.json`](../config/oh-my-posh/iterm2.omp.json) |
-
-Select any theme from the [Oh My Posh theme gallery](https://ohmyposh.dev/docs/themes/)
-by setting its name in `~/.config/linux-setup-local/zshenv`:
-
-```zsh
-export LINUX_SETUP_POSH_THEME='paradox'
-```
-
-Create the directory and file if needed, then run `reload`. Oh My Posh also
-accepts a local configuration path or HTTPS URL in this variable. For the bundled
-iTerm2 configuration, use `export LINUX_SETUP_POSH_THEME="$LINUX_SETUP_DIR/config/oh-my-posh/iterm2.omp.json"`.
-Remove the setting to restore the bundled quick-term default. Upstream theme names
-and URLs require network access and are cached by Oh My Posh; local files work
-offline. The installed Oh My Posh version determines which upstream themes are
-available.
-
-Use a Nerd Font in your terminal emulator. Font, terminal colors, Git state,
-screen width, and available hardware affect the appearance. Battery and Python
-environment segments in the alternative theme appear when their context is
-available. See the [preview gallery](previews.md) for both themes and the command
-picker, and [font setup](installation.md#optional-terminal-features) for details.
+Run `theme-manager` to choose a bundled or upstream theme, then `reload` to apply
+it. See [Themes](themes.md) for direct commands, local files, URLs, and resetting
+the selection. [Font setup](fonts-and-shell.md) explains unreadable icons.
 
 ## Repository layout
 
