@@ -17,6 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 NAME = re.compile(r"[A-Za-z0-9_.-]+")
 
 
+def bundled_themes():
+    names = sorted(path.name[:-9] for path in (ROOT / "config/oh-my-posh").glob("*.omp.json"))
+    return ["quick-term"] + [name for name in names if name != "quick-term"]
+
+
 def settings_path():
     return Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "linux-setup-local/theme.zsh"
 
@@ -35,7 +40,7 @@ def current_theme():
 def theme_value(value):
     if not value or any(not char.isprintable() for char in value):
         raise ValueError("Enter a theme name, an existing JSON file, or an HTTPS URL")
-    if value in ("quick-term", "iterm2"):
+    if value in bundled_themes():
         return str(ROOT / "config/oh-my-posh" / (value + ".omp.json"))
     if value.startswith("https://") and urlsplit(value).hostname and not any(char.isspace() for char in value):
         return value
@@ -96,9 +101,10 @@ def menu():
             return
         try:
             if action == 0:
-                choice = choose("Bundled themes", ["quick-term (default)", "iterm2", "Back"])
-                if choice is not None and choice != 2:
-                    save_theme(["quick-term", "iterm2"][choice])
+                names = bundled_themes()
+                choice = choose("Bundled themes", [name + (" (default)" if name == "quick-term" else "") for name in names] + ["Back"])
+                if choice is not None and choice != len(names):
+                    save_theme(names[choice])
             elif action == 1:
                 names = upstream_themes()
                 choice = choose("Upstream themes", names + ["Back"])
@@ -126,7 +132,7 @@ def main(argv=None):
     use.add_argument("theme")
     args = parser.parse_args(argv)
     if args.action == "list":
-        print("quick-term (bundled)\niterm2 (bundled)")
+        print("\n".join(name + " (bundled)" for name in bundled_themes()))
         print("\n".join(upstream_themes()))
     elif args.action == "current":
         print(current_theme())

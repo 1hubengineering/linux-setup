@@ -53,6 +53,7 @@ def print_guide(zsh=None):
         print(f"  chsh -s {path}")
         print("Log out and back in, or reopen your WSL session. A terminal profile with an explicit Bash command must also be updated.")
     print("\nEveryday commands")
+    print("  update              Pull setup changes and rerun installation from any directory")
     print("  theme-manager       Change the prompt theme; run reload afterward")
     print("  git-profile         Add, switch, or remove GitHub account profiles")
     print("  skill-manager       Add or remove AI skills; choose multiple work areas")

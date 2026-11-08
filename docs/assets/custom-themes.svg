@@ -1,0 +1,848 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1127.68" height="778" viewBox="0 0 1127.68 778">
+<rect width="1127.68" height="778" rx="12" fill="#0f172a"/>
+<path d="M12 0 H1115.68 Q1127.68 0 1127.68 12 V44 H0 V12 Q0 0 12 0" fill="#1e293b"/>
+<circle cx="24" cy="22" r="5" fill="#f87171"/><circle cx="42" cy="22" r="5" fill="#fbbf24"/><circle cx="60" cy="22" r="5" fill="#a3e635"/>
+<text x="563.84" y="27" text-anchor="middle" fill="#cbd5e1" font-family="sans-serif" font-size="13">linux-setup  /  custom themes  /  parent and current folder</text>
+<g font-family="MesloLGM Nerd Font Mono, monospace" font-size="16">
+<text x="24.0" y="70" fill="#e2e8f0">q</text>
+<text x="33.64" y="70" fill="#e2e8f0">u</text>
+<text x="43.28" y="70" fill="#e2e8f0">i</text>
+<text x="52.92" y="70" fill="#e2e8f0">c</text>
+<text x="62.56" y="70" fill="#e2e8f0">k</text>
+<text x="72.2" y="70" fill="#e2e8f0">-</text>
+<text x="81.84" y="70" fill="#e2e8f0">t</text>
+<text x="91.48" y="70" fill="#e2e8f0">e</text>
+<text x="101.12" y="70" fill="#e2e8f0">r</text>
+<text x="110.76" y="70" fill="#e2e8f0">m</text>
+<text x="24.0" y="93" fill="#d75f00">╰</text>
+<text x="33.64" y="93" fill="#d75f00">─</text>
+<text x="52.92" y="93" fill="#d75f00">$</text>
+<text x="72.2" y="93" fill="#e2e8f0">g</text>
+<text x="81.84" y="93" fill="#e2e8f0">i</text>
+<text x="91.48" y="93" fill="#e2e8f0">t</text>
+<text x="110.76" y="93" fill="#e2e8f0">s</text>
+<text x="120.4" y="93" fill="#e2e8f0">t</text>
+<text x="130.04000000000002" y="93" fill="#e2e8f0">a</text>
+<text x="139.68" y="93" fill="#e2e8f0">t</text>
+<text x="149.32" y="93" fill="#e2e8f0">u</text>
+<text x="158.96" y="93" fill="#e2e8f0">s</text>
+<text x="178.24" y="93" fill="#e2e8f0">-</text>
+<text x="187.88" y="93" fill="#e2e8f0">-</text>
+<text x="197.52" y="93" fill="#e2e8f0">s</text>
+<text x="207.16000000000003" y="93" fill="#e2e8f0">h</text>
+<text x="216.8" y="93" fill="#e2e8f0">o</text>
+<text x="226.44" y="93" fill="#e2e8f0">r</text>
+<text x="236.08" y="93" fill="#e2e8f0">t</text>
+<text x="24.0" y="116" fill="#d75f00">╭</text>
+<text x="33.64" y="116" fill="#d75f00">─</text>
+<text x="43.28" y="116" fill="#d75f00"></text>
+<rect x="52.92" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<rect x="62.56" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="62.56" y="116" fill="#121318"></text>
+<rect x="72.2" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<rect x="81.84" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="81.84" y="116" fill="#d75f00"></text>
+<rect x="91.48" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<rect x="101.12" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="101.12" y="116" fill="#4e4e4e">d</text>
+<rect x="110.76" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="110.76" y="116" fill="#4e4e4e">e</text>
+<rect x="120.4" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="120.4" y="116" fill="#4e4e4e">v</text>
+<rect x="130.04000000000002" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<rect x="139.68" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="139.68" y="116" fill="#e4e4e4"></text>
+<rect x="149.32" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<rect x="158.96" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="158.96" y="116" fill="#f2f3f8">m</text>
+<rect x="168.60000000000002" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="168.60000000000002" y="116" fill="#f2f3f8">y</text>
+<rect x="178.24" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="178.24" y="116" fill="#f2f3f8">-</text>
+<rect x="187.88" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="187.88" y="116" fill="#f2f3f8">a</text>
+<rect x="197.52" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="197.52" y="116" fill="#f2f3f8">p</text>
+<rect x="207.16000000000003" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="207.16000000000003" y="116" fill="#f2f3f8">p</text>
+<rect x="216.8" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="216.8" y="116" fill="#f2f3f8">/</text>
+<rect x="226.44" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="226.44" y="116" fill="#f2f3f8">s</text>
+<rect x="236.08" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="236.08" y="116" fill="#f2f3f8">r</text>
+<rect x="245.72000000000003" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="245.72000000000003" y="116" fill="#f2f3f8">c</text>
+<rect x="255.36" y="99" width="9.940000000000001" height="23" fill="#00627f"/>
+<text x="265.0" y="116" fill="#00627f"></text>
+<rect x="274.64" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="274.64" y="116" fill="#0f172a"></text>
+<rect x="284.28000000000003" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<rect x="293.92" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="293.92" y="116" fill="#f2f3f8"></text>
+<rect x="303.56" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<rect x="313.20000000000005" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="313.20000000000005" y="116" fill="#f2f3f8">m</text>
+<rect x="322.84000000000003" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="322.84000000000003" y="116" fill="#f2f3f8">a</text>
+<rect x="332.48" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="332.48" y="116" fill="#f2f3f8">i</text>
+<rect x="342.12" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="342.12" y="116" fill="#f2f3f8">n</text>
+<rect x="351.76" y="99" width="9.940000000000001" height="23" fill="#2d6419"/>
+<text x="361.40000000000003" y="116" fill="#2d6419"></text>
+<text x="891.6" y="116" fill="#e4e4e4"></text>
+<rect x="901.24" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<rect x="910.8800000000001" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="910.8800000000001" y="116" fill="#585858"></text>
+<rect x="920.5200000000001" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<rect x="930.1600000000001" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="930.1600000000001" y="116" fill="#585858">0</text>
+<rect x="939.8000000000001" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="939.8000000000001" y="116" fill="#585858">m</text>
+<rect x="949.44" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="949.44" y="116" fill="#585858">s</text>
+<rect x="959.08" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<rect x="968.72" y="99" width="9.940000000000001" height="23" fill="#e4e4e4"/>
+<text x="968.72" y="116" fill="#d75f00"></text>
+<rect x="978.36" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<rect x="988.0" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="988.0" y="116" fill="#121318"></text>
+<rect x="997.6400000000001" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<rect x="1007.2800000000001" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1007.2800000000001" y="116" fill="#121318">1</text>
+<rect x="1016.9200000000001" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1016.9200000000001" y="116" fill="#121318">0</text>
+<rect x="1026.56" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1026.56" y="116" fill="#121318">:</text>
+<rect x="1036.2" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1036.2" y="116" fill="#121318">2</text>
+<rect x="1045.8400000000001" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1045.8400000000001" y="116" fill="#121318">4</text>
+<rect x="1055.48" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1055.48" y="116" fill="#121318">:</text>
+<rect x="1065.1200000000001" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1065.1200000000001" y="116" fill="#121318">0</text>
+<rect x="1074.76" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1074.76" y="116" fill="#121318">0</text>
+<rect x="1084.4" y="99" width="9.940000000000001" height="23" fill="#d75f00"/>
+<text x="1094.04" y="116" fill="#d75f00"></text>
+<text x="24.0" y="139" fill="#d75f00">╰</text>
+<text x="33.64" y="139" fill="#d75f00">─</text>
+<text x="52.92" y="139" fill="#d75f00">$</text>
+<text x="72.2" y="139" fill="#e2e8f0">n</text>
+<text x="81.84" y="139" fill="#e2e8f0">p</text>
+<text x="91.48" y="139" fill="#e2e8f0">m</text>
+<text x="110.76" y="139" fill="#e2e8f0">r</text>
+<text x="120.4" y="139" fill="#e2e8f0">u</text>
+<text x="130.04000000000002" y="139" fill="#e2e8f0">n</text>
+<text x="149.32" y="139" fill="#e2e8f0">d</text>
+<text x="158.96" y="139" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="139" fill="#e2e8f0">v</text>
+<text x="24.0" y="185" fill="#e2e8f0">q</text>
+<text x="33.64" y="185" fill="#e2e8f0">u</text>
+<text x="43.28" y="185" fill="#e2e8f0">i</text>
+<text x="52.92" y="185" fill="#e2e8f0">c</text>
+<text x="62.56" y="185" fill="#e2e8f0">k</text>
+<text x="72.2" y="185" fill="#e2e8f0">-</text>
+<text x="81.84" y="185" fill="#e2e8f0">t</text>
+<text x="91.48" y="185" fill="#e2e8f0">e</text>
+<text x="101.12" y="185" fill="#e2e8f0">r</text>
+<text x="110.76" y="185" fill="#e2e8f0">m</text>
+<text x="120.4" y="185" fill="#e2e8f0">-</text>
+<text x="130.04000000000002" y="185" fill="#e2e8f0">o</text>
+<text x="139.68" y="185" fill="#e2e8f0">c</text>
+<text x="149.32" y="185" fill="#e2e8f0">e</text>
+<text x="158.96" y="185" fill="#e2e8f0">a</text>
+<text x="168.60000000000002" y="185" fill="#e2e8f0">n</text>
+<text x="24.0" y="208" fill="#7dd3fc">╰</text>
+<text x="33.64" y="208" fill="#7dd3fc">─</text>
+<text x="52.92" y="208" fill="#7dd3fc">$</text>
+<text x="72.2" y="208" fill="#e2e8f0">g</text>
+<text x="81.84" y="208" fill="#e2e8f0">i</text>
+<text x="91.48" y="208" fill="#e2e8f0">t</text>
+<text x="110.76" y="208" fill="#e2e8f0">s</text>
+<text x="120.4" y="208" fill="#e2e8f0">t</text>
+<text x="130.04000000000002" y="208" fill="#e2e8f0">a</text>
+<text x="139.68" y="208" fill="#e2e8f0">t</text>
+<text x="149.32" y="208" fill="#e2e8f0">u</text>
+<text x="158.96" y="208" fill="#e2e8f0">s</text>
+<text x="178.24" y="208" fill="#e2e8f0">-</text>
+<text x="187.88" y="208" fill="#e2e8f0">-</text>
+<text x="197.52" y="208" fill="#e2e8f0">s</text>
+<text x="207.16000000000003" y="208" fill="#e2e8f0">h</text>
+<text x="216.8" y="208" fill="#e2e8f0">o</text>
+<text x="226.44" y="208" fill="#e2e8f0">r</text>
+<text x="236.08" y="208" fill="#e2e8f0">t</text>
+<text x="24.0" y="231" fill="#7dd3fc">╭</text>
+<text x="33.64" y="231" fill="#7dd3fc">─</text>
+<text x="43.28" y="231" fill="#7dd3fc"></text>
+<rect x="52.92" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<rect x="62.56" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="62.56" y="231" fill="#0f172a"></text>
+<rect x="72.2" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<rect x="81.84" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="81.84" y="231" fill="#7dd3fc"></text>
+<rect x="91.48" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<rect x="101.12" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="101.12" y="231" fill="#0c4a6e">d</text>
+<rect x="110.76" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="110.76" y="231" fill="#0c4a6e">e</text>
+<rect x="120.4" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="120.4" y="231" fill="#0c4a6e">v</text>
+<rect x="130.04000000000002" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<rect x="139.68" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="139.68" y="231" fill="#e0f2fe"></text>
+<rect x="149.32" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<rect x="158.96" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="158.96" y="231" fill="#f8fafc">m</text>
+<rect x="168.60000000000002" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="168.60000000000002" y="231" fill="#f8fafc">y</text>
+<rect x="178.24" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="178.24" y="231" fill="#f8fafc">-</text>
+<rect x="187.88" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="187.88" y="231" fill="#f8fafc">a</text>
+<rect x="197.52" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="197.52" y="231" fill="#f8fafc">p</text>
+<rect x="207.16000000000003" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="207.16000000000003" y="231" fill="#f8fafc">p</text>
+<rect x="216.8" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="216.8" y="231" fill="#f8fafc">/</text>
+<rect x="226.44" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="226.44" y="231" fill="#f8fafc">s</text>
+<rect x="236.08" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="236.08" y="231" fill="#f8fafc">r</text>
+<rect x="245.72000000000003" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="245.72000000000003" y="231" fill="#f8fafc">c</text>
+<rect x="255.36" y="214" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="265.0" y="231" fill="#164e63"></text>
+<rect x="274.64" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="274.64" y="231" fill="#0f172a"></text>
+<rect x="284.28000000000003" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<rect x="293.92" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="293.92" y="231" fill="#f8fafc"></text>
+<rect x="303.56" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<rect x="313.20000000000005" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="313.20000000000005" y="231" fill="#f8fafc">m</text>
+<rect x="322.84000000000003" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="322.84000000000003" y="231" fill="#f8fafc">a</text>
+<rect x="332.48" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="332.48" y="231" fill="#f8fafc">i</text>
+<rect x="342.12" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="342.12" y="231" fill="#f8fafc">n</text>
+<rect x="351.76" y="214" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="361.40000000000003" y="231" fill="#14532d"></text>
+<text x="891.6" y="231" fill="#e0f2fe"></text>
+<rect x="901.24" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<rect x="910.8800000000001" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="910.8800000000001" y="231" fill="#0c4a6e"></text>
+<rect x="920.5200000000001" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<rect x="930.1600000000001" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="930.1600000000001" y="231" fill="#0c4a6e">0</text>
+<rect x="939.8000000000001" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="939.8000000000001" y="231" fill="#0c4a6e">m</text>
+<rect x="949.44" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="949.44" y="231" fill="#0c4a6e">s</text>
+<rect x="959.08" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<rect x="968.72" y="214" width="9.940000000000001" height="23" fill="#e0f2fe"/>
+<text x="968.72" y="231" fill="#7dd3fc"></text>
+<rect x="978.36" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<rect x="988.0" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="988.0" y="231" fill="#0f172a"></text>
+<rect x="997.6400000000001" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<rect x="1007.2800000000001" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1007.2800000000001" y="231" fill="#0f172a">1</text>
+<rect x="1016.9200000000001" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1016.9200000000001" y="231" fill="#0f172a">0</text>
+<rect x="1026.56" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1026.56" y="231" fill="#0f172a">:</text>
+<rect x="1036.2" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1036.2" y="231" fill="#0f172a">2</text>
+<rect x="1045.8400000000001" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1045.8400000000001" y="231" fill="#0f172a">4</text>
+<rect x="1055.48" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1055.48" y="231" fill="#0f172a">:</text>
+<rect x="1065.1200000000001" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1065.1200000000001" y="231" fill="#0f172a">0</text>
+<rect x="1074.76" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1074.76" y="231" fill="#0f172a">0</text>
+<rect x="1084.4" y="214" width="9.940000000000001" height="23" fill="#7dd3fc"/>
+<text x="1094.04" y="231" fill="#7dd3fc"></text>
+<text x="24.0" y="254" fill="#7dd3fc">╰</text>
+<text x="33.64" y="254" fill="#7dd3fc">─</text>
+<text x="52.92" y="254" fill="#7dd3fc">$</text>
+<text x="72.2" y="254" fill="#e2e8f0">n</text>
+<text x="81.84" y="254" fill="#e2e8f0">p</text>
+<text x="91.48" y="254" fill="#e2e8f0">m</text>
+<text x="110.76" y="254" fill="#e2e8f0">r</text>
+<text x="120.4" y="254" fill="#e2e8f0">u</text>
+<text x="130.04000000000002" y="254" fill="#e2e8f0">n</text>
+<text x="149.32" y="254" fill="#e2e8f0">d</text>
+<text x="158.96" y="254" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="254" fill="#e2e8f0">v</text>
+<text x="24.0" y="300" fill="#e2e8f0">q</text>
+<text x="33.64" y="300" fill="#e2e8f0">u</text>
+<text x="43.28" y="300" fill="#e2e8f0">i</text>
+<text x="52.92" y="300" fill="#e2e8f0">c</text>
+<text x="62.56" y="300" fill="#e2e8f0">k</text>
+<text x="72.2" y="300" fill="#e2e8f0">-</text>
+<text x="81.84" y="300" fill="#e2e8f0">t</text>
+<text x="91.48" y="300" fill="#e2e8f0">e</text>
+<text x="101.12" y="300" fill="#e2e8f0">r</text>
+<text x="110.76" y="300" fill="#e2e8f0">m</text>
+<text x="120.4" y="300" fill="#e2e8f0">-</text>
+<text x="130.04000000000002" y="300" fill="#e2e8f0">f</text>
+<text x="139.68" y="300" fill="#e2e8f0">o</text>
+<text x="149.32" y="300" fill="#e2e8f0">r</text>
+<text x="158.96" y="300" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="300" fill="#e2e8f0">s</text>
+<text x="178.24" y="300" fill="#e2e8f0">t</text>
+<text x="24.0" y="323" fill="#86efac">╰</text>
+<text x="33.64" y="323" fill="#86efac">─</text>
+<text x="52.92" y="323" fill="#86efac">$</text>
+<text x="72.2" y="323" fill="#e2e8f0">g</text>
+<text x="81.84" y="323" fill="#e2e8f0">i</text>
+<text x="91.48" y="323" fill="#e2e8f0">t</text>
+<text x="110.76" y="323" fill="#e2e8f0">s</text>
+<text x="120.4" y="323" fill="#e2e8f0">t</text>
+<text x="130.04000000000002" y="323" fill="#e2e8f0">a</text>
+<text x="139.68" y="323" fill="#e2e8f0">t</text>
+<text x="149.32" y="323" fill="#e2e8f0">u</text>
+<text x="158.96" y="323" fill="#e2e8f0">s</text>
+<text x="178.24" y="323" fill="#e2e8f0">-</text>
+<text x="187.88" y="323" fill="#e2e8f0">-</text>
+<text x="197.52" y="323" fill="#e2e8f0">s</text>
+<text x="207.16000000000003" y="323" fill="#e2e8f0">h</text>
+<text x="216.8" y="323" fill="#e2e8f0">o</text>
+<text x="226.44" y="323" fill="#e2e8f0">r</text>
+<text x="236.08" y="323" fill="#e2e8f0">t</text>
+<text x="24.0" y="346" fill="#86efac">╭</text>
+<text x="33.64" y="346" fill="#86efac">─</text>
+<text x="43.28" y="346" fill="#86efac"></text>
+<rect x="52.92" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<rect x="62.56" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="62.56" y="346" fill="#0f172a"></text>
+<rect x="72.2" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<rect x="81.84" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="81.84" y="346" fill="#86efac"></text>
+<rect x="91.48" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<rect x="101.12" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="101.12" y="346" fill="#14532d">d</text>
+<rect x="110.76" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="110.76" y="346" fill="#14532d">e</text>
+<rect x="120.4" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="120.4" y="346" fill="#14532d">v</text>
+<rect x="130.04000000000002" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<rect x="139.68" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="139.68" y="346" fill="#dcfce7"></text>
+<rect x="149.32" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<rect x="158.96" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="158.96" y="346" fill="#f8fafc">m</text>
+<rect x="168.60000000000002" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="168.60000000000002" y="346" fill="#f8fafc">y</text>
+<rect x="178.24" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="178.24" y="346" fill="#f8fafc">-</text>
+<rect x="187.88" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="187.88" y="346" fill="#f8fafc">a</text>
+<rect x="197.52" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="197.52" y="346" fill="#f8fafc">p</text>
+<rect x="207.16000000000003" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="207.16000000000003" y="346" fill="#f8fafc">p</text>
+<rect x="216.8" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="216.8" y="346" fill="#f8fafc">/</text>
+<rect x="226.44" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="226.44" y="346" fill="#f8fafc">s</text>
+<rect x="236.08" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="236.08" y="346" fill="#f8fafc">r</text>
+<rect x="245.72000000000003" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="245.72000000000003" y="346" fill="#f8fafc">c</text>
+<rect x="255.36" y="329" width="9.940000000000001" height="23" fill="#14532d"/>
+<text x="265.0" y="346" fill="#14532d"></text>
+<rect x="274.64" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="274.64" y="346" fill="#0f172a"></text>
+<rect x="284.28000000000003" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<rect x="293.92" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="293.92" y="346" fill="#f8fafc"></text>
+<rect x="303.56" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<rect x="313.20000000000005" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="313.20000000000005" y="346" fill="#f8fafc">m</text>
+<rect x="322.84000000000003" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="322.84000000000003" y="346" fill="#f8fafc">a</text>
+<rect x="332.48" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="332.48" y="346" fill="#f8fafc">i</text>
+<rect x="342.12" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="342.12" y="346" fill="#f8fafc">n</text>
+<rect x="351.76" y="329" width="9.940000000000001" height="23" fill="#115e59"/>
+<text x="361.40000000000003" y="346" fill="#115e59"></text>
+<text x="891.6" y="346" fill="#dcfce7"></text>
+<rect x="901.24" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<rect x="910.8800000000001" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="910.8800000000001" y="346" fill="#14532d"></text>
+<rect x="920.5200000000001" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<rect x="930.1600000000001" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="930.1600000000001" y="346" fill="#14532d">0</text>
+<rect x="939.8000000000001" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="939.8000000000001" y="346" fill="#14532d">m</text>
+<rect x="949.44" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="949.44" y="346" fill="#14532d">s</text>
+<rect x="959.08" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<rect x="968.72" y="329" width="9.940000000000001" height="23" fill="#dcfce7"/>
+<text x="968.72" y="346" fill="#86efac"></text>
+<rect x="978.36" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<rect x="988.0" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="988.0" y="346" fill="#0f172a"></text>
+<rect x="997.6400000000001" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<rect x="1007.2800000000001" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1007.2800000000001" y="346" fill="#0f172a">1</text>
+<rect x="1016.9200000000001" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1016.9200000000001" y="346" fill="#0f172a">0</text>
+<rect x="1026.56" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1026.56" y="346" fill="#0f172a">:</text>
+<rect x="1036.2" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1036.2" y="346" fill="#0f172a">2</text>
+<rect x="1045.8400000000001" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1045.8400000000001" y="346" fill="#0f172a">4</text>
+<rect x="1055.48" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1055.48" y="346" fill="#0f172a">:</text>
+<rect x="1065.1200000000001" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1065.1200000000001" y="346" fill="#0f172a">0</text>
+<rect x="1074.76" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1074.76" y="346" fill="#0f172a">0</text>
+<rect x="1084.4" y="329" width="9.940000000000001" height="23" fill="#86efac"/>
+<text x="1094.04" y="346" fill="#86efac"></text>
+<text x="24.0" y="369" fill="#86efac">╰</text>
+<text x="33.64" y="369" fill="#86efac">─</text>
+<text x="52.92" y="369" fill="#86efac">$</text>
+<text x="72.2" y="369" fill="#e2e8f0">n</text>
+<text x="81.84" y="369" fill="#e2e8f0">p</text>
+<text x="91.48" y="369" fill="#e2e8f0">m</text>
+<text x="110.76" y="369" fill="#e2e8f0">r</text>
+<text x="120.4" y="369" fill="#e2e8f0">u</text>
+<text x="130.04000000000002" y="369" fill="#e2e8f0">n</text>
+<text x="149.32" y="369" fill="#e2e8f0">d</text>
+<text x="158.96" y="369" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="369" fill="#e2e8f0">v</text>
+<text x="24.0" y="415" fill="#e2e8f0">q</text>
+<text x="33.64" y="415" fill="#e2e8f0">u</text>
+<text x="43.28" y="415" fill="#e2e8f0">i</text>
+<text x="52.92" y="415" fill="#e2e8f0">c</text>
+<text x="62.56" y="415" fill="#e2e8f0">k</text>
+<text x="72.2" y="415" fill="#e2e8f0">-</text>
+<text x="81.84" y="415" fill="#e2e8f0">t</text>
+<text x="91.48" y="415" fill="#e2e8f0">e</text>
+<text x="101.12" y="415" fill="#e2e8f0">r</text>
+<text x="110.76" y="415" fill="#e2e8f0">m</text>
+<text x="120.4" y="415" fill="#e2e8f0">-</text>
+<text x="130.04000000000002" y="415" fill="#e2e8f0">v</text>
+<text x="139.68" y="415" fill="#e2e8f0">i</text>
+<text x="149.32" y="415" fill="#e2e8f0">o</text>
+<text x="158.96" y="415" fill="#e2e8f0">l</text>
+<text x="168.60000000000002" y="415" fill="#e2e8f0">e</text>
+<text x="178.24" y="415" fill="#e2e8f0">t</text>
+<text x="24.0" y="438" fill="#c4b5fd">╰</text>
+<text x="33.64" y="438" fill="#c4b5fd">─</text>
+<text x="52.92" y="438" fill="#c4b5fd">$</text>
+<text x="72.2" y="438" fill="#e2e8f0">g</text>
+<text x="81.84" y="438" fill="#e2e8f0">i</text>
+<text x="91.48" y="438" fill="#e2e8f0">t</text>
+<text x="110.76" y="438" fill="#e2e8f0">s</text>
+<text x="120.4" y="438" fill="#e2e8f0">t</text>
+<text x="130.04000000000002" y="438" fill="#e2e8f0">a</text>
+<text x="139.68" y="438" fill="#e2e8f0">t</text>
+<text x="149.32" y="438" fill="#e2e8f0">u</text>
+<text x="158.96" y="438" fill="#e2e8f0">s</text>
+<text x="178.24" y="438" fill="#e2e8f0">-</text>
+<text x="187.88" y="438" fill="#e2e8f0">-</text>
+<text x="197.52" y="438" fill="#e2e8f0">s</text>
+<text x="207.16000000000003" y="438" fill="#e2e8f0">h</text>
+<text x="216.8" y="438" fill="#e2e8f0">o</text>
+<text x="226.44" y="438" fill="#e2e8f0">r</text>
+<text x="236.08" y="438" fill="#e2e8f0">t</text>
+<text x="24.0" y="461" fill="#c4b5fd">╭</text>
+<text x="33.64" y="461" fill="#c4b5fd">─</text>
+<text x="43.28" y="461" fill="#c4b5fd"></text>
+<rect x="52.92" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<rect x="62.56" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="62.56" y="461" fill="#0f172a"></text>
+<rect x="72.2" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<rect x="81.84" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="81.84" y="461" fill="#c4b5fd"></text>
+<rect x="91.48" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<rect x="101.12" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="101.12" y="461" fill="#4c1d95">d</text>
+<rect x="110.76" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="110.76" y="461" fill="#4c1d95">e</text>
+<rect x="120.4" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="120.4" y="461" fill="#4c1d95">v</text>
+<rect x="130.04000000000002" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<rect x="139.68" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="139.68" y="461" fill="#ede9fe"></text>
+<rect x="149.32" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<rect x="158.96" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="158.96" y="461" fill="#f8fafc">m</text>
+<rect x="168.60000000000002" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="168.60000000000002" y="461" fill="#f8fafc">y</text>
+<rect x="178.24" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="178.24" y="461" fill="#f8fafc">-</text>
+<rect x="187.88" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="187.88" y="461" fill="#f8fafc">a</text>
+<rect x="197.52" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="197.52" y="461" fill="#f8fafc">p</text>
+<rect x="207.16000000000003" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="207.16000000000003" y="461" fill="#f8fafc">p</text>
+<rect x="216.8" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="216.8" y="461" fill="#f8fafc">/</text>
+<rect x="226.44" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="226.44" y="461" fill="#f8fafc">s</text>
+<rect x="236.08" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="236.08" y="461" fill="#f8fafc">r</text>
+<rect x="245.72000000000003" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="245.72000000000003" y="461" fill="#f8fafc">c</text>
+<rect x="255.36" y="444" width="9.940000000000001" height="23" fill="#4c1d95"/>
+<text x="265.0" y="461" fill="#4c1d95"></text>
+<rect x="274.64" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="274.64" y="461" fill="#0f172a"></text>
+<rect x="284.28000000000003" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<rect x="293.92" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="293.92" y="461" fill="#f8fafc"></text>
+<rect x="303.56" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<rect x="313.20000000000005" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="313.20000000000005" y="461" fill="#f8fafc">m</text>
+<rect x="322.84000000000003" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="322.84000000000003" y="461" fill="#f8fafc">a</text>
+<rect x="332.48" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="332.48" y="461" fill="#f8fafc">i</text>
+<rect x="342.12" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="342.12" y="461" fill="#f8fafc">n</text>
+<rect x="351.76" y="444" width="9.940000000000001" height="23" fill="#164e63"/>
+<text x="361.40000000000003" y="461" fill="#164e63"></text>
+<text x="891.6" y="461" fill="#ede9fe"></text>
+<rect x="901.24" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<rect x="910.8800000000001" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="910.8800000000001" y="461" fill="#4c1d95"></text>
+<rect x="920.5200000000001" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<rect x="930.1600000000001" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="930.1600000000001" y="461" fill="#4c1d95">0</text>
+<rect x="939.8000000000001" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="939.8000000000001" y="461" fill="#4c1d95">m</text>
+<rect x="949.44" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="949.44" y="461" fill="#4c1d95">s</text>
+<rect x="959.08" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<rect x="968.72" y="444" width="9.940000000000001" height="23" fill="#ede9fe"/>
+<text x="968.72" y="461" fill="#c4b5fd"></text>
+<rect x="978.36" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<rect x="988.0" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="988.0" y="461" fill="#0f172a"></text>
+<rect x="997.6400000000001" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<rect x="1007.2800000000001" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1007.2800000000001" y="461" fill="#0f172a">1</text>
+<rect x="1016.9200000000001" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1016.9200000000001" y="461" fill="#0f172a">0</text>
+<rect x="1026.56" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1026.56" y="461" fill="#0f172a">:</text>
+<rect x="1036.2" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1036.2" y="461" fill="#0f172a">2</text>
+<rect x="1045.8400000000001" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1045.8400000000001" y="461" fill="#0f172a">4</text>
+<rect x="1055.48" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1055.48" y="461" fill="#0f172a">:</text>
+<rect x="1065.1200000000001" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1065.1200000000001" y="461" fill="#0f172a">0</text>
+<rect x="1074.76" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1074.76" y="461" fill="#0f172a">0</text>
+<rect x="1084.4" y="444" width="9.940000000000001" height="23" fill="#c4b5fd"/>
+<text x="1094.04" y="461" fill="#c4b5fd"></text>
+<text x="24.0" y="484" fill="#c4b5fd">╰</text>
+<text x="33.64" y="484" fill="#c4b5fd">─</text>
+<text x="52.92" y="484" fill="#c4b5fd">$</text>
+<text x="72.2" y="484" fill="#e2e8f0">n</text>
+<text x="81.84" y="484" fill="#e2e8f0">p</text>
+<text x="91.48" y="484" fill="#e2e8f0">m</text>
+<text x="110.76" y="484" fill="#e2e8f0">r</text>
+<text x="120.4" y="484" fill="#e2e8f0">u</text>
+<text x="130.04000000000002" y="484" fill="#e2e8f0">n</text>
+<text x="149.32" y="484" fill="#e2e8f0">d</text>
+<text x="158.96" y="484" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="484" fill="#e2e8f0">v</text>
+<text x="24.0" y="530" fill="#e2e8f0">q</text>
+<text x="33.64" y="530" fill="#e2e8f0">u</text>
+<text x="43.28" y="530" fill="#e2e8f0">i</text>
+<text x="52.92" y="530" fill="#e2e8f0">c</text>
+<text x="62.56" y="530" fill="#e2e8f0">k</text>
+<text x="72.2" y="530" fill="#e2e8f0">-</text>
+<text x="81.84" y="530" fill="#e2e8f0">t</text>
+<text x="91.48" y="530" fill="#e2e8f0">e</text>
+<text x="101.12" y="530" fill="#e2e8f0">r</text>
+<text x="110.76" y="530" fill="#e2e8f0">m</text>
+<text x="120.4" y="530" fill="#e2e8f0">-</text>
+<text x="130.04000000000002" y="530" fill="#e2e8f0">r</text>
+<text x="139.68" y="530" fill="#e2e8f0">o</text>
+<text x="149.32" y="530" fill="#e2e8f0">s</text>
+<text x="158.96" y="530" fill="#e2e8f0">e</text>
+<text x="24.0" y="553" fill="#fda4af">╰</text>
+<text x="33.64" y="553" fill="#fda4af">─</text>
+<text x="52.92" y="553" fill="#fda4af">$</text>
+<text x="72.2" y="553" fill="#e2e8f0">g</text>
+<text x="81.84" y="553" fill="#e2e8f0">i</text>
+<text x="91.48" y="553" fill="#e2e8f0">t</text>
+<text x="110.76" y="553" fill="#e2e8f0">s</text>
+<text x="120.4" y="553" fill="#e2e8f0">t</text>
+<text x="130.04000000000002" y="553" fill="#e2e8f0">a</text>
+<text x="139.68" y="553" fill="#e2e8f0">t</text>
+<text x="149.32" y="553" fill="#e2e8f0">u</text>
+<text x="158.96" y="553" fill="#e2e8f0">s</text>
+<text x="178.24" y="553" fill="#e2e8f0">-</text>
+<text x="187.88" y="553" fill="#e2e8f0">-</text>
+<text x="197.52" y="553" fill="#e2e8f0">s</text>
+<text x="207.16000000000003" y="553" fill="#e2e8f0">h</text>
+<text x="216.8" y="553" fill="#e2e8f0">o</text>
+<text x="226.44" y="553" fill="#e2e8f0">r</text>
+<text x="236.08" y="553" fill="#e2e8f0">t</text>
+<text x="24.0" y="576" fill="#fda4af">╭</text>
+<text x="33.64" y="576" fill="#fda4af">─</text>
+<text x="43.28" y="576" fill="#fda4af"></text>
+<rect x="52.92" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<rect x="62.56" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="62.56" y="576" fill="#0f172a"></text>
+<rect x="72.2" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<rect x="81.84" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="81.84" y="576" fill="#fda4af"></text>
+<rect x="91.48" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<rect x="101.12" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="101.12" y="576" fill="#881337">d</text>
+<rect x="110.76" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="110.76" y="576" fill="#881337">e</text>
+<rect x="120.4" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="120.4" y="576" fill="#881337">v</text>
+<rect x="130.04000000000002" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<rect x="139.68" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="139.68" y="576" fill="#ffe4e6"></text>
+<rect x="149.32" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<rect x="158.96" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="158.96" y="576" fill="#f8fafc">m</text>
+<rect x="168.60000000000002" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="168.60000000000002" y="576" fill="#f8fafc">y</text>
+<rect x="178.24" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="178.24" y="576" fill="#f8fafc">-</text>
+<rect x="187.88" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="187.88" y="576" fill="#f8fafc">a</text>
+<rect x="197.52" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="197.52" y="576" fill="#f8fafc">p</text>
+<rect x="207.16000000000003" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="207.16000000000003" y="576" fill="#f8fafc">p</text>
+<rect x="216.8" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="216.8" y="576" fill="#f8fafc">/</text>
+<rect x="226.44" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="226.44" y="576" fill="#f8fafc">s</text>
+<rect x="236.08" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="236.08" y="576" fill="#f8fafc">r</text>
+<rect x="245.72000000000003" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="245.72000000000003" y="576" fill="#f8fafc">c</text>
+<rect x="255.36" y="559" width="9.940000000000001" height="23" fill="#881337"/>
+<text x="265.0" y="576" fill="#881337"></text>
+<rect x="274.64" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="274.64" y="576" fill="#0f172a"></text>
+<rect x="284.28000000000003" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<rect x="293.92" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="293.92" y="576" fill="#f8fafc"></text>
+<rect x="303.56" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<rect x="313.20000000000005" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="313.20000000000005" y="576" fill="#f8fafc">m</text>
+<rect x="322.84000000000003" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="322.84000000000003" y="576" fill="#f8fafc">a</text>
+<rect x="332.48" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="332.48" y="576" fill="#f8fafc">i</text>
+<rect x="342.12" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="342.12" y="576" fill="#f8fafc">n</text>
+<rect x="351.76" y="559" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="361.40000000000003" y="576" fill="#334155"></text>
+<text x="891.6" y="576" fill="#ffe4e6"></text>
+<rect x="901.24" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<rect x="910.8800000000001" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="910.8800000000001" y="576" fill="#881337"></text>
+<rect x="920.5200000000001" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<rect x="930.1600000000001" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="930.1600000000001" y="576" fill="#881337">0</text>
+<rect x="939.8000000000001" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="939.8000000000001" y="576" fill="#881337">m</text>
+<rect x="949.44" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="949.44" y="576" fill="#881337">s</text>
+<rect x="959.08" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<rect x="968.72" y="559" width="9.940000000000001" height="23" fill="#ffe4e6"/>
+<text x="968.72" y="576" fill="#fda4af"></text>
+<rect x="978.36" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<rect x="988.0" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="988.0" y="576" fill="#0f172a"></text>
+<rect x="997.6400000000001" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<rect x="1007.2800000000001" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1007.2800000000001" y="576" fill="#0f172a">1</text>
+<rect x="1016.9200000000001" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1016.9200000000001" y="576" fill="#0f172a">0</text>
+<rect x="1026.56" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1026.56" y="576" fill="#0f172a">:</text>
+<rect x="1036.2" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1036.2" y="576" fill="#0f172a">2</text>
+<rect x="1045.8400000000001" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1045.8400000000001" y="576" fill="#0f172a">4</text>
+<rect x="1055.48" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1055.48" y="576" fill="#0f172a">:</text>
+<rect x="1065.1200000000001" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1065.1200000000001" y="576" fill="#0f172a">0</text>
+<rect x="1074.76" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1074.76" y="576" fill="#0f172a">0</text>
+<rect x="1084.4" y="559" width="9.940000000000001" height="23" fill="#fda4af"/>
+<text x="1094.04" y="576" fill="#fda4af"></text>
+<text x="24.0" y="599" fill="#fda4af">╰</text>
+<text x="33.64" y="599" fill="#fda4af">─</text>
+<text x="52.92" y="599" fill="#fda4af">$</text>
+<text x="72.2" y="599" fill="#e2e8f0">n</text>
+<text x="81.84" y="599" fill="#e2e8f0">p</text>
+<text x="91.48" y="599" fill="#e2e8f0">m</text>
+<text x="110.76" y="599" fill="#e2e8f0">r</text>
+<text x="120.4" y="599" fill="#e2e8f0">u</text>
+<text x="130.04000000000002" y="599" fill="#e2e8f0">n</text>
+<text x="149.32" y="599" fill="#e2e8f0">d</text>
+<text x="158.96" y="599" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="599" fill="#e2e8f0">v</text>
+<text x="24.0" y="645" fill="#e2e8f0">q</text>
+<text x="33.64" y="645" fill="#e2e8f0">u</text>
+<text x="43.28" y="645" fill="#e2e8f0">i</text>
+<text x="52.92" y="645" fill="#e2e8f0">c</text>
+<text x="62.56" y="645" fill="#e2e8f0">k</text>
+<text x="72.2" y="645" fill="#e2e8f0">-</text>
+<text x="81.84" y="645" fill="#e2e8f0">t</text>
+<text x="91.48" y="645" fill="#e2e8f0">e</text>
+<text x="101.12" y="645" fill="#e2e8f0">r</text>
+<text x="110.76" y="645" fill="#e2e8f0">m</text>
+<text x="120.4" y="645" fill="#e2e8f0">-</text>
+<text x="130.04000000000002" y="645" fill="#e2e8f0">s</text>
+<text x="139.68" y="645" fill="#e2e8f0">l</text>
+<text x="149.32" y="645" fill="#e2e8f0">a</text>
+<text x="158.96" y="645" fill="#e2e8f0">t</text>
+<text x="168.60000000000002" y="645" fill="#e2e8f0">e</text>
+<text x="24.0" y="668" fill="#cbd5e1">╰</text>
+<text x="33.64" y="668" fill="#cbd5e1">─</text>
+<text x="52.92" y="668" fill="#cbd5e1">$</text>
+<text x="72.2" y="668" fill="#e2e8f0">g</text>
+<text x="81.84" y="668" fill="#e2e8f0">i</text>
+<text x="91.48" y="668" fill="#e2e8f0">t</text>
+<text x="110.76" y="668" fill="#e2e8f0">s</text>
+<text x="120.4" y="668" fill="#e2e8f0">t</text>
+<text x="130.04000000000002" y="668" fill="#e2e8f0">a</text>
+<text x="139.68" y="668" fill="#e2e8f0">t</text>
+<text x="149.32" y="668" fill="#e2e8f0">u</text>
+<text x="158.96" y="668" fill="#e2e8f0">s</text>
+<text x="178.24" y="668" fill="#e2e8f0">-</text>
+<text x="187.88" y="668" fill="#e2e8f0">-</text>
+<text x="197.52" y="668" fill="#e2e8f0">s</text>
+<text x="207.16000000000003" y="668" fill="#e2e8f0">h</text>
+<text x="216.8" y="668" fill="#e2e8f0">o</text>
+<text x="226.44" y="668" fill="#e2e8f0">r</text>
+<text x="236.08" y="668" fill="#e2e8f0">t</text>
+<text x="24.0" y="691" fill="#cbd5e1">╭</text>
+<text x="33.64" y="691" fill="#cbd5e1">─</text>
+<text x="43.28" y="691" fill="#cbd5e1"></text>
+<rect x="52.92" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<rect x="62.56" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="62.56" y="691" fill="#0f172a"></text>
+<rect x="72.2" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<rect x="81.84" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="81.84" y="691" fill="#cbd5e1"></text>
+<rect x="91.48" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<rect x="101.12" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="101.12" y="691" fill="#1e293b">d</text>
+<rect x="110.76" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="110.76" y="691" fill="#1e293b">e</text>
+<rect x="120.4" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="120.4" y="691" fill="#1e293b">v</text>
+<rect x="130.04000000000002" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<rect x="139.68" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="139.68" y="691" fill="#e2e8f0"></text>
+<rect x="149.32" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<rect x="158.96" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="158.96" y="691" fill="#f8fafc">m</text>
+<rect x="168.60000000000002" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="168.60000000000002" y="691" fill="#f8fafc">y</text>
+<rect x="178.24" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="178.24" y="691" fill="#f8fafc">-</text>
+<rect x="187.88" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="187.88" y="691" fill="#f8fafc">a</text>
+<rect x="197.52" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="197.52" y="691" fill="#f8fafc">p</text>
+<rect x="207.16000000000003" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="207.16000000000003" y="691" fill="#f8fafc">p</text>
+<rect x="216.8" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="216.8" y="691" fill="#f8fafc">/</text>
+<rect x="226.44" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="226.44" y="691" fill="#f8fafc">s</text>
+<rect x="236.08" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="236.08" y="691" fill="#f8fafc">r</text>
+<rect x="245.72000000000003" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="245.72000000000003" y="691" fill="#f8fafc">c</text>
+<rect x="255.36" y="674" width="9.940000000000001" height="23" fill="#334155"/>
+<text x="265.0" y="691" fill="#334155"></text>
+<rect x="274.64" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="274.64" y="691" fill="#0f172a"></text>
+<rect x="284.28000000000003" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<rect x="293.92" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="293.92" y="691" fill="#f8fafc"></text>
+<rect x="303.56" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<rect x="313.20000000000005" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="313.20000000000005" y="691" fill="#f8fafc">m</text>
+<rect x="322.84000000000003" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="322.84000000000003" y="691" fill="#f8fafc">a</text>
+<rect x="332.48" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="332.48" y="691" fill="#f8fafc">i</text>
+<rect x="342.12" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="342.12" y="691" fill="#f8fafc">n</text>
+<rect x="351.76" y="674" width="9.940000000000001" height="23" fill="#1e3a5f"/>
+<text x="361.40000000000003" y="691" fill="#1e3a5f"></text>
+<text x="891.6" y="691" fill="#e2e8f0"></text>
+<rect x="901.24" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<rect x="910.8800000000001" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="910.8800000000001" y="691" fill="#1e293b"></text>
+<rect x="920.5200000000001" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<rect x="930.1600000000001" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="930.1600000000001" y="691" fill="#1e293b">0</text>
+<rect x="939.8000000000001" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="939.8000000000001" y="691" fill="#1e293b">m</text>
+<rect x="949.44" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="949.44" y="691" fill="#1e293b">s</text>
+<rect x="959.08" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<rect x="968.72" y="674" width="9.940000000000001" height="23" fill="#e2e8f0"/>
+<text x="968.72" y="691" fill="#cbd5e1"></text>
+<rect x="978.36" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<rect x="988.0" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="988.0" y="691" fill="#0f172a"></text>
+<rect x="997.6400000000001" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<rect x="1007.2800000000001" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1007.2800000000001" y="691" fill="#0f172a">1</text>
+<rect x="1016.9200000000001" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1016.9200000000001" y="691" fill="#0f172a">0</text>
+<rect x="1026.56" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1026.56" y="691" fill="#0f172a">:</text>
+<rect x="1036.2" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1036.2" y="691" fill="#0f172a">2</text>
+<rect x="1045.8400000000001" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1045.8400000000001" y="691" fill="#0f172a">4</text>
+<rect x="1055.48" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1055.48" y="691" fill="#0f172a">:</text>
+<rect x="1065.1200000000001" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1065.1200000000001" y="691" fill="#0f172a">0</text>
+<rect x="1074.76" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1074.76" y="691" fill="#0f172a">0</text>
+<rect x="1084.4" y="674" width="9.940000000000001" height="23" fill="#cbd5e1"/>
+<text x="1094.04" y="691" fill="#cbd5e1"></text>
+<text x="24.0" y="714" fill="#cbd5e1">╰</text>
+<text x="33.64" y="714" fill="#cbd5e1">─</text>
+<text x="52.92" y="714" fill="#cbd5e1">$</text>
+<text x="72.2" y="714" fill="#e2e8f0">n</text>
+<text x="81.84" y="714" fill="#e2e8f0">p</text>
+<text x="91.48" y="714" fill="#e2e8f0">m</text>
+<text x="110.76" y="714" fill="#e2e8f0">r</text>
+<text x="120.4" y="714" fill="#e2e8f0">u</text>
+<text x="130.04000000000002" y="714" fill="#e2e8f0">n</text>
+<text x="149.32" y="714" fill="#e2e8f0">d</text>
+<text x="158.96" y="714" fill="#e2e8f0">e</text>
+<text x="168.60000000000002" y="714" fill="#e2e8f0">v</text>
+</g></svg>

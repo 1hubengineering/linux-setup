@@ -36,9 +36,42 @@ theme-manager reset                 # Restore quick-term
 reload
 ```
 
-`quick-term` is the bundled orange prompt; `iterm2` is the bundled blue and lime
-alternative. Its name does not require the iTerm2 app. Browse their
-[previews](previews.md) or the [upstream gallery](https://ohmyposh.dev/docs/themes/).
+## Bundled themes
+
+The six custom themes share a two-line layout: username, path, and Git context
+on the first line; command input on the second. Completed commands collapse to
+a compact transient prompt. Each prompt leaves one space before your input.
+The clock and command duration are hidden in terminals narrower than 80 columns.
+
+| Theme | Colors |
+| --- | --- |
+| `quick-term` | Orange, blue, and green; the default |
+| `quick-term-ocean` | Sky blue and deep teal |
+| `quick-term-forest` | Mint and forest green |
+| `quick-term-violet` | Lavender and purple |
+| `quick-term-rose` | Rose and burgundy |
+| `quick-term-slate` | Silver and slate blue |
+| `iterm2` | The original blue and lime alternative, with a rocket prompt |
+
+![The six custom themes with compact history and two-line command prompts](assets/custom-themes.png)
+
+Select any bundled name directly:
+
+```sh
+theme-manager use quick-term-ocean
+reload
+```
+
+All bundled themes show only the immediate parent and current folder after the
+username. For example, `/home/user/projects/my-app/src` appears as `my-app/src`;
+entering its `components` folder changes it to `src/components`. Root displays
+`/`, and a folder directly under root displays its own name. Long names, spaces,
+and Unicode characters are kept. Upstream themes retain their own path styles.
+
+The layout uses Oh My Posh's [path formatting](https://ohmyposh.dev/docs/segments/system/path)
+and [transient prompts](https://ohmyposh.dev/docs/configuration/transient).
+See the [preview gallery](previews.md) for larger examples. The `iterm2` name
+does not require the iTerm2 app.
 
 Browsing upstream themes needs GitHub access; a previously fetched list is used
 when offline. The list follows the Oh My Posh version pinned by this setup. You

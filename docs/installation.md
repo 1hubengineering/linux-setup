@@ -159,12 +159,25 @@ To move a checkout later, move/copy it to its persistent destination and rerun
 
 ## Update an existing installation
 
-From your persistent installation checkout:
+From any directory in your configured Zsh terminal:
+
+```sh
+update
+```
+
+The alias locates this checkout, runs `git pull --ff-only`, then runs the updated
+installer. Your working directory stays the same. Other shells can run
+`linux-setup-update`. Git conflicts, diverged history, or a failed pull stop the
+command before installation. Resolve the Git problem and retry. A failed
+installation can also be retried with `update`.
+
+To get this shortcut on an older installation, update once manually and reload:
 
 ```sh
 cd ~/linux-setup
 git pull --ff-only
 ./install.sh
+exec zsh
 ```
 
 Completed tools report that they are already installed. If a managed tool or

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "background": "#c4b5fd",
+          "foreground": "#0f172a",
+          "options": {
+            "alpine": "",
+            "arch": "",
+            "centos": "",
+            "debian": "",
+            "elementary": "",
+            "fedora": "",
+            "gentoo": "",
+            "linux": "",
+            "macos": "",
+            "manjaro": "",
+            "mint": "",
+            "opensuse": "",
+            "raspbian": "",
+            "ubuntu": "",
+            "windows": ""
+          },
+          "style": "diamond",
+          "leading_diamond": "╭─",
+          "template": " {{ .Icon }} ",
+          "type": "os"
+        },
+        {
+          "background": "#ede9fe",
+          "foreground": "#4c1d95",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "template": " {{ .UserName }} ",
+          "type": "session"
+        },
+        {
+          "background": "#4c1d95",
+          "foreground": "#f8fafc",
+          "options": {
+            "style": "agnoster_short",
+            "max_depth": 2,
+            "hide_root_location": true,
+            "folder_icon": "",
+            "folder_separator_icon": "/",
+            "mapped_locations_enabled": false
+          },
+          "style": "powerline",
+          "powerline_symbol": "",
+          "template": " {{ if .RootDir }}{{ .Path }}{{ else }}{{ trimPrefix \"/\" .Path }}{{ end }} ",
+          "type": "path"
+        },
+        {
+          "background": "#164e63",
+          "foreground": "#f8fafc",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#7c4a03{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#54433a{{ end }}",
+            "{{ if gt .Ahead 0 }}#744d89{{ end }}",
+            "{{ if gt .Behind 0 }}#744d89{{ end }}"
+          ],
+          "options": {
+            "branch_template": "{{ trunc 25 .Branch }}",
+            "branch_icon": " ",
+            "branch_identical_icon": "",
+            "branch_gone_icon": ""
+          },
+          "style": "diamond",
+          "leading_diamond": "<transparent,background></>",
+          "template": " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} <transparent></> <#f8fafc> {{ .Working.String }}</>{{ end }}{{ if .Staging.Changed }} <transparent></> <#f8fafc> {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }} <transparent></> <#f8fafc> {{ .StashCount }}</>{{ end }} ",
+          "trailing_diamond": "",
+          "type": "git"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "background": "#ede9fe",
+          "foreground": "#4c1d95",
+          "options": {
+            "style": "austin",
+            "always_enabled": true
+          },
+          "invert_powerline": true,
+          "style": "powerline",
+          "powerline_symbol": "",
+          "template": "  {{ .FormattedMs }} ",
+          "type": "executiontime",
+          "min_width": 80
+        },
+        {
+          "background": "#c4b5fd",
+          "foreground": "#0f172a",
+          "options": {
+            "time_format": "15:04:05"
+          },
+          "invert_powerline": true,
+          "style": "diamond",
+          "template": "  {{ .CurrentDate | date .Format }} ",
+          "trailing_diamond": "",
+          "type": "time",
+          "min_width": 80
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "#c4b5fd",
+          "style": "plain",
+          "template": "╰─ {{ if .Root }}#{{else}}${{end}}",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
+    }
+  ],
+  "final_space": true,
+  "version": 4,
+  "transient_prompt": {
+    "background": "transparent",
+    "foreground": "#c4b5fd",
+    "template": "╰─ {{ if .Root }}#{{ else }}${{ end }} ",
+    "newline": false
+  },
+  "secondary_prompt": {
+    "background": "transparent",
+    "foreground": "#c4b5fd",
+    "template": "· "
+  }
+}

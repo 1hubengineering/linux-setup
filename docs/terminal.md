@@ -26,6 +26,7 @@
 | `pathlist` | Print one PATH entry per line |
 | `linux-doctor` / `dev-doctor` | Check installed tools and shell integration |
 | `linuxsetup` / `devsetup` | Enter this repository |
+| `update` | Pull setup changes and rerun installation from any directory |
 | `reload` | Restart Zsh after config changes |
 | `gs`, `gd`, `gds`, `gl` | Git status, diff, staged diff, recent graph |
 | `ga`, `gc`, `gsw`, `gfetch` | Git add, commit, switch, fetch |

@@ -18,7 +18,7 @@ linux-setup/
 ├── bin/                       # Your portable executable scripts
 ├── config/
 │   ├── zsh/                   # Shell settings, aliases, functions
-│   ├── oh-my-posh/             # quick-term and iterm2 prompt themes
+│   ├── oh-my-posh/             # six custom quick-term themes and the iterm2 alternative
 │   ├── tmux/                  # Pane, session, key, and status settings
 │   ├── git/                   # Included delta settings
 │   ├── bat/                   # File viewer settings

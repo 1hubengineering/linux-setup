@@ -16,6 +16,7 @@ devhelp pnpm                       # Print matching command descriptions
 
 | Command | Use it for | Guide |
 | --- | --- | --- |
+| `update` / `linux-setup-update` | Pull the latest setup and rerun installation from any directory | [Updates](installation.md#update-an-existing-installation) |
 | `theme-manager` | Browse, save, or reset a prompt theme | [Themes](themes.md) |
 | `git-profile` | Add, switch, list, and remove GitHub profiles | [GitHub accounts](github-accounts.md) |
 | `skill-manager` | Install or remove agent skills by work area | [AI skills](skills.md) |

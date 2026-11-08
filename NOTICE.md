@@ -2,7 +2,9 @@
 
 This repository contains customized copies of the `quick-term` and `iterm2`
 themes from [Oh My Posh](https://github.com/JanDeDobbeleer/oh-my-posh), distributed
-under its MIT license. The original license is in `licenses/oh-my-posh.txt`.
+under its MIT license. The five `quick-term-*` palette variants are derived from
+the customized `quick-term` theme. The original license is in
+`licenses/oh-my-posh.txt`.
 
 Tools and plugins are downloaded from their official releases or source archives;
 they are not vendored in this repository. They retain their upstream licenses.

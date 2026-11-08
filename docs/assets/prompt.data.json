@@ -4,10 +4,10 @@
     "OS": "ubuntu",
     "UserName": "dev",
     "HostName": "workstation",
-    "PWD": "~/linux-setup",
-    "AbsolutePWD": "/home/dev/linux-setup",
-    "PSWD": "~/linux-setup",
-    "Folder": "linux-setup",
+    "PWD": "~/projects/my-app/src",
+    "AbsolutePWD": "/home/dev/projects/my-app/src",
+    "PSWD": "~/projects/my-app/src",
+    "Folder": "src",
     "Root": false,
     "WSL": false,
     "Shell": "zsh",
@@ -32,8 +32,8 @@
     "path": {
       "enabled": true,
       "data": {
-        "Path": "~/linux-setup",
-        "Location": "~/linux-setup",
+        "Path": "my-app/src",
+        "Location": "/home/dev/projects/my-app/src",
         "Writable": true
       }
     },

@@ -115,6 +115,27 @@ def theme_previews():
         render(cropped, name, f'linux-setup  /  {name}  /  Zsh')
 
 
+def custom_theme_gallery():
+    """Compare the actual six custom prompts, including compact command history."""
+    names = ['quick-term', 'quick-term-ocean', 'quick-term-forest', 'quick-term-violet', 'quick-term-rose', 'quick-term-slate']
+    screen = pyte.Screen(COLUMNS, len(names) * 6)
+    stream = pyte.Stream(screen)
+    for name in names:
+        stream.feed(name + '\r\n')
+        common = ['--config', str(ROOT / f'config/oh-my-posh/{name}.omp.json'),
+                  '--data', str(ASSETS / 'prompt.data.json'), '--data-only', '--shell', 'bash',
+                  '--escape=false', '--terminal-width', str(COLUMNS)]
+        transient = subprocess.check_output(['oh-my-posh', 'print', 'transient', *common], text=True)
+        primary = subprocess.check_output(['oh-my-posh', 'print', 'primary', *common], text=True)
+        stream.feed(transient.replace('\n', '\r\n') + 'git status --short\r\n')
+        stream.feed(primary.replace('\n', '\r\n') + 'npm run dev\r\n\r\n')
+    last = max(y for y, row in enumerate(screen.display) if row.strip())
+    cropped = pyte.Screen(COLUMNS, last + 2)
+    for y in range(cropped.lines):
+        cropped.buffer[y] = screen.buffer[y].copy()
+    render(cropped, 'custom-themes', 'linux-setup  /  custom themes  /  parent and current folder')
+
+
 def picker_preview():
     """Capture fzf itself; cancel before any command can be selected or run."""
     with tempfile.TemporaryDirectory(prefix='linux-setup-picker-preview-') as directory:
@@ -206,10 +227,14 @@ def skill_manager_preview():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--skills-only', action='store_true', help='Render only the skill manager preview')
+    parser.add_argument('--themes-only', action='store_true', help='Render only theme previews and the custom theme gallery')
     args = parser.parse_args()
     ASSETS.mkdir(exist_ok=True)
     if not args.skills_only:
         theme_previews()
-        picker_preview()
-    skill_manager_preview()
+        custom_theme_gallery()
+        if not args.themes_only:
+            picker_preview()
+    if not args.themes_only:
+        skill_manager_preview()
     print('Rendered terminal previews in docs/assets/')

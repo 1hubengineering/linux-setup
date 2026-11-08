@@ -49,13 +49,17 @@ process exits; the lock file can remain on disk.
 
 ## Approve updates
 
-Fetch the latest setup changes, then run the installer in a terminal:
+Run the update shortcut from any directory in Zsh:
 
 ```sh
-cd ~/linux-setup
-git pull --ff-only
-./install.sh
+update
 ```
+
+It pulls the latest changes into your checkout and runs the installer. Your
+working directory stays the same. Other shells can use `linux-setup-update`.
+See [installation](installation.md#update-an-existing-installation) to add the
+shortcut to an older setup. You can still run `./install.sh` directly when you
+only need to retry an installation without fetching repository changes.
 
 When a managed tool or plugin has a different pinned version, the installer asks
 before changing it. Keeping the current version is the default. Use arrows and

@@ -31,6 +31,8 @@ alias csetup='cd "$DEV_SETUP_DIR"'
 alias devsetup='cd "$LINUX_SETUP_DIR"'
 # Go to the linux-setup checkout (alternate name).
 alias linuxsetup='cd "$LINUX_SETUP_DIR"'
+# Pull the latest linux-setup changes and rerun its installer from any directory.
+alias update='"$LINUX_SETUP_DIR/bin/linux-setup-update"'
 
 # Modern tools; aliases are available when their tools are installed.
 

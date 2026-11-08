@@ -2,6 +2,16 @@
 
 [Documentation](README.md) · [Project overview](../README.md) · [Switch themes](customization.md#switch-the-prompt-theme)
 
+## Custom themes
+
+The default Quick-term theme and five additional palettes use the same two-line
+layout. These examples show `my-app/src`, the immediate parent and current
+folder, with compact transient command history above each active prompt.
+
+![Quick-term, Ocean, Forest, Violet, Rose, and Slate themes](assets/custom-themes.png)
+
+[PNG](assets/custom-themes.png) · [SVG](assets/custom-themes.svg) · [Choose a theme](themes.md)
+
 ## Quick-term
 
 The default theme uses orange accents, a two-line prompt, directory and Git
@@ -44,7 +54,7 @@ the skills you want, then review the source URLs before confirming installation.
 
 The theme previews render the repository's actual Oh My Posh configurations with
 explicit [sample prompt data](assets/prompt.data.json): user `dev`, directory
-`~/linux-setup`, branch `main`, and a fixed example clock. Their command-reference
+`my-app/src` within `/home/dev/projects/my-app/src`, branch `main`, and a fixed example clock. Their command-reference
 output comes from running `devhelp 'pnpm run'` against the current source. They
 are rendered terminal examples, not screenshots of a personal workstation.
 
@@ -76,7 +86,8 @@ Oh My Posh with `print --data` support. The checked-in images were rendered with
 Oh My Posh 31.9.1. The Python packages are documentation-only dependencies;
 normal installation does not install them.
 
-The script writes four PNG/SVG pairs in `docs/assets/`. To regenerate only the
-skill manager image, add `--skills-only` to the command above. Inspect the images after
+The script writes five PNG/SVG pairs in `docs/assets/`. Add `--themes-only` to
+render the themes and comparison gallery, or `--skills-only` for the skill manager.
+Inspect the images after
 changing a theme, command description, fzf layout, font, or rendering dependency.
 It uses a temporary shell configuration and excludes private local commands.
