@@ -62,7 +62,7 @@ class ProfileTests(unittest.TestCase):
                 self.assertIn("Profile created: bob", output.getvalue())
                 self.assertIn("Git author: Shared Author <shared@example.com>", output.getvalue())
                 return False
-            return prompt.startswith("Reuse Git author")
+            return prompt.startswith("Use the same name and email")
 
         with patch.object(profiles.shutil, "which", return_value="/usr/bin/gh"), \
              patch.object(profiles, "ask_yes", side_effect=ask), patch("builtins.input", return_value="bob") as fields, \

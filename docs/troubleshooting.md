@@ -3,7 +3,7 @@
 [Documentation](README.md) · [Project overview](../README.md)
 
 Start with `./install.sh --preflight` for installation prerequisites and
-`linux-doctor` for installed tools and shell integrations. Run checks as the user
+`doctor` for installed tools and shell integrations. Run checks as the user
 whose terminal is being configured.
 
 The findings below come from developing and testing this setup. Some are specific
@@ -129,7 +129,7 @@ runtime while it remains the account's login shell.
 
 ## Missing icons or previews
 
-Run `linux-setup-guide` for font instructions matched to your environment. For
+Run `guide` for font instructions matched to your environment. For
 WSL, install and select the font in Windows Terminal. Local Linux desktops use
 the Linux font installer. See [Fonts and shell](fonts-and-shell.md) for the
 PowerShell and Linux commands.

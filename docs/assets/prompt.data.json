@@ -93,6 +93,21 @@
     "python": {
       "enabled": false,
       "data": {}
+    },
+    "sysinfo": {
+      "enabled": true,
+      "data": {
+        "PhysicalPercentUsed": 24,
+        "Precision": 0,
+        "PhysicalTotalMemory": 17179869184,
+        "PhysicalAvailableMemory": 8589934592
+      }
+    },
+    "shell": {
+      "enabled": true,
+      "data": {
+        "Name": "zsh"
+      }
     }
   }
 }

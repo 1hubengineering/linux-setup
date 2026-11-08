@@ -74,7 +74,7 @@ Linux distribution's package manager.
 ## Check or repair configuration
 
 ```sh
-linux-doctor
+doctor
 ./install.sh --config-only --skip-mcp
 ```
 

@@ -2,7 +2,7 @@
 
 [User guides](README.md) · [Installation](installation.md) · [Themes](themes.md)
 
-Run `linux-setup-guide` at any time to see instructions for your environment.
+Run `guide` at any time to see instructions for your environment.
 These steps are optional; they are printed at the end of installation too.
 
 ## Fix missing prompt icons

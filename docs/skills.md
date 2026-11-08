@@ -2,9 +2,9 @@
 
 [User guides](README.md) · [Commands](commands.md)
 
-Run `skill-manager` to install, list, or remove local skills. From a checkout that
+Run `skills` to install, list, or remove local skills. From a checkout that
 has not been installed, run `python3 scripts/skill_manager.py` instead. Select
-Codex or Claude Code, then global or project scope. For project scope, provide
+Codex or Claude Code, then choose all your projects or one project. For one project, provide
 the path of an existing project directory; enter `.` to use the current directory.
 Choose one or more work areas, such as Web development and UI and UX.
 Skills matching any selected area are shown once. Move with the arrow keys,
@@ -37,7 +37,7 @@ Restart the agent session if it does not immediately discover new skills.
 
 ## Remove skills
 
-Open `skill-manager`, choose **Review or remove installed skills**, then select
-the agent and scope. Move with the arrows and check the skills to remove with
+Open `skills`, choose **Review or remove installed skills**, then select
+your AI app and where the skills are installed. Move with the arrows and check the skills to remove with
 Space. Press Enter to review their exact paths, then confirm removal. Leave
 everything unchecked or press Esc to leave the directory unchanged.

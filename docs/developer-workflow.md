@@ -38,7 +38,7 @@ dev-check                       # Read-only checks for the current project
 dev-check ../another-project     # Check another checkout
 dev-check --json                 # Machine-readable results
 dev-check --network              # Also probe registry reachability
-linux-doctor                    # Check the terminal setup itself
+doctor                    # Check the terminal setup itself
 ```
 
 `dev-check` inspects manifests, lockfiles, dependency markers, Git checkout status, and

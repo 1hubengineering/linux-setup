@@ -18,7 +18,7 @@ NAME = re.compile(r"[A-Za-z0-9_.-]+")
 
 
 def bundled_themes():
-    names = sorted(path.name[:-9] for path in (ROOT / "config/oh-my-posh").glob("*.omp.json"))
+    names = sorted(path.name[:-9] for path in (ROOT / "config/oh-my-posh").glob("*.omp.json") if not path.is_symlink())
     return ["quick-term"] + [name for name in names if name != "quick-term"]
 
 
@@ -40,8 +40,9 @@ def current_theme():
 def theme_value(value):
     if not value or any(not char.isprintable() for char in value):
         raise ValueError("Enter a theme name, an existing JSON file, or an HTTPS URL")
-    if value in bundled_themes():
-        return str(ROOT / "config/oh-my-posh" / (value + ".omp.json"))
+    bundled = ROOT / "config/oh-my-posh" / (value + ".omp.json")
+    if value in bundled_themes() or (NAME.fullmatch(value) and bundled.is_symlink()):
+        return str(bundled.resolve())
     if value.startswith("https://") and urlsplit(value).hostname and not any(char.isspace() for char in value):
         return value
     path = Path(value).expanduser()
@@ -66,7 +67,8 @@ def save_theme(value):
     finally:
         if os.path.exists(name):
             os.unlink(name)
-    print(f"Saved theme: {value}\nRun reload in Zsh, or open a new terminal, to apply it.")
+    label = Path(value).name.removesuffix(".omp.json") if not value.startswith("https://") else value
+    print(f"\nTheme changed to {label}.\nRun reload to see it now, or close and reopen your terminal.", flush=True)
 
 
 def upstream_themes():
@@ -88,51 +90,58 @@ def upstream_themes():
         if cache.is_file():
             names = json.loads(cache.read_text())
             if isinstance(names, list) and all(isinstance(name, str) and NAME.fullmatch(name) for name in names):
-                print("Using the cached upstream theme list.", file=sys.stderr)
+                print("Showing the theme list saved from your last visit.", file=sys.stderr)
                 return names
-        raise RuntimeError(f"Cannot load the upstream theme list: {error}. You can still use theme-manager use NAME.") from None
+        raise RuntimeError(f"Cannot load the online theme list: {error}. You can still use theme use NAME.") from None
 
 
 def menu():
     while True:
-        action = choose("Theme manager", ["Choose a bundled theme", "Browse all upstream themes", "Use a local file or HTTPS URL",
+        action = choose("Theme manager", ["Choose an included theme", "Browse more themes online", "Choose a theme file or web link",
                                          "Show current theme", "Restore the default theme", "Exit"])
         if action is None or action == 5:
             return
         try:
             if action == 0:
                 names = bundled_themes()
-                choice = choose("Bundled themes", [name + (" (default)" if name == "quick-term" else "") for name in names] + ["Back"])
+                choice = choose("Included themes", [name + (" (default)" if name == "quick-term" else "") for name in names] + ["Back"])
                 if choice is not None and choice != len(names):
                     save_theme(names[choice])
+                    return
             elif action == 1:
                 names = upstream_themes()
-                choice = choose("Upstream themes", names + ["Back"])
+                choice = choose("Online themes", names + ["Back"])
                 if choice is not None and choice != len(names):
                     save_theme(names[choice])
+                    return
             elif action == 2:
-                value = input("Existing JSON file or HTTPS URL (blank goes back): ").strip()
+                value = input("Theme file path or https:// web link (leave blank to go back): ").strip()
                 if value:
                     save_theme(value)
+                    return
             elif action == 3:
-                print(current_theme())
+                print("Current theme: " + current_theme())
+                return
             else:
                 save_theme("quick-term")
+                return
         except (RuntimeError, OSError, ValueError) as error:
-            print(f"theme-manager: {error}", file=sys.stderr)
+            print(f"Theme was not changed: {error}", file=sys.stderr)
+            if sys.stdin.isatty() and sys.stdout.isatty():
+                input("Press Enter to return to the menu.")
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="action")
-    sub.add_parser("list", help="List bundled and upstream theme names (network or cached list)")
+    sub.add_parser("list", help="List included themes and the online theme list")
     sub.add_parser("current", help="Show the saved theme selection")
-    sub.add_parser("reset", help="Restore the bundled quick-term theme")
+    sub.add_parser("reset", help="Restore the included quick-term theme")
     use = sub.add_parser("use", help="Save a theme name, local JSON path, or HTTPS URL")
     use.add_argument("theme")
     args = parser.parse_args(argv)
     if args.action == "list":
-        print("\n".join(name + " (bundled)" for name in bundled_themes()))
+        print("\n".join(name + " (included)" for name in bundled_themes()))
         print("\n".join(upstream_themes()))
     elif args.action == "current":
         print(current_theme())

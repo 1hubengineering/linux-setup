@@ -863,9 +863,9 @@ def github_setup(lock, key, deploy):
             return
     if any(os.environ.get(name) for name in ("GH_TOKEN", "GITHUB_TOKEN")):
         print("GH_TOKEN or GITHUB_TOKEN is set and can override saved GitHub CLI accounts.")
-    if ask_yes("Add a GitHub account and author profile?"):
+    if ask_yes("Add a GitHub account with a saved name and email?"):
         add_profiles()
-    print("Manage accounts later with git-profile (add, switch, list, or remove).")
+    print("Run github later to add, switch, view, or remove accounts.")
 
 
 def _main():
@@ -950,7 +950,7 @@ def _main():
     zsh = shutil.which("zsh")
     if zsh:
         # The calling shell may not yet have ~/.local/bin in its PATH.
-        print(f"Run: exec {shlex.quote(zsh)}\nThen: dev-doctor")
+        print(f"Run: exec {shlex.quote(zsh)}\nThen: doctor")
     else:
         print("Zsh is not installed. Run ./install.sh without --config-only to install missing tools.")
     from next_steps import print_guide
@@ -1011,7 +1011,7 @@ def interactive_setup(lock, key, deploy):
         if ask_yes("Would you like to install AI skills?"):
             result = subprocess.run([sys.executable, str(ROOT / "scripts/skill_manager.py")])
             if result.returncode:
-                print("Skill manager did not complete; rerun setup or skill-manager when ready.")
+                print("Skill manager did not complete; run setup or skills again when ready.")
                 return ["AI skills"]
         deploy.state["skills_setup_prompted"] = True
         deploy.save()

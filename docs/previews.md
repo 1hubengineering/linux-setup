@@ -4,11 +4,12 @@
 
 ## Custom themes
 
-The default Quick-term theme and five additional palettes use the same two-line
-layout. These examples show `my-app/src`, the immediate parent and current
-folder, with compact transient command history above each active prompt.
+Wholespace, Unicorn, Tiwahu, Spaceship, Night Owl, and Kali have distinct
+layouts, markers, and context displays. Each example shows `my-app/src`, the
+immediate parent and current folder, with compact command history above the
+active two-line prompt.
 
-![Quick-term, Ocean, Forest, Violet, Rose, and Slate themes](assets/custom-themes.png)
+![Wholespace, Unicorn, Tiwahu, Spaceship, Night Owl, and Kali layouts](assets/custom-themes.png)
 
 [PNG](assets/custom-themes.png) · [SVG](assets/custom-themes.svg) · [Choose a theme](themes.md)
 
@@ -42,7 +43,8 @@ definition. Enter inserts the selection for editing; it does not execute it.
 
 ## AI skill manager
 
-Choose an agent, a global or project scope, and one or more work areas to browse skills.
+Choose your AI app, whether skills apply to all projects or one project, and one
+or more work areas.
 This menu shows the UI and UX choices available for Codex. Use arrows to move and Space to select
 the skills you want, then review the source URLs before confirming installation.
 

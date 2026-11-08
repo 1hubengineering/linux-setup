@@ -5,7 +5,7 @@
 Run the account manager from any terminal:
 
 ```sh
-git-profile
+github
 ```
 
 Use the arrows and Enter to choose **Add**, **Switch**, **List**, **Remove**, or
@@ -30,7 +30,7 @@ and guides you through adding profiles. To install only the CLI:
 ## Add one or several accounts
 
 ```sh
-git-profile add
+github add
 ```
 
 Choose whether to authenticate through `gh auth login` or use an account already
@@ -51,9 +51,9 @@ profiles remain available if you stop partway through adding another.
 ## List and switch profiles
 
 ```sh
-git-profile list
+github list
 cd ~/projects/my-repository
-git-profile use my-github-username
+github use my-github-username
 ```
 
 `use` switches GitHub CLI's active account for `github.com` and sets `user.name`
@@ -72,13 +72,13 @@ can override saved GitHub CLI accounts.
 
 ## Remove a profile or log out
 
-Use **Remove a saved profile** in `git-profile`, then choose whether to keep the
+Use **Remove a saved account** in `github`, then choose whether to keep the
 GitHub login or log out locally too. The manager asks for confirmation before
 removing anything. Direct commands are available:
 
 ```sh
-git-profile remove my-github-username           # Remove saved author profile only
-git-profile remove my-github-username --logout  # Also remove local gh login
+github remove my-github-username           # Remove saved author profile only
+github remove my-github-username --logout  # Also remove local gh login
 ```
 
 Existing repository author settings and commits are kept. To remove only a

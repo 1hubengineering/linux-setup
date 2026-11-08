@@ -48,7 +48,7 @@ After installation succeeds:
 ```sh
 export PATH="$HOME/.local/bin:$PATH"
 exec zsh
-linux-doctor
+doctor
 ```
 
 The preflight checks prerequisites before installation. Its GitHub homepage probe
@@ -104,9 +104,9 @@ checksum-verified like the other managed tools. See [GitHub accounts](github-acc
 for sharing author details, adding another profile, switching, and removal.
 
 The first interactive installation also offers the optional AI skill manager.
-Choose Codex or Claude Code, one or more work areas, and global or project scope.
+Choose Codex or Claude Code, one or more work areas, and whether skills should apply to all projects or one.
 Use arrows to move, Space to toggle choices, and Enter to confirm. Esc goes back. You
-can skip this step and run `skill-manager` later. See
+can skip this step and run `skills` later. See
 [AI skills](skills.md) for sources and removal.
 
 The PostgreSQL dependency is the `psql` client only. Installing it does not create
@@ -145,7 +145,7 @@ resolve. Do not delete those paths by hand while retained tools still use them.
 
 `LINUX_SETUP_DIR` is the canonical environment variable; `DEV_SETUP_DIR` remains
 available for existing scripts. The familiar `dev-doctor`, `devsetup`, `dev-db`,
-and `dev-ports` commands remain usable. New branding also provides `linux-doctor`
+and `dev-ports` commands remain usable. New branding also provides `doctor`
 and `linuxsetup`.
 
 Migration is repeatable after interruption. If both old and new locations contain
@@ -194,7 +194,7 @@ preserved; upgrade those managers through their own supported commands.
 At the end of setup, the installer prints your actual Zsh path, any required
 registration in `/etc/shells`, and the `chsh -s` command. Follow the
 [default-shell guide](fonts-and-shell.md#make-zsh-your-default-shell), or run
-`linux-setup-guide` to show those instructions again. The installer does not
+`guide` to show those instructions again. The installer does not
 change your login shell automatically.
 
 ## Optional terminal features

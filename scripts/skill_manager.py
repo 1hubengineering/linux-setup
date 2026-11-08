@@ -138,11 +138,11 @@ def remove_skills(root):
     if not installed:
         print(f"No skills found in {root}.")
         return
-    selected = choose_many("Select installed skills to remove", [p.name + (" (symlink; target kept)" if p.is_symlink() else "") for p in installed])
+    selected = choose_many("Select installed skills to remove", [p.name + (" (shortcut; original files will be kept)" if p.is_symlink() else "") for p in installed])
     if not selected:
         return
     chosen = [installed[i] for i in selected]
-    print("The following skill directories will be deleted:")
+    print("These skills will be removed from this device:")
     for path in chosen:
         print("  " + str(path))
     if confirm("Remove these skills?"):
@@ -169,8 +169,8 @@ def install_menu(catalog, agent, root):
     selected = choose_many("Select skills to install", labels)
     if not selected:
         return
-    print(f"Destination: {root}")
-    print("Skills are third-party instructions and may include scripts. Review their sources before use.")
+    print(f"Install in: {root}")
+    print("These skills come from other authors and may include scripts. You can review them at the links below.")
     for i in selected:
         item = entries[i]
         repo = catalog['repositories'][item['repository']]
@@ -186,13 +186,13 @@ def install_menu(catalog, agent, root):
             except (OSError, ValueError, tarfile.TarError) as error:
                 failures.append(root / item["id"])
                 print(f"Could not install {item['id']}: {error}", file=sys.stderr)
-    print("Restart your agent session if it does not discover new skills immediately.")
+    print("Restart your AI app to use the new skills.")
     return failures
 
 
 def main():
     if not sys.stdin.isatty():
-        print("skill-manager requires an interactive terminal.", file=sys.stderr)
+        print("Open a terminal and run skills to use this menu.", file=sys.stderr)
         return 1
     catalog = json.loads(CATALOG.read_text())
     failed = set()
@@ -201,19 +201,19 @@ def main():
         if action is None or action == 2:
             unresolved = sorted(path for path in failed if not (path / "SKILL.md").is_file())
             if unresolved:
-                print("Incomplete skills: " + ", ".join(map(str, unresolved)) + ". Rerun skill-manager to retry.", file=sys.stderr)
+                print("Incomplete skills: " + ", ".join(map(str, unresolved)) + ". Run skills again to retry.", file=sys.stderr)
             return 1 if unresolved else 0
-        agent_index = choose("Choose your AI agent", list(AGENTS.values()) + ["Back"])
+        agent_index = choose("Which AI app do you use?", list(AGENTS.values()) + ["Back"])
         if agent_index is None or agent_index == len(AGENTS):
             continue
         agent = list(AGENTS)[agent_index]
         while True:
-            scope = choose("Choose the scope", ["Global (all projects)", "Project", "Back"])
+            scope = choose("Where should these skills be available?", ["All your projects", "One project", "Back"])
             if scope is None or scope == 2:
                 break
             project = None
             if scope == 1:
-                project = input("Existing project directory (absolute path, or . for current directory; blank goes back): ").strip()
+                project = input("Project folder (enter . for this folder, or leave blank to go back): ").strip()
                 if not project:
                     continue
             try:
@@ -221,7 +221,7 @@ def main():
             except ValueError as error:
                 print(error)
                 continue
-            print(f"Skill directory: {root}")
+            print(f"Skills folder: {root}")
             if action == 0:
                 failed.update(install_menu(catalog, agent, root) or [])
             else:

@@ -5,80 +5,82 @@
 ## Use the theme manager
 
 ```sh
-theme-manager
+theme
 ```
 
-Choose a bundled theme, browse the upstream Oh My Posh themes, or enter an
-existing local JSON file or HTTPS configuration URL. Use arrows to move, type
-to search when fzf is available, and press Enter to select. Back or Esc leaves
-that selection unchanged. After saving a theme, apply it in your current shell:
+Choose **Choose an included theme** for the custom layouts below, or **Browse
+more themes online** for the full Oh My Posh collection. You can also choose your
+own theme file or web link. Use arrows to move, type to search, and Enter to choose.
+Back or Esc cancels that choice.
 
-```sh
-reload
-```
-
-The menu's **Show current theme** displays the saved selection. **Restore the
-default theme** returns to quick-term. Changes apply only to this device.
+After you select a theme, the menu closes and confirms **Theme changed to…**.
+Run `reload`, or close and reopen the terminal, to see it. **Show current theme**
+shows the saved choice, and **Restore the default theme** selects Quick-term.
+Changes apply only to this device.
 
 ## Use commands directly
 
 ```sh
-theme-manager list                  # List bundled and upstream names
-theme-manager current               # Show the saved selection
-theme-manager use paradox           # Save an upstream theme name
+theme list                  # List included and online themes
+theme current               # Show the saved selection
+theme use paradox           # Use a theme from the online collection
 reload
 
-theme-manager use iterm2            # Save the bundled alternative
+theme use iterm2            # Save the included alternative
 reload
 
-theme-manager use ~/themes/work.omp.json
-theme-manager reset                 # Restore quick-term
+theme use ~/themes/work.omp.json
+theme reset                 # Restore quick-term
 reload
 ```
 
-## Bundled themes
+## Included layouts
 
-The six custom themes share a two-line layout: username, path, and Git context
-on the first line; command input on the second. Completed commands collapse to
-a compact transient prompt. Each prompt leaves one space before your input.
-The clock and command duration are hidden in terminals narrower than 80 columns.
+These are different prompt designs adapted from the six themes you requested.
+Each uses a two-line layout, with command input on the second line and a compact
+prompt beside completed commands. Their shapes, markers, and context displays
+come from their original designs.
 
-| Theme | Colors |
-| --- | --- |
-| `quick-term` | Orange, blue, and green; the default |
-| `quick-term-ocean` | Sky blue and deep teal |
-| `quick-term-forest` | Mint and forest green |
-| `quick-term-violet` | Lavender and purple |
-| `quick-term-rose` | Rose and burgundy |
-| `quick-term-slate` | Silver and slate blue |
-| `iterm2` | The original blue and lime alternative, with a rocket prompt |
+| Select with `theme use NAME` | Layout | Original design |
+| --- | --- | --- |
+| `setup-wholespace` | Spaced diamond cards, a clock, and computer usage details | [Wholespace](https://github.com/JanDeDobbeleer/oh-my-posh/blob/d01ca021d6ceb899e252884f3a95db5969a4b8fd/themes/wholespace.omp.json) |
+| `setup-unicorn` | Powerline ribbon with a unicorn command marker | [Unicorn](https://github.com/JanDeDobbeleer/oh-my-posh/blob/d01ca021d6ceb899e252884f3a95db5969a4b8fd/themes/unicorn.omp.json) |
+| `setup-tiwahu` | Compact text badges, language icons, and a shell-specific marker | [Tiwahu](https://github.com/JanDeDobbeleer/oh-my-posh/blob/d01ca021d6ceb899e252884f3a95db5969a4b8fd/themes/tiwahu.omp.json) |
+| `setup-spaceship` | Minimal text with “in” and “on” labels and a chevron marker | [Spaceship](https://github.com/JanDeDobbeleer/oh-my-posh/blob/d01ca021d6ceb899e252884f3a95db5969a4b8fd/themes/spaceship.omp.json) |
+| `setup-night-owl` | Rounded tabs, contextual badges, and double-arrow input | [Night Owl](https://github.com/JanDeDobbeleer/oh-my-posh/blob/d01ca021d6ceb899e252884f3a95db5969a4b8fd/themes/night-owl.omp.json) |
+| `setup-kali` | Bracketed user and project details connected to a second-line prompt | [Kali](https://github.com/JanDeDobbeleer/oh-my-posh/blob/d01ca021d6ceb899e252884f3a95db5969a4b8fd/themes/kali.omp.json) |
 
-![The six custom themes with compact history and two-line command prompts](assets/custom-themes.png)
+`quick-term` remains the default, and `iterm2` is another included option.
+Older palette names such as `quick-term-ocean` now point to Quick-term so saved
+selections keep working. The palette variants no longer appear as separate choices.
 
-Select any bundled name directly:
+![Six different custom prompt layouts](assets/custom-themes.png)
+
+Try a layout:
 
 ```sh
-theme-manager use quick-term-ocean
+theme use setup-kali
 reload
 ```
 
-All bundled themes show only the immediate parent and current folder after the
-username. For example, `/home/user/projects/my-app/src` appears as `my-app/src`;
-entering its `components` folder changes it to `src/components`. Root displays
-`/`, and a folder directly under root displays its own name. Long names, spaces,
-and Unicode characters are kept. Upstream themes retain their own path styles.
+All included layouts show only the immediate parent and current folder. For
+example, `/home/user/projects/my-app/src` appears as `my-app/src`; entering its
+`components` folder changes it to `src/components`. Root displays `/`, and a
+folder directly under root displays its own name. Long names, spaces, and
+Unicode characters are kept. Extra details such as clocks, language versions,
+and cloud accounts appear when available and when there is room.
 
-The layout uses Oh My Posh's [path formatting](https://ohmyposh.dev/docs/segments/system/path)
+The `setup-` names are customized copies. The original online themes can still
+be selected by their original names, for example `theme use kali`, or through
+**Browse more themes online**. Those originals keep their own layouts and path
+styles. Browsing the online collection needs GitHub access; a previously loaded
+list is reused when offline. Included themes and your own files work offline.
+
+The layouts use Oh My Posh's [path formatting](https://ohmyposh.dev/docs/segments/system/path)
 and [transient prompts](https://ohmyposh.dev/docs/configuration/transient).
-See the [preview gallery](previews.md) for larger examples. The `iterm2` name
-does not require the iTerm2 app.
-
-Browsing upstream themes needs GitHub access; a previously fetched list is used
-when offline. The list follows the Oh My Posh version pinned by this setup. You
-can select another upstream name directly with `theme-manager use NAME`.
-Upstream names and HTTPS URLs need network access when Oh My Posh loads them;
-local theme files work offline. The manager does not copy or delete your local
-JSON files.
+See the [preview gallery](previews.md) for larger examples and [NOTICE](../NOTICE.md)
+for source attribution. All six copies were taken from the source version linked
+in the table above.
 
 ## Where the selection is saved
 

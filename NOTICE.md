@@ -1,10 +1,12 @@
 # Upstream projects
 
-This repository contains customized copies of the `quick-term` and `iterm2`
-themes from [Oh My Posh](https://github.com/JanDeDobbeleer/oh-my-posh), distributed
-under its MIT license. The five `quick-term-*` palette variants are derived from
-the customized `quick-term` theme. The original license is in
-`licenses/oh-my-posh.txt`.
+This repository contains customized copies of the `quick-term`, `iterm2`,
+`wholespace`, `unicorn`, `tiwahu`, `spaceship`, `night-owl`, and `kali` themes from
+[Oh My Posh](https://github.com/JanDeDobbeleer/oh-my-posh), distributed under its
+MIT license. The six `setup-*` layouts are based on source commit
+`d01ca021d6ceb899e252884f3a95db5969a4b8fd`; exact source links are in
+[the theme guide](docs/themes.md). Earlier palette filenames are compatibility
+links to Quick-term. The original license is in `licenses/oh-my-posh.txt`.
 
 Tools and plugins are downloaded from their official releases or source archives;
 they are not vendored in this repository. They retain their upstream licenses.

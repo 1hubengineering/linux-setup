@@ -1,0 +1,107 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "foreground": "lightBlue",
+          "foreground_templates": [
+            "{{ if .Root }}lightRed{{ end }}"
+          ],
+          "style": "plain",
+          "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>┌──(</>{{ .UserName }}{{ if .Root }}#{{ else }}{{ end }}{{ .HostName }}<{{ if .Root }}lightBlue{{ else }}green{{ end }}>)</>",
+          "type": "session"
+        },
+        {
+          "foreground": "default",
+          "options": {
+            "style": "agnoster_short",
+            "max_depth": 2,
+            "hide_root_location": true,
+            "folder_icon": "",
+            "folder_separator_icon": "/",
+            "mapped_locations_enabled": false
+          },
+          "style": "plain",
+          "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>-[</>{{ if .RootDir }}{{ .Path }}{{ else }}{{ trimPrefix \"/\" .Path }}{{ end }}<{{ if .Root }}lightBlue{{ else }}green{{ end }}>]</>",
+          "type": "path"
+        },
+        {
+          "foreground": "default",
+          "style": "plain",
+          "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>-[</>{{ .HEAD }}<{{ if .Root }}lightBlue{{ else }}green{{ end }}>]</>",
+          "type": "git"
+        },
+        {
+          "foreground": "yellow",
+          "options": {
+            "fetch_virtual_env": true
+          },
+          "style": "plain",
+          "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>-[</> {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }}{{ end }}{{ .Full }}{{ end }}<{{ if .Root }}lightBlue{{ else }}green{{ end }}>]</>",
+          "type": "python"
+        }
+      ],
+      "type": "prompt",
+      "newline": true
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "foreground": "default",
+          "options": {
+            "always_enabled": true,
+            "style": "round"
+          },
+          "style": "plain",
+          "template": " {{ .FormattedMs }} ",
+          "type": "executiontime",
+          "min_width": 100
+        },
+        {
+          "foreground": "green",
+          "foreground_templates": [
+            "{{ if gt .Code 0 }}red{{ end }}"
+          ],
+          "options": {
+            "always_enabled": true
+          },
+          "style": "plain",
+          "template": " {{ if gt .Code 0 }}{{else}}{{ end }} ",
+          "type": "status",
+          "min_width": 100
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "lightBlue",
+          "style": "plain",
+          "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>└─</>{{ if .Root }}<lightRed>#</>{{ else }}${{ end }}",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
+    }
+  ],
+  "version": 4,
+  "final_space": true,
+  "transient_prompt": {
+    "background": "transparent",
+    "newline": false,
+    "foreground": "lightBlue",
+    "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>└─</>{{ if .Root }}<lightRed>#</>{{ else }}${{ end }} "
+  },
+  "secondary_prompt": {
+    "background": "transparent",
+    "foreground": "lightBlue",
+    "template": "· "
+  },
+  "console_title_template": "{{ .Folder }}"
+}

@@ -92,13 +92,13 @@ def pick(entries, query=""):
         for index, entry in enumerate(entries):
             (directory / str(index)).write_text(
                 f"{entry['name']} ({entry['kind']})\n{entry['description']}\n\n"
-                f"Inserts: {entry['insert']}\n\nFull command:\n{entry['command']}\n"
+                f"Puts in your command line: {entry['insert']}\n\nFull command:\n{entry['command']}\n"
             )
         result = subprocess.run(
             [
                 "fzf", "--height=80%", "--layout=reverse", "--border", "--no-multi",
                 "--delimiter=\t", "--with-nth=2..", "--prompt=Commands> ",
-                "--header=Name | kind | description | command — Enter: insert only; Esc: cancel; Ctrl-/: preview",
+                "--header=Shortcut | type | What it does | Command — Enter: insert; Esc: back; Ctrl-/: details",
                 "--bind=ctrl-/:toggle-preview", "--preview-window=down,50%,wrap",
                 "--preview", "cat -- " + shlex.quote(str(directory)) + "/{1}",
                 "--query", query,

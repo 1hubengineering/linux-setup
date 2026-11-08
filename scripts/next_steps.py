@@ -54,11 +54,11 @@ def print_guide(zsh=None):
         print("Log out and back in, or reopen your WSL session. A terminal profile with an explicit Bash command must also be updated.")
     print("\nEveryday commands")
     print("  update              Pull setup changes and rerun installation from any directory")
-    print("  theme-manager       Change the prompt theme; run reload afterward")
-    print("  git-profile         Add, switch, or remove GitHub account profiles")
-    print("  skill-manager       Add or remove AI skills; choose multiple work areas")
-    print("  linux-doctor        Check the terminal setup")
-    print("  linux-setup-guide   Show these font and shell instructions again")
+    print("  theme               Change the prompt theme; run reload afterward")
+    print("  github              Add, switch, or remove GitHub account profiles")
+    print("  skills              Add or remove AI skills; choose multiple work areas")
+    print("  doctor              Check the terminal setup")
+    print("  guide               Show these font and shell instructions again")
     print("Guides: https://github.com/1hubengineering/linux-setup/blob/main/docs/README.md")
 
 

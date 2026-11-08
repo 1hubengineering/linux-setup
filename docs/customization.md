@@ -4,7 +4,7 @@
 
 ## Switch the prompt theme
 
-Run `theme-manager` to choose a bundled or upstream theme, then `reload` to apply
+Run `theme` to choose an included theme or one from the online collection, then `reload` to apply
 it. See [Themes](themes.md) for direct commands, local files, URLs, and resetting
 the selection. [Font setup](fonts-and-shell.md) explains unreadable icons.
 
@@ -18,7 +18,7 @@ linux-setup/
 ├── bin/                       # Your portable executable scripts
 ├── config/
 │   ├── zsh/                   # Shell settings, aliases, functions
-│   ├── oh-my-posh/             # six custom quick-term themes and the iterm2 alternative
+│   ├── oh-my-posh/             # distinct custom layouts, quick-term, and iterm2
 │   ├── tmux/                  # Pane, session, key, and status settings
 │   ├── git/                   # Included delta settings
 │   ├── bat/                   # File viewer settings

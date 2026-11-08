@@ -35,7 +35,7 @@ export PATH="$HOME/.local/bin:$PATH"
 exec zsh
 ```
 
-Then run `linux-doctor`. The installer prints font instructions for your
+Then run `doctor`. The installer prints font instructions for your
 environment and the command to make Zsh your default shell. Keep the checkout:
 your live configuration links to it.
 
@@ -56,12 +56,12 @@ are kept; available pinned updates require confirmation. See
 | I want to… | Run | Guide |
 | --- | --- | --- |
 | Update my terminal setup | `update` | [Updates](docs/installation.md#update-an-existing-installation) |
-| Change my prompt theme | `theme-manager` | [Themes](docs/themes.md) |
-| Add, switch, or remove a GitHub profile | `git-profile` | [GitHub accounts](docs/github-accounts.md) |
-| Install or remove AI skills | `skill-manager` | [AI skills](docs/skills.md) |
+| Change my prompt theme | `theme` | [Themes](docs/themes.md) |
+| Add, switch, or remove a GitHub profile | `github` | [GitHub accounts](docs/github-accounts.md) |
+| Install or remove AI skills | `skills` | [AI skills](docs/skills.md) |
 | Find a shortcut | **Alt+X** or `devcommands` | [Commands](docs/commands.md) |
-| Check my setup | `linux-doctor` | [Troubleshooting](docs/troubleshooting.md) |
-| See font and shell instructions again | `linux-setup-guide` | [Fonts and shell](docs/fonts-and-shell.md) |
+| Check my setup | `doctor` | [Troubleshooting](docs/troubleshooting.md) |
+| See font and shell instructions again | `guide` | [Fonts and shell](docs/fonts-and-shell.md) |
 
 [All user guides](docs/README.md) cover project checks, browser testing, databases,
 updates, and uninstalling. See [included tools](docs/tools.md) for the full tool

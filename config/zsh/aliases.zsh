@@ -34,6 +34,17 @@ alias linuxsetup='cd "$LINUX_SETUP_DIR"'
 # Pull the latest linux-setup changes and rerun its installer from any directory.
 alias update='"$LINUX_SETUP_DIR/bin/linux-setup-update"'
 
+# Choose a prompt theme and see how to apply it.
+alias theme='"$LINUX_SETUP_DIR/bin/theme-manager"'
+# Add, switch, or remove GitHub accounts.
+alias github='"$LINUX_SETUP_DIR/bin/git-profile"'
+# Add or remove AI skills.
+alias skills='"$LINUX_SETUP_DIR/bin/skill-manager"'
+# Check installed tools and shell settings.
+alias doctor='"$LINUX_SETUP_DIR/bin/linux-doctor"'
+# Show font installation and default shell instructions.
+alias guide='"$LINUX_SETUP_DIR/bin/linux-setup-guide"'
+
 # Modern tools; aliases are available when their tools are installed.
 
 # List all files with details, Git status, and directories first.

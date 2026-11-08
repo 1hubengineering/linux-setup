@@ -24,7 +24,7 @@
 | `dev-check [PATH]` | Read-only project dependency, Git, runtime, and Docker checks |
 | `dev-browser doctor` | Check a project's Playwright/browser setup |
 | `pathlist` | Print one PATH entry per line |
-| `linux-doctor` / `dev-doctor` | Check installed tools and shell integration |
+| `doctor` / `dev-doctor` | Check installed tools and shell integration |
 | `linuxsetup` / `devsetup` | Enter this repository |
 | `update` | Pull setup changes and rerun installation from any directory |
 | `reload` | Restart Zsh after config changes |

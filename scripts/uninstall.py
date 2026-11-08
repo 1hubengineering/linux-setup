@@ -192,7 +192,7 @@ def registered_shells():
 def switch_shell(replacement, selected_paths, interactive):
     candidates = [s for s in registered_shells() if not any(Path(s).resolve() == p.resolve() or Path(s).resolve().is_relative_to(p.resolve()) for p in selected_paths)]
     if not replacement and interactive:
-        replacement = choose("Replacement login shell", [("Keep current shell/program", None)] + [(s, s) for s in candidates])
+        replacement = choose("Which shell should open when you sign in?", [("Keep current shell/program", None)] + [(s, s) for s in candidates])
     if not replacement:
         return False
     if replacement not in candidates:
@@ -389,17 +389,17 @@ def apply_plan(deploy, remove, caches, replacement=None, interactive=False, jour
 
 
 def display_plan(deploy, remove, caches):
-    print("\nConfiguration: restore unchanged setup-owned links and original backups.")
+    print("\nSettings: restore the saved backups. Settings you changed later are kept for review.")
     print("Remove programs:", ", ".join(sorted(remove)) or "none")
     print("Keep programs:", ", ".join(sorted(set(deploy.state.get("programs", {})) - set(remove))) or "none")
-    print("Remove caches:")
+    print("Temporary files to delete:")
     for name, paths in caches.items():
         for path in paths:
             print("  " + visible(name) + ": " + visible(path))
     if not caches:
         print("  none")
     else:
-        print("Selected caches are permanently deleted and may be shared. Tools may download or rebuild them.")
+        print("These temporary files will be deleted. Programs may download or create them again.")
     for name in sorted(remove):
         item = deploy.state.get("programs", {}).get(name)
         if item and program_is_login_shell(name, item, deploy.state.get("links", {})):
@@ -455,12 +455,12 @@ def _main(argv=None):
             if interactive_menu:
                 if not sys.stdin.isatty():
                     raise RuntimeError("Choose --keep-tools, --remove NAME, or --all-tools; use --dry-run to preview")
-                mode = choose("Uninstall mode", [("Remove setup; keep all programs", "keep"), ("Remove setup and selected programs", "select"), ("Remove setup and all owned programs", "all")])
+                mode = choose("What would you like to remove?", [("Remove setup; keep all programs", "keep"), ("Remove setup and selected programs", "select"), ("Remove setup and all programs it installed", "all")])
                 if mode == "all":
                     remove = owned
                 elif mode == "select":
-                    remove = set(choose("Checked programs will be REMOVED", [(n + " " + version_label(programs[n]), n) for n in sorted(owned)], multi=True))
-                cache_ids = choose("Checked caches will be DELETED", [(n + ": " + item["label"] + " — " + ", ".join(map(str, item["paths"])), n) for n, item in options.items()], multi=True)
+                    remove = set(choose("Select programs to remove", [(n + " " + version_label(programs[n]), n) for n in sorted(owned)], multi=True))
+                cache_ids = choose("Select temporary files to delete (optional)", [(n + ": " + item["label"] + " — " + ", ".join(map(str, item["paths"])), n) for n, item in options.items()], multi=True)
             invalid_caches = set(cache_ids) - set(options)
             if invalid_caches:
                 raise RuntimeError("Unknown or unavailable cache ID: " + ", ".join(sorted(invalid_caches)) + ". Use --list.")
@@ -472,7 +472,7 @@ def _main(argv=None):
         if not args.yes:
             if not sys.stdin.isatty():
                 raise RuntimeError("Confirmation requires a terminal; use --yes for an explicitly selected plan")
-            if input("\nType UNINSTALL to apply this plan: ") != "UNINSTALL":
+            if input("\nType UNINSTALL to confirm removal: ") != "UNINSTALL":
                 print("Cancelled; no changes made.")
                 return 0
         if hasattr(setup, "migrate_legacy"):

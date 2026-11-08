@@ -374,9 +374,9 @@ def confirm(action, kind, names, connection, database):
     if kind == "schema":
         print("Database:", visible(database))
     print("Targets:", ", ".join(visible(n) for n in names))
-    print("This permanently deletes all contained data and objects. Schema CASCADE may also remove dependent objects in other schemas.")
+    print("This permanently deletes the selected data and tables. Removing a schema can also remove tables or other items that depend on it elsewhere.")
     if action == "reset" and kind == "database":
-        print("Database reset drops and recreates the database; the two operations cannot be atomic. Active connections are not forced off.")
+        print("Reset deletes the database and then creates it again. Creation can fail after deletion. Close other connections before continuing.")
     phrase = f"{action.upper()} {names[0]}" if len(names) == 1 else f"{action.upper()} {len(names)} {kind.upper()}S"
     return input(f"Type {visible(phrase)} to continue: ") == phrase
 
@@ -438,12 +438,12 @@ def main(argv=None):
         if not sys.stdin.isatty():
             raise DBError("The interactive manager requires a terminal; --connections works without one")
         while True:
-            connection = choose("Connection", [(c.label, c) for c in connections])
+            connection = choose("Choose a database server", [(c.label, c) for c in connections])
             if connection is None:
                 return 0
             pg = Postgres(connection, args.maintenance_db)
             while True:
-                action = choose(connection.label, [("Databases", "database"), ("Schemas", "schema"), ("Switch connection", "switch"), ("Quit", "quit")])
+                action = choose(connection.label, [("Databases", "database"), ("Schemas (groups of tables)", "schema"), ("Choose another server", "switch"), ("Quit", "quit")])
                 if action in (None, "switch"):
                     break
                 if action == "quit":
@@ -452,7 +452,7 @@ def main(argv=None):
                     if action == "database":
                         manage(pg, "database")
                     else:
-                        database = choose("Database for schemas", [(r["name"], r["name"]) for r in pg.databases()])
+                        database = choose("Choose the database whose tables you want to manage", [(r["name"], r["name"]) for r in pg.databases()])
                         if database is not None:
                             manage(pg, "schema", database)
                 except DBError as error:

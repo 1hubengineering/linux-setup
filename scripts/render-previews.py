@@ -116,8 +116,8 @@ def theme_previews():
 
 
 def custom_theme_gallery():
-    """Compare the actual six custom prompts, including compact command history."""
-    names = ['quick-term', 'quick-term-ocean', 'quick-term-forest', 'quick-term-violet', 'quick-term-rose', 'quick-term-slate']
+    """Compare the distinct custom prompt layouts, including compact command history."""
+    names = ['setup-wholespace', 'setup-unicorn', 'setup-tiwahu', 'setup-spaceship', 'setup-night-owl', 'setup-kali']
     screen = pyte.Screen(COLUMNS, len(names) * 6)
     stream = pyte.Stream(screen)
     for name in names:
@@ -189,8 +189,8 @@ def skill_manager_preview():
             offset = 0
             for prompt, answer in [
                 (b'AI skill manager', b'\r'),  # Install skills
-                (b'Choose your AI agent', b'\r'),  # Codex
-                (b'Choose the scope', b'\r'),  # Global
+                (b'Which AI app do you use?', b'\r'),  # Codex
+                (b'Where should these skills be available?', b'\r'),  # Global
                 (b'Choose your work areas', b'\x1b[B' * areas.index('UI and UX') + b' \r'),
                 (b'Select skills to install', None),
             ]:
