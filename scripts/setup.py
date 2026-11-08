@@ -341,6 +341,7 @@ def prepare_retained_zsh(deploy):
 
 
 def install_tools(lock, key, deploy):
+    failures = []
     for name, item in lock["tools"].items():
         if item.get("install_if_missing"):
             existing = find_tool(TOOLS.get(name, name))
@@ -349,8 +350,10 @@ def install_tools(lock, key, deploy):
                 print(f"{name}: keeping existing installation ({existing})", flush=True)
                 # Finish a previously interrupted first-time Vite+ setup.
                 if name == "vp" and Path(existing).resolve().is_relative_to(DATA / "tools/vp"):
-                    if not (CONFIG / "vite-plus/env").is_file():
-                        prepare_vp(Path(existing), deploy)
+                    pending = isinstance(deploy.state, dict) and deploy.state["programs"].get("vp", {}).get("setup_incomplete")
+                    if pending or not (CONFIG / "vite-plus/env").is_file():
+                        if not try_prepare_vp(Path(existing), deploy):
+                            failures.append("Vite+")
                 if isinstance(deploy.state, dict) and name not in deploy.state["programs"]:
                     deploy.record_program(name, owned=False, binaries=item.get("binaries", [name]), executable=existing)
                 continue
@@ -386,7 +389,8 @@ def install_tools(lock, key, deploy):
         if name == "vp":
             # Generate the official shell environment and runtime/PM shims.
             # Point them at the durable binary store, not a removable config link.
-            prepare_vp(destination / "vp", deploy)
+            if not try_prepare_vp(destination / "vp", deploy):
+                failures.append("Vite+")
             if changed:
                 deploy.record_program(name, paths=[destination], version=item["version"], binaries=binaries, refresh=True)
         for binary in binaries:
@@ -406,6 +410,27 @@ def install_tools(lock, key, deploy):
             stamp.write_text(item["sha256"] + "\n")
         deploy.record_program(name, kind="plugin", paths=[destination], version=item["commit"], refresh=changed)
         deploy.link(destination, DATA / "plugins" / name / "current", program=name)
+    return failures
+
+
+def try_prepare_vp(executable, deploy):
+    """Allow the rest of setup to finish while recording an incomplete bootstrap."""
+    real = isinstance(deploy.state, dict)
+    if real:
+        if "vp" not in deploy.state["programs"]:
+            deploy.record_program("vp", paths=[executable.resolve().parent], binaries=["vp"])
+        deploy.state["programs"]["vp"]["setup_incomplete"] = True
+        deploy.save()
+    try:
+        prepare_vp(executable, deploy)
+    except (subprocess.CalledProcessError, OSError) as error:
+        print(f"Vite+ setup failed: {error}. Other setup will continue.", file=sys.stderr)
+        print(f"Inspect {DATA.parent / 'vite-plus/upgrade.log'} and rerun ./install.sh to retry Vite+.", file=sys.stderr)
+        return False
+    if real:
+        deploy.state["programs"]["vp"].pop("setup_incomplete", None)
+        deploy.save()
+    return True
 
 
 def prepare_vp(executable, deploy):
@@ -661,9 +686,10 @@ def main():
     migrate_legacy()
     deploy = Deployment()
     BIN.mkdir(parents=True, exist_ok=True)
+    failures = []
     if not args.config_only:
         install_base(deploy)
-        install_tools(lock, key, deploy)
+        failures = install_tools(lock, key, deploy)
     install_config(deploy)
     if not args.skip_mcp:
         install_mcp(deploy)
@@ -682,6 +708,8 @@ def main():
                     print("Skill manager did not complete; rerun skill-manager when ready.")
             deploy.state["skills_setup_prompted"] = True
             deploy.save()
+    if failures:
+        print("\nSetup finished with incomplete tools: " + ", ".join(failures), file=sys.stderr)
     print(f"\nInstalled from {ROOT}\nBackups: {STATE / 'backups'}")
     zsh = shutil.which("zsh")
     if zsh:
@@ -689,7 +717,7 @@ def main():
         print(f"Run: exec {shlex.quote(zsh)}\nThen: dev-doctor")
     else:
         print("Zsh is not installed. Run ./install.sh without --config-only to install missing tools.")
-    return 0
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

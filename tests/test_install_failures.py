@@ -98,6 +98,30 @@ class InstallFailureTests(unittest.TestCase):
         self.assertEqual(item["external_files"][str(shim)]["symlink"], str(executable))
         self.assertIn(str(shim), setup.Deployment().state["programs"]["vp"]["external_files"])
 
+    def test_vp_failure_does_not_stop_other_tools_and_retries_even_with_env_file(self):
+        digest = "a" * 64
+        vp = self.write(setup.DATA / "tools/vp/1-linux-x86_64/vp", "binary")
+        self.write(vp.parent / ".sha256", digest + "\n")
+        self.write(setup.CONFIG / "vite-plus/env", "partial environment")
+        uv = self.write(setup.DATA / "tools/uv/1-linux-x86_64/uv", "binary")
+        self.write(uv.parent / ".sha256", digest + "\n")
+        lock = {"tools": {name: {"version": "1", "install_if_missing": True,
+                 "platforms": {"linux-x86_64": {"sha256": digest}}}
+                 for name in ("vp", "uv")}, "plugins": {}}
+        failure = subprocess.CalledProcessError(1, [str(vp), "env", "setup"])
+        with patch.object(setup, "find_tool", return_value=None), patch.object(setup, "prepare_vp", side_effect=failure):
+            failures = setup.install_tools(lock, "linux-x86_64", self.deploy)
+        self.assertEqual(failures, ["Vite+"])
+        self.assertTrue((setup.BIN / "uv").is_symlink())
+        self.assertTrue((setup.BIN / "vp").is_symlink())
+        self.assertTrue(self.deploy.state["programs"]["vp"]["setup_incomplete"])
+        with patch.object(setup, "find_tool", side_effect=lambda name: str(setup.BIN / name)), \
+             patch.object(setup, "run"), patch.object(setup, "prepare_vp") as prepare:
+            failures = setup.install_tools(lock, "linux-x86_64", self.deploy)
+        self.assertEqual(failures, [])
+        prepare.assert_called_once()
+        self.assertNotIn("setup_incomplete", self.deploy.state["programs"]["vp"])
+
     def test_interrupted_vp_inventory_is_reconciled_without_mutating_dry_run(self):
         executable = self.write(setup.DATA / "tools/vp/1/vp", "binary")
         environment = self.write(setup.CONFIG / "vite-plus/env", "original environment")

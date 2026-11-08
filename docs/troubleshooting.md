@@ -67,6 +67,14 @@ environment and shims. Existing Vite+ and uv installations are preserved; if an
 existing installation is broken, repair it using that tool's supported workflow
 and rerun the checks.
 
+If `vp env setup` fails, the installer continues with the other tools and shell
+configuration, then exits with a nonzero status. Inspect the Vite+ log at
+`${XDG_DATA_HOME:-$HOME/.local/share}/vite-plus/upgrade.log` for the underlying
+error; review it for credentials or private paths before sharing it. Once the
+underlying issue is resolved, rerun `./install.sh` to retry Vite+ setup. A
+successful GitHub preflight alone does not verify access to every service Vite+
+uses to install its dependencies.
+
 If Vite+ works by absolute path but not in a new shell, check its environment hook
 and PATH. After keeping Vite+ during uninstall, a restored Bash or other shell
 may need the official hook added to its own startup file.
