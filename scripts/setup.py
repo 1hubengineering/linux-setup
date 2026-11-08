@@ -347,14 +347,18 @@ def install_tools(lock, key, deploy):
         if item.get("install_if_missing"):
             existing = find_tool(TOOLS.get(name, name))
             if existing:
-                run([existing, "--version"], capture_output=True, text=True)
+                # An incomplete Vite+ runs its bootstrap even for --version.
+                # Repair it before probing the executable, so that a missing
+                # runtime library cannot prevent the retry from starting.
+                pending = (name == "vp" and Path(existing).resolve().is_relative_to(DATA / "tools/vp")
+                           and ((isinstance(deploy.state, dict) and deploy.state["programs"].get("vp", {}).get("setup_incomplete"))
+                                or not (CONFIG / "vite-plus/env").is_file()))
+                if pending:
+                    if not try_prepare_vp(Path(existing), deploy):
+                        failures.append("Vite+")
+                else:
+                    run([existing, "--version"], capture_output=True, text=True)
                 print(f"{name}: keeping existing installation ({existing})", flush=True)
-                # Finish a previously interrupted first-time Vite+ setup.
-                if name == "vp" and Path(existing).resolve().is_relative_to(DATA / "tools/vp"):
-                    pending = isinstance(deploy.state, dict) and deploy.state["programs"].get("vp", {}).get("setup_incomplete")
-                    if pending or not (CONFIG / "vite-plus/env").is_file():
-                        if not try_prepare_vp(Path(existing), deploy):
-                            failures.append("Vite+")
                 if isinstance(deploy.state, dict) and name not in deploy.state["programs"]:
                     deploy.record_program(name, owned=False, binaries=item.get("binaries", [name]), executable=existing)
                 continue

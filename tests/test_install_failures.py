@@ -116,10 +116,11 @@ class InstallFailureTests(unittest.TestCase):
         self.assertTrue((setup.BIN / "vp").is_symlink())
         self.assertTrue(self.deploy.state["programs"]["vp"]["setup_incomplete"])
         with patch.object(setup, "find_tool", side_effect=lambda name: str(setup.BIN / name)), \
-             patch.object(setup, "run"), patch.object(setup, "prepare_vp") as prepare:
+             patch.object(setup, "run") as probe, patch.object(setup, "prepare_vp") as prepare:
             failures = setup.install_tools(lock, "linux-x86_64", self.deploy)
         self.assertEqual(failures, [])
         prepare.assert_called_once()
+        self.assertEqual([call.args[0][0] for call in probe.call_args_list], [str(setup.BIN / "uv")])
         self.assertNotIn("setup_incomplete", self.deploy.state["programs"]["vp"])
 
     def test_missing_libatomic_is_extracted_and_passed_to_vite_setup(self):
