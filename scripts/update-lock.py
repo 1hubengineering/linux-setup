@@ -9,11 +9,11 @@ root = Path(__file__).resolve().parents[1]
 path = root / "tools.lock.json"
 lock = json.loads(path.read_text())
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("tools", nargs="+", choices=list(lock["tools"]))
+parser.add_argument("tools", nargs="+", choices=list(lock["tools"]) + list(lock.get("optional_tools", {})))
 args = parser.parse_args()
 
 for name in args.tools:
-    item = lock["tools"][name]
+    item = (lock["tools"] | lock.get("optional_tools", {}))[name]
     repo = item["repository"].removeprefix("https://github.com/")
     request = urllib.request.Request(f"https://api.github.com/repos/{repo}/releases/latest", headers={"User-Agent": "linux-setup/1"})
     with urllib.request.urlopen(request, timeout=45) as response:

@@ -1,0 +1,240 @@
+{
+  "repositories": {
+    "uiux": {
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "commit": "4f2dbb67e64969a9a30ab00742f2d55d66ddec2b"
+    },
+    "humanizer": {
+      "repo": "blader/humanizer",
+      "commit": "0ef9fe5bc3572734fd3ae6c448fe00a30cd5dcf0"
+    },
+    "vercel": {
+      "repo": "vercel-labs/agent-skills",
+      "commit": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62"
+    },
+    "anthropic": {
+      "repo": "anthropics/skills",
+      "commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579"
+    },
+    "openai": {
+      "repo": "openai/skills",
+      "commit": "49f948faa9258a0c61caceaf225e179651397431"
+    },
+    "agents": {
+      "repo": "wshobson/agents",
+      "commit": "9c61ab243def98f72da12abd41cfcf5bcd91af9d"
+    }
+  },
+  "skills": [
+    {
+      "id": "ui-ux-pro-max",
+      "description": "Searchable UI/UX design, accessibility, and design systems",
+      "repository": "uiux",
+      "path": ".claude/skills/ui-ux-pro-max",
+      "areas": [
+        "UI and UX",
+        "Web development",
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ],
+      "adapt_uiux": true
+    },
+    {
+      "id": "humanizer",
+      "description": "Edit prose while preserving meaning and the writer’s voice",
+      "repository": "humanizer",
+      "path": ".",
+      "areas": [
+        "Content and writing"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ],
+      "root_files": [
+        "SKILL.md",
+        "LICENSE"
+      ]
+    },
+    {
+      "id": "frontend-design",
+      "description": "Build distinctive, intentional interfaces",
+      "repository": "anthropic",
+      "path": "skills/frontend-design",
+      "areas": [
+        "UI and UX",
+        "Web development",
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "web-design-guidelines",
+      "description": "Review web interfaces for usability and accessibility",
+      "repository": "vercel",
+      "path": "skills/web-design-guidelines",
+      "areas": [
+        "UI and UX",
+        "Web development"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "vercel-react-best-practices",
+      "description": "React and Next.js performance guidelines",
+      "repository": "vercel",
+      "path": "skills/react-best-practices",
+      "areas": [
+        "Web development",
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "vercel-composition-patterns",
+      "description": "React component composition patterns",
+      "repository": "vercel",
+      "path": "skills/composition-patterns",
+      "areas": [
+        "Web development",
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "webapp-testing",
+      "description": "Test web applications using Playwright",
+      "repository": "anthropic",
+      "path": "skills/webapp-testing",
+      "areas": [
+        "Web development",
+        "Full stack",
+        "Testing and quality"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "api-design-principles",
+      "description": "REST and API design guidance",
+      "repository": "agents",
+      "path": "plugins/backend-development/skills/api-design-principles",
+      "areas": [
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "github-actions-templates",
+      "description": "GitHub Actions CI/CD workflows",
+      "repository": "agents",
+      "path": "plugins/cicd-automation/skills/github-actions-templates",
+      "areas": [
+        "DevOps and cloud",
+        "Testing and quality"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "terraform-module-library",
+      "description": "Terraform infrastructure module patterns",
+      "repository": "agents",
+      "path": "plugins/cloud-infrastructure/skills/terraform-module-library",
+      "areas": [
+        "DevOps and cloud"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "writing-guidelines",
+      "description": "Review and improve technical writing",
+      "repository": "vercel",
+      "path": "skills/writing-guidelines",
+      "areas": [
+        "Content and writing"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "doc-coauthoring",
+      "description": "Collaboratively draft and review documents",
+      "repository": "anthropic",
+      "path": "skills/doc-coauthoring",
+      "areas": [
+        "Content and writing"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "playwright",
+      "description": "Browser automation with Playwright",
+      "repository": "openai",
+      "path": "skills/.curated/playwright",
+      "areas": [
+        "Testing and quality",
+        "Web development"
+      ],
+      "agents": [
+        "codex"
+      ]
+    },
+    {
+      "id": "gh-fix-ci",
+      "description": "Investigate and fix GitHub Actions failures",
+      "repository": "openai",
+      "path": "skills/.curated/gh-fix-ci",
+      "areas": [
+        "DevOps and cloud",
+        "Testing and quality"
+      ],
+      "agents": [
+        "codex"
+      ]
+    },
+    {
+      "id": "security-best-practices",
+      "description": "Language-specific application security guidance",
+      "repository": "openai",
+      "path": "skills/.curated/security-best-practices",
+      "areas": [
+        "Testing and quality",
+        "Full stack"
+      ],
+      "agents": [
+        "codex"
+      ]
+    }
+  ]
+}

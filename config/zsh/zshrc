@@ -60,7 +60,7 @@ if [[ -r "$_dev_plugin_dir/zsh-autosuggestions/current/zsh-autosuggestions.zsh" 
 fi
 
 if (( $+commands[oh-my-posh] )); then
-  eval "$(oh-my-posh init zsh --config "$LINUX_SETUP_DIR/config/oh-my-posh/quick-term.omp.json")"
+  eval "$(oh-my-posh init zsh --config "${LINUX_SETUP_POSH_THEME:-$LINUX_SETUP_DIR/config/oh-my-posh/quick-term.omp.json}")"
 fi
 
 # These stay private to the device. Portable customizations belong in this repo.

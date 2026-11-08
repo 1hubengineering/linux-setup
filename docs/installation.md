@@ -38,7 +38,10 @@ exec zsh
 linux-doctor
 ```
 
-The preflight checks prerequisites before installation. The dry run describes the
+The preflight checks prerequisites before installation. Its GitHub homepage probe
+is advisory: a failure may not reflect access to release downloads, which are
+checked during installation. If installation fails, do not run `exec zsh` until
+the error has been resolved and installation succeeds. The dry run describes the
 installation without applying it. Downloaded artifacts are verified against the
 SHA-256 values in `tools.lock.json`; repeat installs reuse verified downloads.
 
@@ -76,6 +79,20 @@ is needed. An existing Zsh is reused. `--config-only` deliberately skips all too
 installation, including Zsh. At completion, the installer prints an `exec` command
 with the full Zsh path so it also works before your current shell has added
 `~/.local/bin` to `PATH`.
+
+On an interactive normal installation, the installer asks for a Git author name
+and email only when the corresponding global value is missing. It then offers
+GitHub CLI installation and account setup on the first interactive run. Existing
+values and an existing `gh` installation are preserved. Non-interactive runs,
+preflight, dry runs, and configuration-only runs do not prompt. You can revisit
+the account flow with `./install.sh --github-setup`, or install just the optional
+CLI with `./install.sh --install-gh`. The GitHub CLI download is pinned and
+checksum-verified like the other managed tools.
+
+The first interactive installation also offers the optional AI skill manager.
+Choose Codex or Claude Code, an area of work, and global or project scope. You
+can skip this step and run `skill-manager` later. See
+[AI skills](developer-workflow.md#ai-skills) for sources and removal.
 
 The PostgreSQL dependency is the `psql` client only. Installing it does not create
 a database cluster or start a server. Your applications retain responsibility for

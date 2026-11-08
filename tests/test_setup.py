@@ -87,6 +87,24 @@ class DeploymentTests(unittest.TestCase):
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_optional_github_cli_installs_from_pinned_archive(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive = root / "gh.tar.gz"
+            with tarfile.open(archive, "w:gz") as bundle:
+                payload = b"#!/bin/sh\necho gh\n"
+                member = tarfile.TarInfo("gh_2.103.3_linux_amd64/bin/gh")
+                member.size = len(payload)
+                bundle.addfile(member, io.BytesIO(payload))
+            lock = json.loads((ROOT / "tools.lock.json").read_text())
+            with patch.object(setup, "STATE", root / "state"), patch.object(setup, "DATA", root / "data"), patch.object(setup, "BIN", root / "bin"), patch.object(setup, "find_tool", return_value=None), patch.object(setup, "download", return_value=archive) as download:
+                deploy = setup.Deployment()
+                setup.install_gh(lock, "linux-x86_64", deploy)
+            asset = lock["optional_tools"]["gh"]["platforms"]["linux-x86_64"]
+            download.assert_called_once_with(asset["url"], asset["sha256"], asset["name"])
+            self.assertEqual(subprocess.check_output([str(root / "bin/gh")], text=True).strip(), "gh")
+            self.assertTrue(deploy.state["programs"]["gh"]["owned"])
+
     def test_executables_ignore_archive_paths(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -231,6 +249,18 @@ class BaseToolTests(unittest.TestCase):
             self.assertEqual(setup.main(), 0)
         base.assert_called_once()
         self.assertIn("Run: exec " + shlex.quote(str(setup.BIN / "zsh")), output.getvalue())
+
+    def test_first_interactive_install_offers_skills_once(self):
+        import git_profiles
+        terminal = Mock()
+        terminal.isatty.return_value = True
+        self.deploy.state['github_setup_prompted'] = True
+        with patch.object(sys, 'argv', ['setup.py', '--skip-mcp']), patch.object(sys, 'stdin', terminal), patch.dict(os.environ, {'PATH': '/usr/bin:/bin'}), patch('preflight.check', return_value=[]), patch.object(setup, 'Deployment', return_value=self.deploy), patch.object(setup, 'migrate_legacy'), patch.object(setup, 'install_base'), patch.object(setup, 'install_tools'), patch.object(setup, 'install_config'), patch.object(git_profiles, 'configure_identity'), patch.object(git_profiles, 'ask_yes', return_value=True) as ask, patch.object(setup.subprocess, 'run', return_value=Mock(returncode=0)) as run:
+            self.assertEqual(setup.main(), 0)
+            self.assertEqual(setup.main(), 0)
+        ask.assert_called_once_with('Would you like to install AI skills?')
+        run.assert_called_once_with([sys.executable, str(ROOT / 'scripts/skill_manager.py')])
+        self.assertTrue(self.deploy.state['skills_setup_prompted'])
 
 
 class ManagerTests(unittest.TestCase):
