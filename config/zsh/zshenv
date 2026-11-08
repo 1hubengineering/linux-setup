@@ -33,6 +33,14 @@ fi
 
 [[ -r "$XDG_CONFIG_HOME/linux-setup-local/zshenv" ]] && source "$XDG_CONFIG_HOME/linux-setup-local/zshenv"
 
+# On minimal systems Node may need the isolated, user-installed libatomic.
+if [[ -f "$XDG_DATA_HOME/linux-setup/tools/vp/libatomic/libatomic.so.1" ]]; then
+  case ":${LD_LIBRARY_PATH:-}:" in
+    *":$XDG_DATA_HOME/linux-setup/tools/vp/libatomic:"*) ;;
+    *) export LD_LIBRARY_PATH="$XDG_DATA_HOME/linux-setup/tools/vp/libatomic${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ;;
+  esac
+fi
+
 # Load Vite+'s runtime and package-manager shims on every device. Honor a
 # machine-specific hook already loaded above, plus current and legacy layouts.
 if (( ! $+functions[vp] )); then

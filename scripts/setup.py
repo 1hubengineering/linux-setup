@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Install pinned terminal tools and link this checkout's configuration."""
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -422,8 +423,9 @@ def try_prepare_vp(executable, deploy):
         deploy.state["programs"]["vp"]["setup_incomplete"] = True
         deploy.save()
     try:
-        prepare_vp(executable, deploy)
-    except (subprocess.CalledProcessError, OSError) as error:
+        library_dir = ensure_vp_libatomic(deploy)
+        prepare_vp(executable, deploy, library_dir=library_dir)
+    except (subprocess.CalledProcessError, OSError, RuntimeError) as error:
         print(f"Vite+ setup failed: {error}. Other setup will continue.", file=sys.stderr)
         print(f"Inspect {DATA.parent / 'vite-plus/upgrade.log'} and rerun ./install.sh to retry Vite+.", file=sys.stderr)
         return False
@@ -433,7 +435,43 @@ def try_prepare_vp(executable, deploy):
     return True
 
 
-def prepare_vp(executable, deploy):
+def ensure_vp_libatomic(deploy):
+    """Provide Node's libatomic dependency in user space when absent on the host."""
+    directory = DATA / "tools/vp/libatomic"
+    library = directory / "libatomic.so.1"
+    if library.is_file():
+        return directory
+    try:
+        ctypes.CDLL("libatomic.so.1")
+        return None
+    except OSError:
+        pass
+    if not shutil.which("apt-get") or not shutil.which("dpkg-deb"):
+        raise RuntimeError("Node requires libatomic.so.1; install your distribution's libatomic package and retry")
+    if directory.exists():
+        raise RuntimeError(f"Keeping incomplete or untracked library directory: {directory}")
+    print("Installing Node's libatomic dependency without sudo ...", flush=True)
+    with tempfile.TemporaryDirectory(prefix="linux-setup-libatomic-") as temporary:
+        stage = Path(temporary)
+        run(["apt-get", "download", "libatomic1"], cwd=stage)
+        packages = list(stage.glob("*.deb"))
+        if len(packages) != 1:
+            raise RuntimeError("APT did not download exactly one libatomic1 package")
+        extracted = stage / "extracted"
+        run(["dpkg-deb", "-x", packages[0], extracted])
+        candidates = list(extracted.glob("usr/lib/*/libatomic.so.1")) + list(extracted.glob("lib/*/libatomic.so.1"))
+        if len(candidates) != 1 or not candidates[0].is_file():
+            raise RuntimeError("libatomic1 package does not contain a usable libatomic.so.1")
+        directory.mkdir(parents=True)
+        shutil.copy2(candidates[0].resolve(), library)
+    if isinstance(deploy.state, dict):
+        item = deploy.state["programs"]["vp"]
+        deploy.record_program("vp", paths=[directory], version=item.get("version", ""),
+                              binaries=item.get("binaries", ["vp"]), refresh=True)
+    return directory
+
+
+def prepare_vp(executable, deploy, library_dir=None):
     """Track only changed environment/shim files, never downloaded runtimes."""
     roots = [CONFIG / "vite-plus", DATA.parent / "vite-plus/bin"]
     before = {}
@@ -459,7 +497,10 @@ def prepare_vp(executable, deploy):
         deploy.state["programs"]["vp"]["pending_external"] = {"before": before, "backups": backups}
         deploy.save()
     try:
-        run([executable, "env", "setup"], env={**os.environ, "VP_SELF_SETUP_NO_MODIFY_PATH": "1", "CI": "1"})
+        env = {**os.environ, "VP_SELF_SETUP_NO_MODIFY_PATH": "1", "CI": "1"}
+        if library_dir:
+            env["LD_LIBRARY_PATH"] = str(library_dir) + (os.pathsep + env["LD_LIBRARY_PATH"] if env.get("LD_LIBRARY_PATH") else "")
+        run([executable, "env", "setup"], env=env)
     finally:
         if real:
             finalize_vp(deploy)

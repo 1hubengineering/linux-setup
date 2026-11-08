@@ -122,6 +122,29 @@ class InstallFailureTests(unittest.TestCase):
         prepare.assert_called_once()
         self.assertNotIn("setup_incomplete", self.deploy.state["programs"]["vp"])
 
+    def test_missing_libatomic_is_extracted_and_passed_to_vite_setup(self):
+        executable = self.write(setup.DATA / "tools/vp/1/vp", "binary")
+        self.deploy.record_program("vp", paths=[executable.parent], binaries=["vp"])
+        commands = []
+
+        def run_command(command, **kwargs):
+            commands.append((command, kwargs))
+            if command[:2] == ["apt-get", "download"]:
+                self.write(Path(kwargs["cwd"]) / "libatomic.deb", "package")
+            elif command[:2] == ["dpkg-deb", "-x"]:
+                self.write(Path(command[3]) / "usr/lib/x86_64-linux-gnu/libatomic.so.1", "library")
+
+        with patch.object(setup.ctypes, "CDLL", side_effect=OSError("missing")), \
+             patch.object(setup.shutil, "which", return_value="/usr/bin/tool"), \
+             patch.object(setup, "run", side_effect=run_command):
+            self.assertTrue(setup.try_prepare_vp(executable, self.deploy))
+        directory = setup.DATA / "tools/vp/libatomic"
+        self.assertEqual((directory / "libatomic.so.1").read_text(), "library")
+        self.assertIn(str(directory), self.deploy.state["programs"]["vp"]["paths"])
+        env = commands[-1][1]["env"]
+        self.assertEqual(env["LD_LIBRARY_PATH"].split(":")[0], str(directory))
+        self.assertEqual(commands[-1][0], [executable, "env", "setup"])
+
     def test_interrupted_vp_inventory_is_reconciled_without_mutating_dry_run(self):
         executable = self.write(setup.DATA / "tools/vp/1/vp", "binary")
         environment = self.write(setup.CONFIG / "vite-plus/env", "original environment")

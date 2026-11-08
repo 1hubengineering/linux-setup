@@ -67,6 +67,13 @@ environment and shims. Existing Vite+ and uv installations are preserved; if an
 existing installation is broken, repair it using that tool's supported workflow
 and rerun the checks.
 
+If Node reports that `libatomic.so.1` is missing, rerun the latest installer.
+On Ubuntu/Debian it downloads and extracts `libatomic1` into the Vite+ managed
+user directory without sudo, and makes it available during setup and in new Zsh
+sessions. Alternatively, an administrator can install the system package with
+`sudo apt install libatomic1` before rerunning the installer. Other distributions
+should install their equivalent libatomic package with their package manager.
+
 If `vp env setup` fails, the installer continues with the other tools and shell
 configuration, then exits with a nonzero status. Inspect the Vite+ log at
 `${XDG_DATA_HOME:-$HOME/.local/share}/vite-plus/upgrade.log` for the underlying
