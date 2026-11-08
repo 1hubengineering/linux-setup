@@ -239,5 +239,24 @@
       "url": "https://codeload.github.com/zsh-users/zsh-syntax-highlighting/tar.gz/db085e4661f6aafd24e5acb5b2e17e4dd5dddf3e",
       "sha256": "874999413d147b7ad6776077e1b756d31d68284f9ef2ef240b33a4c842f0e1d8"
     }
+  },
+  "optional_tools": {
+    "gh": {
+      "repository": "https://github.com/cli/cli",
+      "version": "v2.103.3",
+      "install_if_missing": true,
+      "platforms": {
+        "linux-x86_64": {
+          "name": "gh_2.103.3_linux_amd64.tar.gz",
+          "url": "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz",
+          "sha256": "4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d"
+        },
+        "linux-aarch64": {
+          "name": "gh_2.103.3_linux_arm64.tar.gz",
+          "url": "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_arm64.tar.gz",
+          "sha256": "ee32df2323c8847f5fac6cb6b4b69ca75828e9329a8f22f677021f7b3306ce63"
+        }
+      }
+    }
   }
 }

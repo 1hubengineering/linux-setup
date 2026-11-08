@@ -101,12 +101,15 @@ def check(root, config, data, state, cache, bin_dir, *, config_only=False, netwo
     if network and not config_only and not errors:
         try:
             ssl.create_default_context()
-            request = urllib.request.Request("https://github.com/", method="HEAD", headers={"User-Agent": "linux-setup/preflight"})
+            request = urllib.request.Request("https://github.com/", headers={"User-Agent": "linux-setup/1"})
             with urllib.request.urlopen(request, timeout=8):
                 pass
             messages.append("GitHub HTTPS and certificate verification succeeded. Individual release downloads are verified during installation.")
-        except (OSError, ValueError, urllib.error.URLError):
-            errors.append("Cannot reach GitHub over verified HTTPS. Check network/proxy access and the system CA certificates; keep TLS verification enabled. On Ubuntu/Debian, --install-prerequisites installs ca-certificates.")
+        except (OSError, ValueError, urllib.error.URLError) as exc:
+            # A homepage probe can be blocked independently of release downloads.
+            # Let the actual checksum-verified downloads determine availability.
+            detail = f"HTTP {exc.code}" if isinstance(exc, urllib.error.HTTPError) else str(getattr(exc, "reason", exc))
+            messages.append(f"Warning: GitHub HTTPS probe failed ({detail}). Installation will still try the actual downloads with TLS verification enabled. Check proxy settings and CA certificates if downloads fail; on Ubuntu/Debian, --install-prerequisites installs ca-certificates.")
     elif not network or config_only:
         messages.append("Network check skipped; no files were downloaded.")
     messages.append("Optional: a Nerd Font on the terminal-rendering device; ffmpeg, Poppler, and 7-Zip for extra Yazi previews.")

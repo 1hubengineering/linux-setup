@@ -573,11 +573,32 @@ def doctor():
             failed.append(name)
     zsh = shutil.which("zsh")
     if zsh:
-        result = subprocess.run([zsh, "-lic", '(( $+functions[_zsh_autosuggest_start] && $+functions[_zsh_highlight] && $+functions[_omp_precmd] && $+functions[z] && $+functions[y] )) && [[ -r "$POSH_CONFIG" ]]'], capture_output=True, text=True)
+        result = subprocess.run([zsh, "-lic", '(( $+functions[_zsh_autosuggest_start] && $+functions[_zsh_highlight] && $+functions[_omp_precmd] && $+functions[z] && $+functions[y] )) && [[ "$POSH_CONFIG" == https://* || -r "$POSH_CONFIG" ]]'], capture_output=True, text=True)
         print("OK      shell integrations" if result.returncode == 0 else "FAIL    shell integrations: " + result.stderr)
         if result.returncode:
             failed.append("shell integrations")
     return 1 if failed else 0
+
+
+def install_gh(lock, key, deploy):
+    install_tools({"tools": {"gh": lock["optional_tools"]["gh"]}, "plugins": {}}, key, deploy)
+
+
+def github_setup(lock, key, deploy):
+    from git_profiles import add_profile, ask_yes, configure_identity
+
+    configure_identity()
+    if not find_tool("gh"):
+        if ask_yes("Install GitHub CLI (gh)?", default=True):
+            install_gh(lock, key, deploy)
+        else:
+            print("You can install it later with ./install.sh --install-gh.")
+            return
+    if any(os.environ.get(name) for name in ("GH_TOKEN", "GITHUB_TOKEN")):
+        print("GH_TOKEN or GITHUB_TOKEN is set and can override saved GitHub CLI accounts.")
+    while ask_yes("Add a GitHub account and author profile?"):
+        add_profile()
+    print("Manage accounts later with git-profile add, list, and use.")
 
 
 def main():
@@ -589,6 +610,8 @@ def main():
     group.add_argument("--restore", action="store_true", help="Restore files replaced by this installer")
     group.add_argument("--dry-run", action="store_true", help="Print the install plan without changing anything")
     group.add_argument("--preflight", action="store_true", help="Check prerequisites and network without installing")
+    group.add_argument("--install-gh", action="store_true", help="Install GitHub CLI without changing Git identity")
+    group.add_argument("--github-setup", action="store_true", help="Set up Git identity and GitHub accounts interactively")
     parser.add_argument("--skip-mcp", action="store_true", help="Do not modify Codex MCP configuration")
     args = parser.parse_args()
     os.environ["PATH"] = str(BIN) + os.pathsep + os.environ.get("PATH", "")
@@ -613,6 +636,14 @@ def main():
         return 0
     key = platform_key()
     lock = json.loads((ROOT / "tools.lock.json").read_text())
+    if args.install_gh:
+        install_gh(lock, key, Deployment())
+        return 0
+    if args.github_setup:
+        if not sys.stdin.isatty():
+            raise RuntimeError("GitHub setup requires an interactive terminal.")
+        github_setup(lock, key, Deployment())
+        return 0
     from preflight import check
     cached = all(find_tool(TOOLS.get(name, name)) for name in lock["tools"])
     for message in check(ROOT, CONFIG, DATA, STATE, CACHE, BIN, config_only=args.config_only,
@@ -636,6 +667,21 @@ def main():
     install_config(deploy)
     if not args.skip_mcp:
         install_mcp(deploy)
+    if not args.config_only and sys.stdin.isatty():
+        from git_profiles import configure_identity
+        configure_identity()
+        if not deploy.state.get("github_setup_prompted"):
+            github_setup(lock, key, deploy)
+            deploy.state["github_setup_prompted"] = True
+            deploy.save()
+        if not deploy.state.get("skills_setup_prompted"):
+            from git_profiles import ask_yes
+            if ask_yes("Would you like to install AI skills?"):
+                result = subprocess.run([sys.executable, str(ROOT / "scripts/skill_manager.py")])
+                if result.returncode:
+                    print("Skill manager did not complete; rerun skill-manager when ready.")
+            deploy.state["skills_setup_prompted"] = True
+            deploy.save()
     print(f"\nInstalled from {ROOT}\nBackups: {STATE / 'backups'}")
     zsh = shutil.which("zsh")
     if zsh:

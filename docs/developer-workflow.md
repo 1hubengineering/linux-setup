@@ -21,6 +21,63 @@ exec zsh
 Use the persistent checkout for installation, rather than a temporary review
 worktree. Configuration-only installation keeps existing tools and their versions.
 
+## Git and GitHub profiles
+
+Run `./install.sh --github-setup` from the setup checkout to fill missing global
+Git author settings, install GitHub CLI if needed, and add accounts. You can also
+run `git-profile add` later: it offers GitHub CLI login, or you can reuse an
+account already logged in. Add each GitHub username with its commit author name
+and email, then use:
+
+```sh
+git-profile list
+cd ~/projects/my-repository
+git-profile use my-github-username
+```
+
+`use` selects the account in GitHub CLI and sets `user.name` and `user.email`
+for the current repository. GitHub CLI's active account is shared across terminal
+sessions for that host, so switching accounts affects other repositories and
+terminals too; their saved repository author settings do not change. Run
+`gh auth status` to inspect accounts. HTTPS Git credentials use the GitHub CLI
+account only if its credential helper is configured (for example, with
+`gh auth setup-git`); SSH authentication depends on your SSH configuration.
+Environment tokens such as `GH_TOKEN` can override saved GitHub CLI accounts.
+GitHub CLI manages credentials separately and may store tokens in a plain-text
+file if no credential store is available. The profile file contains only author
+details and usernames, not tokens. Use an email associated with the intended
+GitHub account, including its no-reply address if desired.
+
+## AI skills
+
+Run `skill-manager` to install, list, or remove local skills. From a checkout that
+has not been installed, run `python3 scripts/skill_manager.py` instead. Select
+Codex or Claude Code, then global or project scope. For project scope, provide
+the path of an existing project directory; enter `.` to use the current directory.
+The install menu groups the catalog by work area and accepts multiple selections.
+
+| Agent | Global directory | Project directory |
+| --- | --- | --- |
+| Codex | `~/.agents/skills/` | `<project>/.agents/skills/` |
+| Claude Code | `~/.claude/skills/` | `<project>/.claude/skills/` |
+
+These are local agent skills, not skills uploaded to ChatGPT or another hosted
+service. The manager lists and removes skill directories in the selected location,
+including skills installed by other tools; it displays the exact paths and asks
+for confirmation before deleting. It does not overwrite existing skills. Skills
+installed as symlinks are removed by unlinking them; their targets are kept. Skills
+in other discovery locations, such as `~/.codex/skills`, are not listed there.
+
+The catalog includes UI/UX Pro Max, Humanizer, frontend design, web guidelines,
+React, testing, DevOps, and writing skills. OpenAI's Codex-specific skills are
+offered only for Codex. The catalog records upstream repositories and commit
+IDs in [`skills.catalog.json`](../skills.catalog.json). Downloads need network
+access; files are then installed locally with their supporting resources. UI/UX
+Pro Max's plugin-specific script paths are adapted to the selected installation
+directory, so reinstall it after moving that directory. Review the displayed
+source URLs: third-party skills contain instructions and may include scripts.
+Restart the agent session if it does not immediately discover new skills.
+
 ## Check a checkout
 
 ```sh

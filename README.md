@@ -68,6 +68,10 @@ Missing Zsh and other base tools are installed automatically on Ubuntu/Debian
 without sudo. Existing base programs, Vite+, and uv are reused. If bootstrap
 prerequisites are missing, `./install.sh --install-prerequisites` offers the
 administrative package installation and index refresh before continuing.
+On an interactive first run, the installer also offers Git author and optional
+GitHub CLI account setup. See [Git and GitHub profiles](docs/developer-workflow.md#git-and-github-profiles).
+It also offers an optional [AI skill manager](docs/developer-workflow.md#ai-skills)
+for Codex and Claude Code; run `skill-manager` anytime to add or remove skills.
 
 Choose a **Nerd Font** in your terminal settings to display prompt icons. In WSL
 or SSH, configure the font on the desktop client. Installation leaves your
@@ -91,7 +95,7 @@ that registration is missing; pass `--skip-mcp` to skip it.
 
 | Area | Included |
 | --- | --- |
-| Shell and prompt | Zsh, Oh My Posh, two bundled themes, autosuggestions, syntax highlighting, completion, persistent history |
+| Shell and prompt | Zsh, Oh My Posh, upstream theme selection and two bundled themes, autosuggestions, syntax highlighting, completion, persistent history |
 | Search and navigation | fzf, fd, ripgrep, zoxide, custom command picker |
 | Files and previews | eza, bat, Yazi, jq |
 | Git and sessions | lazygit, delta, tmux, project session helper |

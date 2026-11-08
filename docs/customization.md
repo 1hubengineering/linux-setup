@@ -12,18 +12,20 @@ for Zsh; the `iterm2` name does not require the iTerm2 application.
 | Quick-term | Orange accents, two-line prompt, duration and clock, compact command history | [`quick-term.omp.json`](../config/oh-my-posh/quick-term.omp.json) |
 | iTerm2 | Blue and lime segments, exit-status color, rocket prompt, contextual segments | [`iterm2.omp.json`](../config/oh-my-posh/iterm2.omp.json) |
 
-To try the alternative in your current Zsh session:
+Select any theme from the [Oh My Posh theme gallery](https://ohmyposh.dev/docs/themes/)
+by setting its name in `~/.config/linux-setup-local/zshenv`:
 
 ```zsh
-eval "$(oh-my-posh init zsh --config "$LINUX_SETUP_DIR/config/oh-my-posh/iterm2.omp.json")"
+export LINUX_SETUP_POSH_THEME='paradox'
 ```
 
-To make it the shared default, change the `--config` path in
-[`config/zsh/zshrc`](../config/zsh/zshrc) from `quick-term.omp.json` to
-`iterm2.omp.json`, then run `reload`. To keep the choice private to one device,
-put the initialization command above in `~/.config/linux-setup-local/zshrc`,
-which loads after the shared prompt configuration. Remove that override to use
-the shared default again.
+Create the directory and file if needed, then run `reload`. Oh My Posh also
+accepts a local configuration path or HTTPS URL in this variable. For the bundled
+iTerm2 configuration, use `export LINUX_SETUP_POSH_THEME="$LINUX_SETUP_DIR/config/oh-my-posh/iterm2.omp.json"`.
+Remove the setting to restore the bundled quick-term default. Upstream theme names
+and URLs require network access and are cached by Oh My Posh; local files work
+offline. The installed Oh My Posh version determines which upstream themes are
+available.
 
 Use a Nerd Font in your terminal emulator. Font, terminal colors, Git state,
 screen width, and available hardware affect the appearance. Battery and Python
@@ -56,9 +58,9 @@ linux-setup/
 
 Add shared aliases to `config/zsh/aliases.zsh`, functions to
 `config/zsh/functions.zsh`, and executable scripts to `bin/`. Rerun the installer
-to link new scripts. Edit the active theme in
-`config/oh-my-posh/quick-term.omp.json`. Change its path in `config/zsh/zshrc` to
-switch themes. Use `reload` after changing shell initialization or prompt settings.
+to link new scripts. Edit the bundled default in
+`config/oh-my-posh/quick-term.omp.json`. Use `reload` after changing shell
+initialization or prompt settings.
 
 Private or device-specific additions go in:
 

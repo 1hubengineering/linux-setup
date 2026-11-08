@@ -93,10 +93,15 @@ class PreflightTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "apt-get and dpkg-deb"):
                 self.check(network=False)
 
-    def test_tls_failure_is_actionable(self):
+    def test_tls_failure_is_actionable_but_does_not_block_install(self):
         with patch.object(preflight.urllib.request, "urlopen", side_effect=urllib.error.URLError("certificate verify failed")):
-            with self.assertRaisesRegex(RuntimeError, "CA certificates"):
-                self.check()
+            messages = self.check()
+        self.assertTrue(any("CA certificates" in line and "certificate verify failed" in line for line in messages))
+
+    def test_network_probe_uses_get_like_downloads(self):
+        with patch.object(preflight.urllib.request, "urlopen") as network:
+            self.check()
+        self.assertEqual(network.call_args.args[0].get_method(), "GET")
 
     def test_bootstrap_dry_run_does_not_install_packages(self):
         # Run only the dry-run branch. The actual administrator commands must
