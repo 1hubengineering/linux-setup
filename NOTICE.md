@@ -8,6 +8,10 @@ MIT license. The six `setup-*` layouts are based on source commit
 [the theme guide](docs/themes.md). Earlier palette filenames are compatibility
 links to Quick-term. The original license is in `licenses/oh-my-posh.txt`.
 
+The bundled `clean-detailed` theme is based on the
+[upstream theme](https://github.com/JanDeDobbeleer/oh-my-posh/blob/main/themes/clean-detailed.omp.json),
+with added blank-row spacing, under the same Oh My Posh MIT license.
+
 Tools and plugins are downloaded from their official releases or source archives;
 they are not vendored in this repository. They retain their upstream licenses.
 

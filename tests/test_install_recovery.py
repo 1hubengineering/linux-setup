@@ -257,6 +257,7 @@ class RecoveryTests(unittest.TestCase):
 
     def test_failed_optional_skill_setup_is_offered_again(self):
         self.deploy.state["github_setup_prompted"] = True
+        self.deploy.state["developer_setup_prompted"] = True
         with patch("git_profiles.configure_identity"), patch("git_profiles.ask_yes", return_value=True) as ask, \
              patch.object(setup.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)):
             self.assertEqual(setup.interactive_setup({}, "linux-x86_64", self.deploy), ["AI skills"])

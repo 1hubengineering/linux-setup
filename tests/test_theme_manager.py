@@ -101,22 +101,31 @@ class ThemeRenderingTests(unittest.TestCase):
             args += ["--" + key.replace('_', '-'), str(value)]
         return subprocess.check_output(args, text=True)
 
-    def test_bundled_paths_show_only_parent_and_current_directory(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            config = Path(temporary) / "path.json"
-            for name in themes.bundled_themes():
-                theme = json.loads((ROOT / f"config/oh-my-posh/{name}.omp.json").read_text())
-                segment = next(s for b in theme["blocks"] for s in b["segments"] if s["type"] == "path")
-                # Retain the real path formatter and template, without decorative segments.
-                segment = dict(segment, style="plain", template='{{ if .RootDir }}{{ .Path }}{{ else }}{{ trimPrefix "/" .Path }}{{ end }}')
-                config.write_text(json.dumps({"version": 4, "final_space": False,
-                    "blocks": [{"type": "prompt", "alignment": "left", "segments": [segment]}]}))
-                for path, expected in [("/", "/"), ("/home", "home"),
-                    ("/home/user/projects/my-app/src", "my-app/src"),
-                    ("/srv/ancestor/project with spaces/子目录", "project with spaces/子目录")]:
-                    with self.subTest(theme=name, path=path):
-                        shown = self.render(config, pwd=path).strip().removeprefix(" ")
-                        self.assertEqual(shown, expected)
+    def test_clean_detailed_preserves_upstream_segments_with_blank_row_spacing(self):
+        config = ROOT / "config/oh-my-posh/clean-detailed.omp.json"
+        theme = json.loads(config.read_text())
+        self.assertEqual([[s["type"] for s in block["segments"]] for block in theme["blocks"]],
+                         [["os", "shell", "sysinfo", "executiontime"], ["git"], ["text", "time", "root", "path"], ["status"]])
+        self.assertEqual(theme["blocks"][1]["alignment"], "right")
+        self.assertEqual(self.render(config, prompt="transient"), "\ue285 ")
+        primary = self.render(config, pwd="/srv/project with spaces/子目录")
+        lines = primary.splitlines()
+        self.assertEqual(len(lines), 5)
+        self.assertFalse(lines[1].strip())
+        self.assertFalse(lines[3].strip())
+        self.assertIn("MEM:", primary)
+        self.assertIn("子目录", primary)
+        self.assertIn("╭─", primary)
+        self.assertIn("╰─", primary)
+        self.assertNotIn("unable to", primary.lower())
+
+    def test_existing_themes_keep_distinct_original_path_styles(self):
+        expected = {"quick-term": "agnoster_short", "iterm2": "full", "setup-wholespace": "agnoster_full",
+                    "setup-unicorn": "full", "setup-tiwahu": "mixed", "setup-spaceship": "folder"}
+        for name, style in expected.items():
+            theme = json.loads((ROOT / f"config/oh-my-posh/{name}.omp.json").read_text())
+            segment = next(s for b in theme["blocks"] for s in b["segments"] if s["type"] == "path")
+            self.assertEqual(segment.get("options", segment.get("properties", {})).get("style"), style, name)
 
     def test_custom_prompts_have_two_lines_and_compact_transient_history(self):
         markers = {"quick-term": "╰─ $ ", "setup-wholespace": " ", "setup-unicorn": "🦄 ",
@@ -128,7 +137,7 @@ class ThemeRenderingTests(unittest.TestCase):
                           "--config", str(config), "--shell", "bash", "--plain"]
                 primary = subprocess.check_output(["oh-my-posh", "print", "primary", *common, "--terminal-width", "112"], text=True)
                 self.assertEqual(len(primary.splitlines()), 2)
-                self.assertIn("my-app/src", primary.splitlines()[0])
+                self.assertTrue(primary.splitlines()[0])
                 self.assertTrue(primary.splitlines()[1].endswith(marker))
                 self.assertFalse(primary.splitlines()[1].endswith("  "))
                 transient = subprocess.check_output(["oh-my-posh", "print", "transient", *common], text=True)

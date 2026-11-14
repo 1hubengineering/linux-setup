@@ -5,14 +5,15 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python: ['3.9', '3.12']
+        python: ['3.9', '3.12', '3.14']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends zsh fzf
-      - run: bash -n install.sh uninstall.sh
+      - run: for script in install.sh uninstall.sh config/bash/* config/shell/*; do bash -n "$script" || exit; done
+      - run: for script in config/zsh/*; do zsh -n "$script" || exit; done
       - run: python3 -m unittest discover -s tests -v
   lifecycle:
     runs-on: ubuntu-24.04

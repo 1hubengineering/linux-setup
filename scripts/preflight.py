@@ -57,7 +57,7 @@ def _writable_destination(path):
     return None
 
 
-def check(root, config, data, state, cache, bin_dir, *, config_only=False, network=True):
+def check(root, config, data, state, cache, bin_dir, *, config_only=False, network=True, selected_base=None, require_vp=True):
     """Return messages or raise RuntimeError; never create files or run installers."""
     errors, messages = [], []
     root, config, data, state, cache, bin_dir = map(Path, (root, config, data, state, cache, bin_dir))
@@ -78,12 +78,12 @@ def check(root, config, data, state, cache, bin_dir, *, config_only=False, netwo
             errors.append(error)
 
     if not config_only:
-        if not _glibc():
+        if require_vp and not _glibc():
             if _existing_vp(config, data, bin_dir):
                 messages.append("Non-glibc host: preserving the existing Vite+ installation. Other upstream binaries must also be compatible with this distribution; it is not a tested installation target.")
             else:
                 errors.append("The pinned Vite+ Linux build requires glibc. On a musl distribution install its matching Vite+ build first, or use Ubuntu/Debian; the installer preserves an existing vp.")
-        missing = [tool for tool in BASE if not shutil.which(tool)]
+        missing = [tool for tool in (BASE if selected_base is None else selected_base) if not shutil.which(tool)]
         if missing:
             packages = ["postgresql-client" if name == "psql" else name for name in missing]
             if not shutil.which("apt-get") or not shutil.which("dpkg-deb"):
@@ -111,7 +111,7 @@ def check(root, config, data, state, cache, bin_dir, *, config_only=False, netwo
             detail = f"HTTP {exc.code}" if isinstance(exc, urllib.error.HTTPError) else str(getattr(exc, "reason", exc))
             messages.append(f"Warning: GitHub HTTPS probe failed ({detail}). Installation will still try the actual downloads with TLS verification enabled. Check proxy settings and CA certificates if downloads fail; on Ubuntu/Debian, --install-prerequisites installs ca-certificates.")
     elif not network or config_only:
-        messages.append("Network check skipped; no files were downloaded.")
+        messages.append("Network preflight skipped; installation may still download missing tools.")
     messages.append("Optional: a Nerd Font on the terminal-rendering device; ffmpeg, Poppler, and 7-Zip for extra Yazi previews.")
     if errors:
         raise RuntimeError("Preflight failed:\n- " + "\n- ".join(errors))

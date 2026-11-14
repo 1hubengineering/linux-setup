@@ -12,6 +12,7 @@ from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from terminal_ui import choose
+from console import section, status
 
 ROOT = Path(__file__).resolve().parents[1]
 NAME = re.compile(r"[A-Za-z0-9_.-]+")
@@ -61,14 +62,16 @@ def save_theme(value):
     fd, name = tempfile.mkstemp(prefix=".theme-", dir=path.parent)
     try:
         with os.fdopen(fd, "w") as stream:
-            stream.write("# Written by theme-manager. This selection takes precedence over the local zshenv.\n")
+            stream.write("# Written by theme-manager. Shared by Bash and Zsh; takes precedence over local shell environment hooks.\n")
             stream.write("export LINUX_SETUP_POSH_THEME=" + shlex.quote(value) + "\n")
         os.replace(name, path)
     finally:
         if os.path.exists(name):
             os.unlink(name)
     label = Path(value).name.removesuffix(".omp.json") if not value.startswith("https://") else value
-    print(f"\nTheme changed to {label}.\nRun reload to see it now, or close and reopen your terminal.", flush=True)
+    section("Prompt theme")
+    status("ok", f"Theme changed to {label}.")
+    print("Run reload to see it now, or close and reopen your terminal.", flush=True)
 
 
 def upstream_themes():

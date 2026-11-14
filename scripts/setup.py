@@ -23,6 +23,7 @@ from pathlib import Path, PurePosixPath
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ownership import atomic_json, fingerprint, infer_programs, migrate
+from console import section, status, table, progress, busy
 
 ROOT = Path(__file__).resolve().parents[1]
 HOME = Path.home()
@@ -92,7 +93,7 @@ def download(url, digest, name):
         temporary = target.with_suffix(target.suffix + ".part")
         try:
             request = urllib.request.Request(url, headers={"User-Agent": "linux-setup/1"})
-            with urllib.request.urlopen(request, timeout=90) as response, temporary.open("wb") as out:
+            with busy(f"Downloading {name}"), urllib.request.urlopen(request, timeout=90) as response, temporary.open("wb") as out:
                 shutil.copyfileobj(response, out)
             actual = hashlib.sha256(temporary.read_bytes()).hexdigest()
             if actual != digest:
@@ -266,9 +267,9 @@ class Deployment:
         return unresolved
 
 
-def install_base(deploy):
+def install_base(deploy, selected=None):
     failures = []
-    for name in BASE:
+    for name in BASE if selected is None else selected:
         try:
             existing = shutil.which(name)
             legacy = HOME / ".local/share/zsh-runtime"
@@ -278,7 +279,7 @@ def install_base(deploy):
             if existing:
                 if not previous:
                     deploy.record_program(name, kind="base", owned=False, binaries=[name], executable=existing)
-                print(f"{name}: already installed ({existing}); skipping.", flush=True)
+                status("kept", f"{name}: already installed ({existing}); skipping.")
                 continue
             folder = DATA / "base" / name
             active = previous.get("pending_bundle", {}).get("path") or previous.get("active_path")
@@ -291,7 +292,7 @@ def install_base(deploy):
                 previous = saved_program(deploy, name)
             if previous.get("owned") and previous.get("version") == "distro" and wrapper.is_file():
                 deploy.link(wrapper, BIN / name, program=name)
-                print(f"{name}: already installed; repaired its executable link.", flush=True)
+                status("kept", f"{name}: already installed; repaired its executable link.")
                 continue
             if not shutil.which("apt-get"):
                 raise RuntimeError(f"Install {name} with your package manager, then rerun ./install.sh")
@@ -411,7 +412,7 @@ def approve_update(name, version, deploy):
     if previous.get("requested_version") == version:
         print(f"{name}: resuming previously approved update to {version}.", flush=True)
         return True
-    print(f"{name}: already installed ({installed}); pinned update available: {version}.", flush=True)
+    status("kept", f"{name}: already installed ({installed}); pinned update available: {version}.")
     if not sys.stdin.isatty() or not sys.stdout.isatty():
         print(f"{name}: keeping installed version. Run ./install.sh interactively to approve the update.", flush=True)
         return False
@@ -471,7 +472,7 @@ def install_one_tool(name, item, key, deploy):
     previous = saved_program(deploy, name)
     existing = find_tool(TOOLS.get(name, name))
     if existing and not previous.get("owned"):
-        print(f"{name}: already installed ({existing}); skipping external installation.", flush=True)
+        status("kept", f"{name}: already installed ({existing}); skipping external installation.")
         if not previous:
             deploy.record_program(name, owned=False, binaries=item.get("binaries", [TOOLS.get(name, name)]), executable=existing)
         return True
@@ -489,9 +490,9 @@ def install_one_tool(name, item, key, deploy):
                 source = Path(active) / binary
                 if source.is_file():
                     deploy.link(source, BIN / binary, program=name)
-            print(f"{name}: already installed ({existing}); skipping download.", flush=True)
+            status("kept", f"{name}: already installed ({existing}); skipping download.")
             return ready
-        print(f"{name}: already installed ({existing}); skipping.", flush=True)
+        status("kept", f"{name}: already installed ({existing}); skipping.")
         return True
     if not approve_update(name, item["version"], deploy):
         repair_program_links(deploy, name)
@@ -510,7 +511,7 @@ def install_one_tool(name, item, key, deploy):
     stamp = destination / ".sha256"
     changed = not stamp.is_file() or stamp.read_text().strip() != asset["sha256"] or not all((destination / n).is_file() for n in binaries)
     if changed:
-        print(f"Downloading {name} {item['version']} ...", flush=True)
+        status("info", f"Downloading {name} {item['version']} ...")
         archive = download(asset["url"], asset["sha256"], asset["name"])
         destination.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix=".install-", dir=destination.parent) as temporary:
@@ -528,7 +529,7 @@ def install_one_tool(name, item, key, deploy):
             (stage / ".sha256").write_text(asset["sha256"] + "\n")
             destination = publish_bundle(stage, destination, deploy, name, "tool", item["version"], binaries)
     else:
-        print(f"{name}: already installed ({item['version']}); skipping download.", flush=True)
+        status("kept", f"{name}: already installed ({item['version']}); skipping download.")
     metadata = {}
     if name == "vp" and (changed or not previous or previous.get("pending_bundle")):
         metadata["setup_incomplete"] = True
@@ -559,7 +560,7 @@ def install_one_plugin(name, item, deploy):
     stamp = destination / ".sha256"
     changed = not stamp.is_file() or stamp.read_text().strip() != item["sha256"]
     if changed:
-        print(f"Downloading {name} {item['version']} ...", flush=True)
+        status("info", f"Downloading {name} {item['version']} ...")
         archive = download(item["url"], item["sha256"], name + ".tar.gz")
         destination.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix=".install-", dir=destination.parent) as temporary:
@@ -568,7 +569,7 @@ def install_one_plugin(name, item, deploy):
             (stage / ".sha256").write_text(item["sha256"] + "\n")
             destination = publish_bundle(stage, destination, deploy, name, "plugin", item["commit"])
     else:
-        print(f"{name}: already installed; skipping download.", flush=True)
+        status("kept", f"{name}: already installed; skipping download.")
     record_complete(deploy, name, destination, kind="plugin", version=item["commit"], refresh=changed)
     deploy.link(destination, DATA / "plugins" / name / "current", program=name)
 
@@ -736,6 +737,35 @@ def finalize_vp(deploy, save=True):
         deploy.save()
 
 
+def install_bash(deploy):
+    """Wrap existing Bash startup files, retaining their contents and ownership backups."""
+    startup = DATA / "bash"
+    startup.mkdir(parents=True, exist_ok=True)
+    fallback = next((p for p in [HOME / ".bash_login", HOME / ".profile"] if p.is_file()), None)
+    for filename, config in [(".bashrc", "bashrc"), (".bash_profile", "env")]:
+        target = HOME / filename
+        wrapper = startup / filename.lstrip(".")
+        deploy.link(wrapper, target)
+        backup = deploy.state["links"][str(target)].get("backup")
+        previous = Path(backup) if backup else (fallback if filename == ".bash_profile" else None)
+        lines = ["# Managed by linux-setup; original startup file is kept in the installer backup."]
+        if filename == ".bashrc":
+            lines.append('[[ ${_LINUX_SETUP_BASH_READY:-} != 1 ]] || return 0')
+        if previous and previous.is_file():
+            lines.append("source " + shlex.quote(str(previous)))
+        lines.append("source " + shlex.quote(str(ROOT / "config/bash" / config)))
+        if filename == ".bash_profile":
+            lines.append('[[ $- != *i* || ${_LINUX_SETUP_BASH_READY:-} == 1 ]] || source "$HOME/.bashrc"')
+        descriptor, temporary = tempfile.mkstemp(prefix=".startup-", dir=startup)
+        try:
+            with os.fdopen(descriptor, "w") as stream:
+                stream.write("\n".join(lines) + "\n")
+            os.replace(temporary, wrapper)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+
+
 def install_config(deploy):
     # Migrate the known addition from the earlier setup without executing or
     # copying arbitrary shell startup files into a public repository.
@@ -767,10 +797,11 @@ def install_config(deploy):
         run(["git", "config", "--global", "--add", "include.path", include])
         deploy.state["git_include"] = include
         deploy.save()
+    install_bash(deploy)
     # Keep local tool initialization outside the portable repository.
     local = CONFIG / "linux-setup-local"
     local.mkdir(parents=True, exist_ok=True)
-    for name in ["zshenv", "zshrc"]:
+    for name in ["zshenv", "zshrc", "bashenv", "bashrc"]:
         target = local / name
         if not target.exists():
             target.write_text("# Machine-specific shell additions; never committed to linux-setup.\n")
@@ -806,7 +837,7 @@ def install_mcp(deploy=None):
         deploy = deploy or Deployment()
         existing = subprocess.run([codex, "mcp", "get", "oh-my-posh", "--json"], capture_output=True, text=True)
         if existing.returncode == 0:
-            print("Keeping existing Oh My Posh MCP registration.")
+            status("kept", "Keeping existing Oh My Posh MCP registration.")
             if "mcp" not in deploy.state:
                 deploy.state["mcp"] = {"name": "oh-my-posh", "owned": False}
                 deploy.save()
@@ -880,7 +911,24 @@ def _main():
     group.add_argument("--install-gh", action="store_true", help="Install GitHub CLI without changing Git identity")
     group.add_argument("--github-setup", action="store_true", help="Set up Git identity and GitHub accounts interactively")
     parser.add_argument("--skip-mcp", action="store_true", help="Do not modify Codex MCP configuration")
+    parser.add_argument("--dev-tools", action="store_true", help="Install missing developer CLIs and stable Python with uv")
+    parser.add_argument("--auth", action="store_true", help="Authenticate installed Codex and Claude CLIs interactively")
+    parser.add_argument("--plain", action="store_true", help="Use plain text without colors, borders, or animation")
+    parser.add_argument("--no-animation", action="store_true", help="Keep formatted output but disable download spinners")
+    navigation = parser.add_mutually_exclusive_group()
+    navigation.add_argument("--wizard", action="store_true", help="Plan selected setup actions with keyboard menus before making changes")
+    navigation.add_argument("--no-wizard", action="store_true", help="Use the explicit legacy/batch installation flow")
     args = parser.parse_args()
+    if args.wizard and any(getattr(args, name) for name in ('check', 'mcp_only', 'restore', 'dry_run', 'preflight', 'install_gh', 'github_setup')):
+        parser.error("--wizard cannot be combined with an action-only command")
+    if args.plain:
+        os.environ["LINUX_SETUP_PLAIN"] = "1"
+    if args.no_animation:
+        os.environ["LINUX_SETUP_NO_ANIMATION"] = "1"
+    if args.config_only and args.dev_tools:
+        parser.error("--config-only cannot be combined with --dev-tools")
+    if args.auth and not args.dry_run and not sys.stdin.isatty():
+        raise RuntimeError("--auth requires an interactive terminal; use dev-tools auth later.")
     os.environ["PATH"] = str(BIN) + os.pathsep + os.environ.get("PATH", "")
     if args.check:
         return doctor()
@@ -910,15 +958,22 @@ def _main():
             raise RuntimeError("GitHub setup requires an interactive terminal.")
         github_setup(lock, key, Deployment())
         return 0
+    if wants_wizard(sys.argv[1:]):
+        import types
+        from setup_wizard import run as run_wizard
+        return run_wizard(types.SimpleNamespace(**globals()), lock, key, args)
     from preflight import check
+    section("linux-setup / Preflight")
     cached = all(find_tool(TOOLS.get(name, name)) for name in lock["tools"])
     for message in check(ROOT, CONFIG, DATA, STATE, CACHE, BIN, config_only=args.config_only,
                          network=args.preflight or (not args.config_only and not args.dry_run and not cached)):
-        print(message)
+        status("info", message)
     if args.preflight:
         return 0
     if args.dry_run:
         print(f"Platform: {key}\nCheckout: {ROOT}\nConfiguration link: {CONFIG / 'linux-setup'}\nExecutables: {BIN}\nData: {DATA}\nBackups: {STATE / 'backups'}")
+        if args.dev_tools:
+            print("Developer tools: stable Python via uv, Codex, Claude Code, OpenSpec, Graphify (existing tools kept)")
         print("Tools:", ", ".join(lock["tools"]))
         print("Plugins:", ", ".join(lock["plugins"]))
         print("Existing programs are kept. Managed tool/plugin updates require interactive confirmation.")
@@ -929,23 +984,35 @@ def _main():
     migrate_legacy()
     deploy = Deployment()
     BIN.mkdir(parents=True, exist_ok=True)
-    installation = InstallationRun(deploy, "configuration" if args.config_only else "full")
+    total = (1 if args.config_only else 3) + int(args.dev_tools) + int(args.auth) + int(not args.skip_mcp) + int(not args.config_only and sys.stdin.isatty())
+    installation = InstallationRun(deploy, "configuration" if args.config_only else "full", total=total)
     if not args.config_only:
         installation.step("base tools", lambda: install_base(deploy))
         installation.step("tools and plugins", lambda: install_tools(lock, key, deploy))
     installation.step("configuration", lambda: install_config(deploy))
+    if args.dev_tools:
+        from dev_tools import install
+        installation.step("developer tools", install)
+        if installation.record["steps"]["developer tools"]["status"] == "complete":
+            deploy.state["developer_setup_prompted"] = True
+            deploy.save()
+    if args.auth:
+        from dev_tools import authenticate
+        installation.step("agent authentication", authenticate)
+    if not args.config_only and sys.stdin.isatty():
+        installation.step("GitHub and skills", lambda: interactive_setup(lock, key, deploy, developer_attempted=args.dev_tools))
     if not args.skip_mcp:
         installation.step("Codex integration", lambda: install_mcp(deploy))
-    if not args.config_only and sys.stdin.isatty():
-        installation.step("GitHub and skills", lambda: interactive_setup(lock, key, deploy))
     failures = installation.finish()
     if failures:
         print("\nSetup finished with incomplete steps: " + ", ".join(failures), file=sys.stderr)
-        print("Rerun ./install.sh to retry; completed tools and backups will be reused.", file=sys.stderr)
+        retry = "./install.sh" + (" --dev-tools" if args.dev_tools else "") + (" --auth" if args.auth else "") + (" --skip-mcp" if args.skip_mcp else "")
+        print(f"Retry: {retry}; completed tools and backups will be reused.", file=sys.stderr)
     elif not deploy.changed:
         print("\nAlready installed; configuration and executable links checked.")
     else:
         print(f"\nSetup complete from {ROOT}")
+    section("Next actions")
     print(f"Backups: {STATE / 'backups'}")
     zsh = shutil.which("zsh")
     if zsh:
@@ -960,7 +1027,9 @@ def _main():
 
 class InstallationRun:
     """Durable step journal; reruns recheck links and reuse completed artifacts."""
-    def __init__(self, deploy, mode):
+    def __init__(self, deploy, mode, total=0):
+        self.total = total
+        self.results = []
         self.deploy = deploy
         self.failures = []
         self.record = deploy.state.setdefault("installations", {}).setdefault(mode, {"steps": {}})
@@ -972,6 +1041,9 @@ class InstallationRun:
         deploy.save()
 
     def step(self, name, action):
+        index = len(self.results) + 1
+        section(f"[{index}/{self.total or '?'}] {name.capitalize()}")
+        started = time.monotonic()
         self.record["current_step"] = name
         self.record["steps"][name] = {"status": "running"}
         self.deploy.save()
@@ -983,25 +1055,44 @@ class InstallationRun:
             self.record["status"] = "incomplete"
             self.deploy.save()
             raise
-        except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
-            print(f"{name}: incomplete: {error}. Continuing with other steps.", file=sys.stderr)
+        except (OSError, RuntimeError, ValueError, tarfile.TarError, zipfile.BadZipFile, subprocess.CalledProcessError) as error:
+            status("error", f"{name}: {str(error).rstrip('.')}. Continuing with other steps.", stream=sys.stderr)
             failures = [name]
             failure_detail = str(error)
         self.record["steps"][name] = {"status": "incomplete" if failures else "complete", "failures": failures}
         if failure_detail:
             self.record["steps"][name]["error"] = failure_detail
+        elapsed = time.monotonic() - started
+        self.record["steps"][name]["duration_seconds"] = round(elapsed, 2)
+        self.results.append((name, "INCOMPLETE" if failures else "OK", f"{elapsed:.1f}s"))
+        status("error" if failures else "ok", f"{name}: {'needs attention' if failures else 'checked'} ({elapsed:.1f}s)")
         self.failures.extend(failures)
         self.deploy.save()
 
     def finish(self):
+        section("Installation summary")
+        table(("Step", "Result", "Time"), self.results)
+        complete = sum(result == "OK" for _, result, _ in self.results)
+        progress(len(self.results), self.total or len(self.results))
+        status("warn" if self.failures else "ok", f"{complete} successful, {len(self.results) - complete} incomplete")
         self.record.update(status="incomplete" if self.failures else "complete", failures=self.failures)
         self.record.pop("current_step", None)
         self.deploy.save()
         return self.failures
 
 
-def interactive_setup(lock, key, deploy):
+def interactive_setup(lock, key, deploy, developer_attempted=False):
     from git_profiles import configure_identity, ask_yes
+    developer_failures = []
+    if not developer_attempted and not deploy.state.get("developer_setup_prompted"):
+        if ask_yes("Install missing Python and AI developer tools (Codex, Claude Code, OpenSpec, Graphify)?"):
+            from dev_tools import install, authenticate
+            developer_failures = install() or []
+            if not developer_failures and ask_yes("Sign in to Codex and Claude Code now (existing logins are kept)?"):
+                authenticate()
+        if not developer_failures:
+            deploy.state["developer_setup_prompted"] = True
+            deploy.save()
     configure_identity()
     if not deploy.state.get("github_setup_prompted"):
         github_setup(lock, key, deploy)
@@ -1012,13 +1103,26 @@ def interactive_setup(lock, key, deploy):
             result = subprocess.run([sys.executable, str(ROOT / "scripts/skill_manager.py")])
             if result.returncode:
                 print("Skill manager did not complete; run setup or skills again when ready.")
-                return ["AI skills"]
+                return developer_failures + ["AI skills"]
         deploy.state["skills_setup_prompted"] = True
         deploy.save()
-    return []
+    return developer_failures
+
+
+def wants_wizard(arguments):
+    if "--help" in arguments or "-h" in arguments:
+        return False
+    if "--wizard" in arguments:
+        return True
+    explicit = ("--no-wizard", "--help", "-h", "--preflight", "--dry-run", "--check", "--restore", "--mcp-only", "--install-gh", "--github-setup")
+    return not any(flag in arguments for flag in explicit) and sys.stdin.isatty() and sys.stdout.isatty()
 
 
 def main():
+    if wants_wizard(sys.argv[1:]):
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            raise RuntimeError("The setup wizard requires an interactive terminal; use --no-wizard for batch setup.")
+        return _main()
     if any(flag in sys.argv[1:] for flag in ("--help", "-h", "--preflight", "--dry-run", "--check")):
         return _main()
     with operation_lock():

@@ -85,29 +85,24 @@ The [included tools reference](tools.md) lists the included programs.
 Already available programs are reused, including external installations.
 Fresh Vite+/uv installations use the lockfile versions.
 
-Zsh is installed automatically when it is missing during a normal `./install.sh`
-run on Ubuntu/Debian. Its packages and runtime files stay in your user directory,
-with an executable entry point at `~/.local/bin/zsh`; no sudo or login-shell change
-is needed. An existing Zsh is reused. `--config-only` deliberately skips all tool
-installation, including Zsh. At completion, the installer prints an `exec` command
-with the full Zsh path so it also works before your current shell has added
-`~/.local/bin` to `PATH`.
+The default interactive flow starts with the [selection wizard](setup-wizard.md).
+Recommended programs include missing Zsh and terminal tools; custom selection can
+skip any of them. Installed tools are kept. Selected Zsh packages and runtime
+files stay in your user directory, with an executable entry point at
+`~/.local/bin/zsh`; no sudo or login-shell change is needed. `--config-only`
+skips program installation. When shell configuration is selected, completion
+includes font instructions and an `exec` command using the actual Zsh path.
 
-On an interactive normal installation, the installer asks for a Git author name
-and email only when the corresponding global value is missing. It then offers
-GitHub CLI installation and account setup on the first interactive run. Existing
-values and an existing `gh` installation are preserved. Non-interactive runs,
-preflight, dry runs, and configuration-only runs do not prompt. You can revisit
-the account flow with `./install.sh --github-setup`, or install just the optional
-CLI with `./install.sh --install-gh`. The GitHub CLI download is pinned and
-checksum-verified like the other managed tools. See [GitHub accounts](github-accounts.md)
-for sharing author details, adding another profile, switching, and removal.
+Git identity, GitHub login, saved author profiles, and agent skills are independent
+optional choices. Choose global/project integration scope and review the exact
+destinations before applying. GitHub CLI installation is added to the reviewed
+plan only when needed. Existing profiles and credentials are preserved. See
+[GitHub accounts](github-accounts.md) and [AI skills](skills.md).
 
-The first interactive installation also offers the optional AI skill manager.
-Choose Codex or Claude Code, one or more work areas, and whether skills should apply to all projects or one.
-Use arrows to move, Space to toggle choices, and Enter to confirm. Esc goes back. You
-can skip this step and run `skills` later. See
-[AI skills](skills.md) for sources and removal.
+`--no-wizard` keeps the earlier flow: install missing terminal tools, then offer
+GitHub and skills setup. Noninteractive invocations use this batch-compatible
+behavior and never open menus. Standalone account management remains available
+through `./install.sh --github-setup` and `./install.sh --install-gh`.
 
 The PostgreSQL dependency is the `psql` client only. Installing it does not create
 a database cluster or start a server. Your applications retain responsibility for
@@ -180,9 +175,10 @@ git pull --ff-only
 exec zsh
 ```
 
-Completed tools report that they are already installed. If a managed tool or
-plugin has a new pinned version, an interactive run asks before updating it;
-non-interactive runs keep the installed version. Rerunning also retries incomplete
+The wizard detects and keeps installed tools; select incomplete/missing programs
+to retry them. Use `--no-wizard` for the earlier update flow, where managed pinned
+updates require interactive confirmation and noninteractive runs retain installed
+versions. Rerunning also retries incomplete
 steps after a failure or interruption. See [rerun and recovery](recovery.md).
 
 On success, run `exec zsh`. For configuration changes without tool downloads,
@@ -217,3 +213,14 @@ selection use the tools already included in the setup.
 
 For download errors, missing libraries, or completion problems, see
 [troubleshooting](troubleshooting.md).
+
+Optional developer tools: `./install.sh --dev-tools`. Add `--auth` in an interactive
+terminal to authenticate Codex and Claude Code. See [developer tools](developer-tools.md).
+
+The installer shows numbered sections and a timed result table. Use `--plain`
+for undecorated output or `--no-animation` to disable download spinners.
+See [terminal output](terminal-output.md).
+
+In a terminal, installation opens the [setup selection wizard](setup-wizard.md)
+before downloads or configuration writes. Review all choices before applying.
+Use `--no-wizard` for the explicit legacy flow; noninteractive runs remain batch-compatible.

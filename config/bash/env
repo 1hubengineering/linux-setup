@@ -1,0 +1,26 @@
+# Shared environment for Bash login and interactive shells.
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export LINUX_SETUP_DIR="$XDG_CONFIG_HOME/linux-setup"
+export DEV_SETUP_DIR="$LINUX_SETUP_DIR"
+export DEV_DIR="${DEV_DIR:-$HOME/github}"
+export PROJECTS_DIR="${PROJECTS_DIR:-$HOME/projects}"
+for _setup_path in "$LINUX_SETUP_DIR/bin" "$HOME/.cargo/bin" "${UV_INSTALL_DIR:-$HOME/.local/bin}" "$HOME/.local/bin"; do
+  case ":$PATH:" in *":$_setup_path:"*) ;; *) export PATH="$_setup_path:$PATH" ;; esac
+done
+unset _setup_path
+if [[ -f "$XDG_DATA_HOME/linux-setup/tools/vp/libatomic/libatomic.so.1" ]]; then
+  case ":${LD_LIBRARY_PATH:-}:" in
+    *":$XDG_DATA_HOME/linux-setup/tools/vp/libatomic:"*) ;;
+    *) export LD_LIBRARY_PATH="$XDG_DATA_HOME/linux-setup/tools/vp/libatomic${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ;;
+  esac
+fi
+if ! declare -F vp >/dev/null; then
+  for _setup_env in "${VP_HOME:-$XDG_CONFIG_HOME/vite-plus}/env" "$XDG_CONFIG_HOME/vite-plus/env" "$HOME/.vite-plus/env"; do
+    if [[ -r "$_setup_env" ]]; then source "$_setup_env"; break; fi
+  done
+  unset _setup_env
+fi
+[[ ! -r "$XDG_CONFIG_HOME/linux-setup-local/bashenv" ]] || source "$XDG_CONFIG_HOME/linux-setup-local/bashenv"

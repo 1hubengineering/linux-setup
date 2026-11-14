@@ -36,17 +36,15 @@
           "foreground": "#011627",
           "powerline_symbol": "",
           "leading_powerline_symbol": "",
-          "options": {
-            "style": "agnoster_short",
-            "max_depth": 2,
-            "hide_root_location": true,
-            "folder_icon": "",
-            "folder_separator_icon": "/",
-            "mapped_locations_enabled": false
-          },
           "style": "powerline",
-          "template": " {{ if .RootDir }}{{ .Path }}{{ else }}{{ trimPrefix \"/\" .Path }}{{ end }} ",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "folder_icon": " ",
+            "folder_separator_icon": "<#011627></> ",
+            "home_icon": "  ",
+            "style": "agnoster"
+          },
+          "template": "{{ path .Path .Location }}"
         },
         {
           "background": "#addb67",

@@ -204,7 +204,7 @@
     },
     "uv": {
       "repository": "https://github.com/astral-sh/uv",
-      "version": "0.13.5",
+      "version": "0.13.8",
       "install_if_missing": true,
       "binaries": [
         "uv",
@@ -213,13 +213,13 @@
       "platforms": {
         "linux-x86_64": {
           "name": "uv-x86_64-unknown-linux-musl.tar.gz",
-          "url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-musl.tar.gz",
-          "sha256": "57ef9d9ccb01fb1bd998df995b0dd221b52f7d7841fbea93f2d4463bf61fb7a9"
+          "url": "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-unknown-linux-musl.tar.gz",
+          "sha256": "61fb26dabc4f0cf1d050fc6c67d40e43e4fae2994af21ebc1e050b233bf2b5ed"
         },
         "linux-aarch64": {
           "name": "uv-aarch64-unknown-linux-musl.tar.gz",
-          "url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-aarch64-unknown-linux-musl.tar.gz",
-          "sha256": "7906c79adb21c81abd559841ba76bb1d9af9d791acac7a041b2972e03ae16538"
+          "url": "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-aarch64-unknown-linux-musl.tar.gz",
+          "sha256": "0c6f8593fcf1eadfc60e663b685c408267559d7c5d61c689bbb9f3a7e369ba32"
         }
       }
     }

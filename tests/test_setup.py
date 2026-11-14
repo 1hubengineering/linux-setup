@@ -265,6 +265,7 @@ class BaseToolTests(unittest.TestCase):
         terminal = Mock()
         terminal.isatty.return_value = True
         self.deploy.state['github_setup_prompted'] = True
+        self.deploy.state["developer_setup_prompted"] = True
         with patch.object(sys, 'argv', ['setup.py', '--skip-mcp']), patch.object(sys, 'stdin', terminal), patch.dict(os.environ, {'PATH': '/usr/bin:/bin'}), patch('preflight.check', return_value=[]), patch.object(setup, 'Deployment', return_value=self.deploy), patch.object(setup, 'migrate_legacy'), patch.object(setup, 'install_base', return_value=[]), patch.object(setup, 'install_tools', return_value=[]), patch.object(setup, 'install_config', return_value=None), patch.object(git_profiles, 'configure_identity'), patch.object(git_profiles, 'ask_yes', return_value=True) as ask, patch.object(setup.subprocess, 'run', return_value=Mock(returncode=0)) as run:
             self.assertEqual(setup.main(), 0)
             self.assertEqual(setup.main(), 0)

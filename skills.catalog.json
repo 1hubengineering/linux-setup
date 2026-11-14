@@ -2,7 +2,7 @@
   "repositories": {
     "uiux": {
       "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
-      "commit": "4f2dbb67e64969a9a30ab00742f2d55d66ddec2b"
+      "commit": "d643997c82e94742dd3bee43210b0198e8bbba3d"
     },
     "humanizer": {
       "repo": "blader/humanizer",
@@ -23,6 +23,14 @@
     "agents": {
       "repo": "wshobson/agents",
       "commit": "9c61ab243def98f72da12abd41cfcf5bcd91af9d"
+    },
+    "better-auth": {
+      "repo": "better-auth/skills",
+      "commit": "20c9e88a5c007461a703f1c213572b073196113e"
+    },
+    "shadcn": {
+      "repo": "shadcn-ui/ui",
+      "commit": "e62c9435fff729a175f38983dee73b2cb4f6a069"
     }
   },
   "skills": [
@@ -44,7 +52,7 @@
     },
     {
       "id": "humanizer",
-      "description": "Edit prose while preserving meaning and the writer’s voice",
+      "description": "Edit prose while preserving meaning and the writer\u2019s voice",
       "repository": "humanizer",
       "path": ".",
       "areas": [
@@ -234,6 +242,153 @@
       ],
       "agents": [
         "codex"
+      ]
+    },
+    {
+      "id": "better-auth-best-practices",
+      "repository": "better-auth",
+      "path": "better-auth/best-practices",
+      "description": "Better Auth configuration, sessions, and adapters",
+      "areas": [
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "create-auth",
+      "repository": "better-auth",
+      "path": "better-auth/create-auth",
+      "description": "Scaffold Better Auth authentication",
+      "areas": [
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "better-auth-security-best-practices",
+      "repository": "better-auth",
+      "path": "security",
+      "description": "Harden Better Auth authentication",
+      "areas": [
+        "Full stack",
+        "Testing and quality"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "shadcn",
+      "repository": "shadcn",
+      "path": "skills/shadcn",
+      "description": "Project-aware shadcn/ui components and patterns",
+      "areas": [
+        "Web development",
+        "UI and UX"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "tailwind-design-system",
+      "repository": "agents",
+      "path": "plugins/frontend-mobile-development/skills/tailwind-design-system",
+      "description": "Tailwind CSS v4 design systems",
+      "areas": [
+        "Web development",
+        "UI and UX"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "uv-package-manager",
+      "repository": "agents",
+      "path": "plugins/python-development/skills/uv-package-manager",
+      "description": "Python environments and dependencies with uv",
+      "areas": [
+        "Python development"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "python-testing-patterns",
+      "repository": "agents",
+      "path": "plugins/python-development/skills/python-testing-patterns",
+      "description": "Python tests and fixtures",
+      "areas": [
+        "Python development",
+        "Testing and quality"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "python-type-safety",
+      "repository": "agents",
+      "path": "plugins/python-development/skills/python-type-safety",
+      "description": "Modern Python typing",
+      "areas": [
+        "Python development"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "email-and-password-best-practices",
+      "repository": "better-auth",
+      "path": "better-auth/emailAndPassword",
+      "description": "Better Auth email verification and password recovery",
+      "areas": [
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "organization-best-practices",
+      "repository": "better-auth",
+      "path": "better-auth/organization",
+      "description": "Better Auth organizations, roles, and invitations",
+      "areas": [
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "id": "two-factor-authentication-best-practices",
+      "repository": "better-auth",
+      "path": "better-auth/twoFactor",
+      "description": "Better Auth multi-factor authentication",
+      "areas": [
+        "Full stack"
+      ],
+      "agents": [
+        "codex",
+        "claude"
       ]
     }
   ]

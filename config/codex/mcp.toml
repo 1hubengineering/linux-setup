@@ -2,3 +2,11 @@
 # Your existing Codex configuration is never copied into this repository.
 [mcp_servers.oh-my-posh]
 url = "https://ohmyposh.dev/api/mcp"
+
+# Optional: register with dev-tools mcp codex.
+[mcp_servers.better-auth]
+url = "https://mcp.better-auth.com/mcp"
+
+[mcp_servers.shadcn]
+command = "npx"
+args = ["--yes", "shadcn@latest", "mcp"]

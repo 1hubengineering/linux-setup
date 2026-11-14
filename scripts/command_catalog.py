@@ -43,6 +43,7 @@ def source_paths():
     config = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
     return [
         ROOT / "config/zsh/aliases.zsh",
+        ROOT / "config/shell/developer-aliases.sh",
         ROOT / "config/zsh/functions.zsh",
         ROOT / "config/zsh/command-picker.zsh",
         config / "linux-setup-local/zshenv",

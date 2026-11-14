@@ -3,6 +3,10 @@ import os
 from pathlib import Path
 import shlex
 import shutil
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from console import section, table
 
 
 def environment():
@@ -20,7 +24,7 @@ def environment():
 
 def print_guide(zsh=None):
     target = environment()
-    print("\nSet up prompt icons")
+    section("Set up prompt icons")
     if target == "wsl":
         print("WSL detected. Install the font on Windows, where your terminal renders it.")
         print("Run in Windows PowerShell (skip this if Windows already has Oh My Posh):")
@@ -42,7 +46,7 @@ def print_guide(zsh=None):
     zsh = zsh or shutil.which("zsh")
     if zsh:
         path = shlex.quote(str(Path(zsh).absolute()))
-        print("\nMake Zsh your default login shell (optional)")
+        section("Make Zsh your default login shell (optional)")
         try:
             registered = str(Path(zsh).absolute()) in Path("/etc/shells").read_text().splitlines()
         except OSError:
@@ -52,13 +56,19 @@ def print_guide(zsh=None):
             print(f"  printf '%s\\n' {path} | sudo tee -a /etc/shells")
         print(f"  chsh -s {path}")
         print("Log out and back in, or reopen your WSL session. A terminal profile with an explicit Bash command must also be updated.")
-    print("\nEveryday commands")
-    print("  update              Pull setup changes and rerun installation from any directory")
-    print("  theme               Change the prompt theme; run reload afterward")
-    print("  github              Add, switch, or remove GitHub account profiles")
-    print("  skills              Add or remove AI skills; choose multiple work areas")
-    print("  doctor              Check the terminal setup")
-    print("  guide               Show these font and shell instructions again")
+    section("Everyday commands")
+    table(("Command", "Purpose"), [
+        ("update", "Pull setup changes and rerun installation"),
+        ("theme", "Change the prompt theme; run reload afterward"),
+        ("github", "Manage GitHub account profiles"),
+        ("skills", "Add or remove AI skills"),
+        ("dev-tools install", "Install missing developer tools"),
+        ("dev-tools auth", "Sign in to Codex and Claude Code"),
+        ("shell", "Switch the current session between Bash and Zsh"),
+        ("default-shell", "Change the default login shell"),
+        ("doctor", "Check the terminal setup"),
+        ("guide", "Show font and shell instructions"),
+    ])
     print("Guides: https://github.com/1hubengineering/linux-setup/blob/main/docs/README.md")
 
 

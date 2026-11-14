@@ -356,3 +356,7 @@ alias cld='claude'
 alias cldr='claude --resume'
 # Continue the latest Claude Code session.
 alias cldc='claude --continue'
+
+source "$LINUX_SETUP_DIR/config/shell/developer-aliases.sh"
+# Switch the current session between Bash and Zsh.
+alias shell='exec shell-toggle --current zsh'

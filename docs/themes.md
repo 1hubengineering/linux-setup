@@ -34,6 +34,21 @@ theme reset                 # Restore quick-term
 reload
 ```
 
+## Clean-detailed
+
+Run `theme use clean-detailed` then `reload` to use the upstream
+[Clean-detailed theme](https://github.com/JanDeDobbeleer/oh-my-posh/blob/main/themes/clean-detailed.omp.json).
+It includes colored diamond segments for the OS, shell, memory usage, and command
+timing, right-aligned Git information, a clock/path line, and a separate input
+line. A blank terminal row separates the prompt lines for readability; terminal
+themes cannot set pixel spacing. Its original transient prompt is preserved.
+Quick-term remains the default.
+
+Bash and Zsh share the saved selection. Bash transient prompts require
+[ble.sh](https://ohmyposh.dev/docs/configuration/transient), loaded automatically
+when installed at `~/.local/share/blesh/ble.sh` (respecting `XDG_DATA_HOME`). Without
+ble.sh, the normal Bash prompt still works.
+
 ## Included layouts
 
 These are different prompt designs adapted from the six themes you requested.
@@ -63,12 +78,10 @@ theme use setup-kali
 reload
 ```
 
-All included layouts show only the immediate parent and current folder. For
-example, `/home/user/projects/my-app/src` appears as `my-app/src`; entering its
-`components` folder changes it to `src/components`. Root displays `/`, and a
-folder directly under root displays its own name. Long names, spaces, and
-Unicode characters are kept. Extra details such as clocks, language versions,
-and cloud accounts appear when available and when there is room.
+Existing layouts now use their original path formatting rather than forcing
+all paths to parent/current. Quick-term and iterm2 use their earliest repository
+path settings; the six adapted themes use their upstream source settings.
+Theme file locations, saved selections, and the default theme remain compatible.
 
 The `setup-` names are customized copies. The original online themes can still
 be selected by their original names, for example `theme use kali`, or through
@@ -85,7 +98,7 @@ in the table above.
 ## Where the selection is saved
 
 The manager writes `~/.config/linux-setup-local/theme.zsh`, respecting
-`XDG_CONFIG_HOME`. Zsh reads it before initializing the prompt. It takes
+`XDG_CONFIG_HOME`. Bash and Zsh read it before initializing the prompt. It takes
 precedence over `LINUX_SETUP_POSH_THEME` in your local zshenv. For manual control,
 remove the manager's `theme.zsh` file and put the export in your local zshenv.
 Existing shell-level exports continue to work when no manager selection exists.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Browse, install, and remove local skills for Codex and Claude Code."""
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
 import shutil
@@ -23,7 +24,7 @@ def destination(agent, scope, project=None):
     if agent not in AGENTS or scope not in ("global", "project"):
         raise ValueError("Unsupported agent or scope")
     if scope == "global":
-        return Path.home() / (".agents/skills" if agent == "codex" else ".claude/skills")
+        return Path.home() / ".agents/skills" if agent == "codex" else Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude")) / "skills"
     if not project or not Path(project).expanduser().is_dir():
         raise ValueError("Project path must be an existing directory")
     return Path(project).expanduser().resolve() / (".agents/skills" if agent == "codex" else ".claude/skills")

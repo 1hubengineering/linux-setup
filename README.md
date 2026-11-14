@@ -39,13 +39,15 @@ Then run `doctor`. The installer prints font instructions for your
 environment and the command to make Zsh your default shell. Keep the checkout:
 your live configuration links to it.
 
-Setup installs missing base tools without sudo on Ubuntu/Debian and backs up
-existing configuration. It offers GitHub account setup and AI skills during an
-interactive first run. Move through menus with **arrow keys**, toggle multiple
+Setup opens a read-only selection wizard before installing programs or changing
+configuration. Choose programs, agents, scope, integrations, and Git/GitHub actions,
+then review and apply the plan. Selected missing base tools install without sudo
+on Ubuntu/Debian; existing configuration is backed up. Move through menus with **arrow keys**, toggle multiple
 choices with **Space**, and press **Enter** to confirm. **Esc** goes back.
 
 Rerun `./install.sh` after a failed or interrupted installation. Completed tools
-are kept; available pinned updates require confirmation. See
+are kept. The wizard skips installed versions; `--no-wizard` retains the earlier
+flow with confirmation for available pinned updates. See
 [rerun and recovery](docs/recovery.md).
 
 [Installation details and supported systems](docs/installation.md) ·
@@ -70,3 +72,10 @@ list and [development](docs/development.md) to contribute.
 Report problems through [GitHub Issues](https://github.com/1hubengineering/linux-setup/issues)
 with your distribution, architecture, and redacted error output.
 [Third-party notices](NOTICE.md).
+
+See [developer tools and shell switching](docs/developer-tools.md) for Python/uv,
+Codex/Claude authentication, MCP servers, project workflows, and Bash support.
+
+Interactive installation now starts with a [selection wizard](docs/setup-wizard.md):
+choose programs, agents, scope, integrations, and Git/GitHub actions before changes.
+Use `--no-wizard` for the legacy batch flow.
