@@ -2,6 +2,7 @@
 import io
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -16,6 +17,13 @@ import console
 import setup
 
 COMMANDS = [ROOT / 'install.sh', ROOT / 'uninstall.sh'] + [p for p in sorted((ROOT / 'bin').iterdir()) if p.is_file()]
+
+
+def help_tokens(text):
+    # Older argparse versions use a different heading and repeat metavars for aliases.
+    text = text.replace('\noptional arguments:\n', '\noptions:\n')
+    text = re.sub(r'(?m)^([ \t]+-\w) ([A-Z][A-Z0-9_]*), (--[\w-]+) \2\b', r'\1, \3 \2', text)
+    return text.split()
 
 
 class CliTests(unittest.TestCase):
@@ -41,7 +49,8 @@ class CliTests(unittest.TestCase):
             with self.subTest(command=command.name):
                 result = subprocess.run([str(command), '--help'], env={**os.environ, 'LINUX_SETUP_BUILD_CLI': '1'}, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertEqual(result.stdout, (ROOT / 'config/cli-help' / (command.name + '.txt')).read_text())
+                snapshot = (ROOT / 'config/cli-help' / (command.name + '.txt')).read_text()
+                self.assertEqual(help_tokens(result.stdout), help_tokens(snapshot))
 
     def test_completion_scripts_use_real_subcommands_and_argument_choices(self):
         for shell in ('bash', 'zsh', 'fish'):

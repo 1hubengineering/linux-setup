@@ -77,8 +77,9 @@ python3 -m unittest discover -s tests -v
 ```
 
 The generator runs only metadata commands and disables the cached-help fast path
-for regeneration. Tests check public command help/version behavior in a fresh home,
-compare help snapshots with the real parsers, and exercise Bash/Zsh completion.
+for regeneration. Use Python 3.14 to reproduce the help snapshots' formatting.
+Tests check public command help/version behavior in a fresh home, compare help
+content across supported Python versions, and exercise Bash/Zsh completion.
 Fish syntax is checked when Fish is available. The repository remains Linux/WSL
 software; Windows-native and macOS application execution are not supported or tested.
 
