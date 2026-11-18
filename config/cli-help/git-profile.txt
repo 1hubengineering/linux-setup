@@ -1,0 +1,18 @@
+usage: git-profile [-h] [--version] [--completion {bash,zsh,fish}]
+                   {menu,add,list,use,remove} ...
+
+Interactive Git identity and GitHub account helpers; never store credentials.
+
+positional arguments:
+  {menu,add,list,use,remove}
+    menu                Open the keyboard-driven account manager (default)
+    add                 Add an account and its Git author details
+    list                Show saved accounts
+    use                 Select an account and set this repository's author
+    remove              Remove a saved author profile after confirmation
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files

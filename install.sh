@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 setup_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$#" == 1 && ( "$1" == --help || "$1" == -h ) && -z "${LINUX_SETUP_BUILD_CLI:-}" && -r "$setup_dir/config/cli-help/install.sh.txt" ]]; then
+  while IFS= read -r help_line; do printf '%s\n' "$help_line"; done < "$setup_dir/config/cli-help/install.sh.txt"
+  exit 0
+fi
+
+if [[ "$#" == 1 && "$1" == --version ]]; then
+  read -r setup_version < "$setup_dir/VERSION"
+  printf "%s %s\n" "install.sh" "$setup_version"
+  exit 0
+fi
+
 
 bootstrap=0
 assume_yes=0

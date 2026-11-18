@@ -61,7 +61,7 @@ flow with confirmation for available pinned updates. See
 | Change my prompt theme | `theme` | [Themes](docs/themes.md) |
 | Add, switch, or remove a GitHub profile | `github` | [GitHub accounts](docs/github-accounts.md) |
 | Install or remove AI skills | `skills` | [AI skills](docs/skills.md) |
-| Find a shortcut | **Alt+X** or `devcommands` | [Commands](docs/commands.md) |
+| Find a shortcut | **Alt+X** to search, `mycommands` to list | [Commands](docs/commands.md) |
 | Check my setup | `doctor` | [Troubleshooting](docs/troubleshooting.md) |
 | See font and shell instructions again | `guide` | [Fonts and shell](docs/fonts-and-shell.md) |
 
@@ -79,3 +79,6 @@ Codex/Claude authentication, MCP servers, project workflows, and Bash support.
 Interactive installation now starts with a [selection wizard](docs/setup-wizard.md):
 choose programs, agents, scope, integrations, and Git/GitHub actions before changes.
 Use `--no-wizard` for the legacy batch flow.
+
+See [CLI conventions and completion](docs/cli-development.md) for help/version
+commands, Bash/Zsh/Fish completion, and CI behavior.

@@ -106,7 +106,7 @@ def install(update=False, selected=None):
 
 
 def authenticate(agent='all', device=False, method=None):
-    if not sys.stdin.isatty():
+    if os.environ.get("CI") or not sys.stdin.isatty():
         raise RuntimeError('Authentication requires a terminal. Run dev-tools auth interactively.')
     missing = []
     for name, status_command, login in [
@@ -161,7 +161,8 @@ def mcp(agent):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='action', required=True)
     installer = sub.add_parser('install', help='Keep existing tools; install missing stable releases')
     installer.add_argument('--update', action='store_true', help='Explicitly update existing managers and CLIs')
@@ -194,6 +195,9 @@ def main(argv=None):
 if __name__ == '__main__':
     try:
         sys.exit(main())
+    except KeyboardInterrupt:
+        print('\nCancelled.', file=sys.stderr)
+        sys.exit(130)
     except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
         print(f'dev-tools: {error}', file=sys.stderr)
         sys.exit(1)

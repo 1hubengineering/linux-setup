@@ -35,7 +35,7 @@ class WizardTests(unittest.TestCase):
             item = patch.object(self.setup, key, value)
             item.start()
             self.addCleanup(item.stop)
-        env = patch.dict(os.environ, {'HOME': str(self.home), 'XDG_CONFIG_HOME': str(self.home / 'config')})
+        env = patch.dict(os.environ, {'HOME': str(self.home), 'XDG_CONFIG_HOME': str(self.home / 'config'), 'CI': ''})
         env.start()
         self.addCleanup(env.stop)
         self.args = SimpleNamespace(config_only=False, dev_tools=False, auth=False, skip_mcp=False)

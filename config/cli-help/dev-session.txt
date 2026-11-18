@@ -1,0 +1,12 @@
+usage: dev-session [-h] [--version] [--completion {bash,zsh,fish}] [project_directory]
+
+Create or enter a tmux workspace for a project directory.
+
+positional arguments:
+  project_directory     Project folder (default: current directory)
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files

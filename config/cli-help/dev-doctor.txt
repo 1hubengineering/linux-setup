@@ -1,0 +1,10 @@
+usage: dev-doctor [-h] [--version] [--completion {bash,zsh,fish}] [--check]
+
+Check linux-setup's tools and shell integration.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --check               Check installed tools (the default action)

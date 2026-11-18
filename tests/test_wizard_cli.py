@@ -19,7 +19,7 @@ class WizardCliTests(unittest.TestCase):
     def test_default_interactive_cancel_precedes_any_state_or_config_writes(self):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
-            env = {**os.environ, 'HOME': temporary, 'TERM': 'xterm-256color', 'PYTHONDONTWRITEBYTECODE': '1'}
+            env = {**os.environ, 'HOME': temporary, 'TERM': 'xterm-256color', 'PYTHONDONTWRITEBYTECODE': '1', 'CI': ''}
             for variable, suffix in [('XDG_CONFIG_HOME', 'config'), ('XDG_DATA_HOME', 'data'), ('XDG_STATE_HOME', 'state'), ('XDG_CACHE_HOME', 'cache')]:
                 env[variable] = str(home / suffix)
             child, master = pty.fork()

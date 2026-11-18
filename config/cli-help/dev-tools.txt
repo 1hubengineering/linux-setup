@@ -1,0 +1,18 @@
+usage: dev-tools [-h] [--version] [--completion {bash,zsh,fish}]
+                 {install,auth,mcp,workflow} ...
+
+Install optional developer tools, authenticate agents, and configure integrations.
+
+positional arguments:
+  {install,auth,mcp,workflow}
+    install             Keep existing tools; install missing stable releases
+    auth                Keep active logins; sign in when needed
+    mcp                 Add missing Better Auth and shadcn servers without replacing
+                        existing entries
+    workflow            Initialize agent workflows in the current project
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files

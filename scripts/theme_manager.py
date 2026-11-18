@@ -70,7 +70,7 @@ def save_theme(value):
             os.unlink(name)
     label = Path(value).name.removesuffix(".omp.json") if not value.startswith("https://") else value
     section("Prompt theme")
-    status("ok", f"Theme changed to {label}.")
+    status("ok", f"Theme changed to {label}.", stream=sys.stdout)
     print("Run reload to see it now, or close and reopen your terminal.", flush=True)
 
 
@@ -135,7 +135,8 @@ def menu():
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="action")
     sub.add_parser("list", help="List included themes and the online theme list")
     sub.add_parser("current", help="Show the saved theme selection")
@@ -161,8 +162,8 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except (EOFError, KeyboardInterrupt):
-        print("\nCancelled.")
-        sys.exit(0)
+        print("\nCancelled.", file=sys.stderr)
+        sys.exit(130)
     except (OSError, RuntimeError, ValueError) as error:
         print(f"theme-manager: {error}", file=sys.stderr)
         sys.exit(1)

@@ -1,0 +1,18 @@
+usage: dev-ports [-h] [--version] [--completion {bash,zsh,fish}] [--json] [--yes]
+                 [--force]
+                 [{list,kill}] [ports ...]
+
+Inspect TCP listeners and stop explicitly selected processes.
+
+positional arguments:
+  {list,kill}
+  ports
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --json                List listeners as JSON
+  --yes, -y             Confirm signalling the displayed processes
+  --force               Use SIGKILL instead of SIGTERM

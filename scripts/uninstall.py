@@ -408,7 +408,8 @@ def display_plan(deploy, remove, caches):
 
 
 def parser():
-    result = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    result = ArgumentParser(description=__doc__)
     mode = result.add_mutually_exclusive_group()
     mode.add_argument("--keep-tools", action="store_true", help="Restore setup configuration and keep all programs")
     mode.add_argument("--remove", action="append", default=[], metavar="NAME", help="Remove an owned program; repeat as needed")
@@ -501,7 +502,7 @@ def _main(argv=None):
 
 def main(argv=None):
     arguments = sys.argv[1:] if argv is None else argv
-    if any(flag in arguments for flag in ("--help", "-h", "--list", "--dry-run")):
+    if any(flag in arguments for flag in ("--help", "-h", "--version", "--completion", "--list", "--dry-run")):
         return _main(arguments)
     try:
         with setup.operation_lock():

@@ -191,7 +191,10 @@ def install_menu(catalog, agent, root):
     return failures
 
 
-def main():
+def main(argv=None):
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
+    parser.parse_args([] if argv is None else argv)
     if not sys.stdin.isatty():
         print("Open a terminal and run skills to use this menu.", file=sys.stderr)
         return 1
@@ -232,7 +235,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(main(sys.argv[1:]))
     except (EOFError, KeyboardInterrupt):
         print("\nCancelled.")
         sys.exit(130)

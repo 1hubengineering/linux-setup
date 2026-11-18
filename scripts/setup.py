@@ -24,6 +24,7 @@ from pathlib import Path, PurePosixPath
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ownership import atomic_json, fingerprint, infer_programs, migrate
 from console import section, status, table, progress, busy
+from cli_support import can_prompt
 
 ROOT = Path(__file__).resolve().parents[1]
 HOME = Path.home()
@@ -900,7 +901,8 @@ def github_setup(lock, key, deploy):
 
 
 def _main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--config-only", action="store_true", help="Link configuration without downloading tools")
     group.add_argument("--check", action="store_true", help="Check tools and shell integrations")
@@ -927,7 +929,7 @@ def _main():
         os.environ["LINUX_SETUP_NO_ANIMATION"] = "1"
     if args.config_only and args.dev_tools:
         parser.error("--config-only cannot be combined with --dev-tools")
-    if args.auth and not args.dry_run and not sys.stdin.isatty():
+    if args.auth and not args.dry_run and (os.environ.get("CI") or not sys.stdin.isatty()):
         raise RuntimeError("--auth requires an interactive terminal; use dev-tools auth later.")
     os.environ["PATH"] = str(BIN) + os.pathsep + os.environ.get("PATH", "")
     if args.check:
@@ -954,7 +956,7 @@ def _main():
     if args.install_gh:
         return 1 if install_gh(lock, key, Deployment()) else 0
     if args.github_setup:
-        if not sys.stdin.isatty():
+        if not can_prompt():
             raise RuntimeError("GitHub setup requires an interactive terminal.")
         github_setup(lock, key, Deployment())
         return 0
@@ -984,7 +986,7 @@ def _main():
     migrate_legacy()
     deploy = Deployment()
     BIN.mkdir(parents=True, exist_ok=True)
-    total = (1 if args.config_only else 3) + int(args.dev_tools) + int(args.auth) + int(not args.skip_mcp) + int(not args.config_only and sys.stdin.isatty())
+    total = (1 if args.config_only else 3) + int(args.dev_tools) + int(args.auth) + int(not args.skip_mcp) + int(not args.config_only and can_prompt())
     installation = InstallationRun(deploy, "configuration" if args.config_only else "full", total=total)
     if not args.config_only:
         installation.step("base tools", lambda: install_base(deploy))
@@ -999,7 +1001,7 @@ def _main():
     if args.auth:
         from dev_tools import authenticate
         installation.step("agent authentication", authenticate)
-    if not args.config_only and sys.stdin.isatty():
+    if not args.config_only and can_prompt():
         installation.step("GitHub and skills", lambda: interactive_setup(lock, key, deploy, developer_attempted=args.dev_tools))
     if not args.skip_mcp:
         installation.step("Codex integration", lambda: install_mcp(deploy))
@@ -1110,20 +1112,20 @@ def interactive_setup(lock, key, deploy, developer_attempted=False):
 
 
 def wants_wizard(arguments):
-    if "--help" in arguments or "-h" in arguments:
+    if any(flag in arguments for flag in ("--help", "-h", "--version", "--completion")):
         return False
     if "--wizard" in arguments:
         return True
     explicit = ("--no-wizard", "--help", "-h", "--preflight", "--dry-run", "--check", "--restore", "--mcp-only", "--install-gh", "--github-setup")
-    return not any(flag in arguments for flag in explicit) and sys.stdin.isatty() and sys.stdout.isatty()
+    return not any(flag in arguments for flag in explicit) and can_prompt()
 
 
 def main():
     if wants_wizard(sys.argv[1:]):
-        if not sys.stdin.isatty() or not sys.stdout.isatty():
+        if not can_prompt():
             raise RuntimeError("The setup wizard requires an interactive terminal; use --no-wizard for batch setup.")
         return _main()
-    if any(flag in sys.argv[1:] for flag in ("--help", "-h", "--preflight", "--dry-run", "--check")):
+    if any(flag in sys.argv[1:] for flag in ("--help", "-h", "--version", "--completion", "--preflight", "--dry-run", "--check")):
         return _main()
     with operation_lock():
         return _main()
@@ -1134,7 +1136,7 @@ if __name__ == "__main__":
         sys.exit(main())
     except (KeyboardInterrupt, EOFError):
         print("\nSetup stopped. Rerun ./install.sh to continue.", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(130)
     except (RuntimeError, OSError, subprocess.CalledProcessError) as error:
         print(f"linux-setup: {error}", file=sys.stderr)
         sys.exit(1)

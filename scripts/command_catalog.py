@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Describe live Zsh commands without evaluating their definitions."""
-import argparse
+"""Describe live Bash and Zsh commands without evaluating their definitions."""
 import os
 from pathlib import Path
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -16,7 +16,7 @@ FUNCTION = re.compile(r"^\s*(?:function\s+([^\s(){]+)(?:\s*\(\s*\))?|([^\s(){]+)
 
 
 def descriptions(paths):
-    """Read adjacent comments, not shell values; Zsh supplies the actual values."""
+    """Read adjacent comments. The calling shell supplies the live definitions."""
     result = {}
     for path in paths:
         if not path.is_file():
@@ -39,19 +39,19 @@ def descriptions(paths):
     return result
 
 
-def source_paths():
+def source_paths(shell="zsh"):
     config = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
-    return [
-        ROOT / "config/zsh/aliases.zsh",
-        ROOT / "config/shell/developer-aliases.sh",
-        ROOT / "config/zsh/functions.zsh",
-        ROOT / "config/zsh/command-picker.zsh",
-        config / "linux-setup-local/zshenv",
-        config / "linux-setup-local/zshrc",
-    ]
+    managed = ROOT / "config" / shell
+    local = config / "linux-setup-local"
+    extension = "sh" if shell == "bash" else "zsh"
+    paths = [managed / ("aliases." + extension), ROOT / "config/shell/developer-aliases.sh"]
+    if shell == "zsh":
+        paths.append(managed / "functions.zsh")
+    return paths + [managed / ("command-picker." + extension), managed / (shell + "rc"),
+                    local / (shell + "env"), local / (shell + "rc")]
 
 
-def catalog(snapshot, metadata):
+def catalog(snapshot, metadata, shell="zsh"):
     fields = snapshot.split("\0")
     if fields[-1] == "":
         fields.pop()
@@ -68,7 +68,8 @@ def catalog(snapshot, metadata):
             "name": name,
             "kind": kind,
             "description": metadata[(kind, name)],
-            "command": body if kind == "alias" else f"{name} () {{\n{body}\n}}",
+            # Bash's declare -f already includes the name and outer braces.
+            "command": body if kind == "alias" or shell == "bash" else f"{name} () {{\n{body}\n}}",
             "insert": body if kind == "alias" else shlex.quote(name) + " ",
         }
     return sorted(entries.values(), key=lambda entry: entry["name"].casefold())
@@ -83,6 +84,21 @@ def row(entry):
     return "\t".join(single_line(entry[key]) for key in ("name", "kind", "description", "command"))
 
 
+def list_commands(entries, query):
+    matches = [entry for entry in entries if query.casefold() in row(entry).casefold()]
+    if not sys.stdout.isatty():
+        for entry in matches:
+            print(row(entry))
+        return
+    from console import table
+    if matches:
+        table(("Shortcut", "Type", "Description"),
+              [(entry["name"], entry["kind"], entry["description"]) for entry in matches])
+        print(f"{len(matches)} commands. Press Alt+X to preview a definition or insert a command.")
+    else:
+        print("No matching commands.")
+
+
 def pick(entries, query=""):
     if not entries:
         return None
@@ -91,17 +107,27 @@ def pick(entries, query=""):
     with tempfile.TemporaryDirectory(prefix="linux-setup-commands-") as temporary:
         directory = Path(temporary)
         for index, entry in enumerate(entries):
+            hint = "Enter inserts the expansion" if entry["kind"] == "alias" else f"Enter inserts {entry['name']} for editing"
+            definition = "".join(c if c.isprintable() or c in "\n\t" else " " for c in entry["command"])
             (directory / str(index)).write_text(
-                f"{entry['name']} ({entry['kind']})\n{entry['description']}\n\n"
-                f"Puts in your command line: {entry['insert']}\n\nFull command:\n{entry['command']}\n"
+                f"# {single_line(entry['name'])} ({entry['kind']}) | {single_line(hint)}\n"
+                f"# {single_line(entry['description'])}\n\n# Full command:\n{definition}\n"
             )
+        from console import plain
+        monochrome = "NO_COLOR" in os.environ or plain() or os.environ.get("TERM") == "dumb"
+        bat = shutil.which("bat") or shutil.which("batcat")
+        viewer = [bat, "--paging=never", "--language=bash", "--style=plain",
+                  "--color=never" if monochrome else "--color=always"] if bat else ["cat"]
+        preview = shlex.join(viewer + ["--"]) + " " + shlex.quote(str(directory)) + "/{1}"
         result = subprocess.run(
             [
                 "fzf", "--height=80%", "--layout=reverse", "--border", "--no-multi",
                 "--delimiter=\t", "--with-nth=2..", "--prompt=Commands> ",
-                "--header=Shortcut | type | What it does | Command — Enter: insert; Esc: back; Ctrl-/: details",
-                "--bind=ctrl-/:toggle-preview", "--preview-window=down,50%,wrap",
-                "--preview", "cat -- " + shlex.quote(str(directory)) + "/{1}",
+                "--border-label= My commands ", "--highlight-line", "--no-hscroll",
+                "--header=Enter insert · Esc cancel · Ctrl-/ preview · Shift-↑/↓ scroll preview",
+                "--bind=ctrl-/:toggle-preview,shift-up:preview-up,shift-down:preview-down",
+                "--preview-window=right,50%,wrap,<50(down,50%,wrap)", "--preview", preview,
+                *(["--no-color"] if monochrome else []),
                 "--query", query,
             ],
             input="".join(f"{index}\t{row(entry)}\n" for index, entry in enumerate(entries)),
@@ -122,18 +148,18 @@ def pick(entries, query=""):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--shell", choices=("bash", "zsh"), default="zsh")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--list", action="store_true")
     mode.add_argument("--pick", action="store_true")
     parser.add_argument("query", nargs="?", default="")
     args = parser.parse_args()
     try:
-        entries = catalog(sys.stdin.read(), descriptions(source_paths()))
+        entries = catalog(sys.stdin.read(), descriptions(source_paths(args.shell)), args.shell)
         if args.list:
-            for entry in entries:
-                if args.query.casefold() in row(entry).casefold():
-                    print(row(entry))
+            list_commands(entries, args.query)
             return 0
         selected = pick(entries, args.query)
         if selected is None:

@@ -1,0 +1,28 @@
+usage: install.sh [-h] [--version] [--completion {bash,zsh,fish}] [--config-only |
+                  --check | --mcp-only | --restore | --dry-run | --preflight |
+                  --install-gh | --github-setup] [--skip-mcp] [--dev-tools] [--auth]
+                  [--plain] [--no-animation] [--wizard | --no-wizard]
+
+Install pinned terminal tools and link this checkout's configuration.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --config-only         Link configuration without downloading tools
+  --check               Check tools and shell integrations
+  --mcp-only            Register the Oh My Posh MCP server in Codex
+  --restore             Restore files replaced by this installer
+  --dry-run             Print the install plan without changing anything
+  --preflight           Check prerequisites and network without installing
+  --install-gh          Install GitHub CLI without changing Git identity
+  --github-setup        Set up Git identity and GitHub accounts interactively
+  --skip-mcp            Do not modify Codex MCP configuration
+  --dev-tools           Install missing developer CLIs and stable Python with uv
+  --auth                Authenticate installed Codex and Claude CLIs interactively
+  --plain               Use plain text without colors, borders, or animation
+  --no-animation        Keep formatted output but disable download spinners
+  --wizard              Plan selected setup actions with keyboard menus before making
+                        changes
+  --no-wizard           Use the explicit legacy/batch installation flow

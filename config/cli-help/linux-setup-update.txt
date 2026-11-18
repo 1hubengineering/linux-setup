@@ -1,0 +1,13 @@
+usage: linux-setup-update [-h] [--version] [--completion {bash,zsh,fish}] [--pull-only]
+
+Update this linux-setup checkout and rerun installation from any directory.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --pull-only           Pull setup changes and skip the installer
+
+Your current directory is preserved. Git must be able to fast-forward the checkout's
+tracking branch.

@@ -1,0 +1,17 @@
+usage: dev-browser [-h] [--version] [--completion {bash,zsh,fish}] [--project PROJECT]
+                   {doctor,install,run} ...
+
+Use project-pinned Playwright with optional user-local Chromium libraries.
+
+positional arguments:
+  {doctor,install,run}
+    doctor              check the pinned browser with a local headless launch
+    install             install project-pinned Chromium
+    run                 run a command with cached browser libraries
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --project PROJECT     project directory (default: current directory)

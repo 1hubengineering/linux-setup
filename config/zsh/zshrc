@@ -18,6 +18,7 @@ autoload -Uz compinit
 compinit -i -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+[[ ! -r "$LINUX_SETUP_DIR/config/completions/linux-setup.zsh" ]] || source "$LINUX_SETUP_DIR/config/completions/linux-setup.zsh"
 if (( $+commands[uv] )); then
   eval "$(uv generate-shell-completion zsh)"
 fi
@@ -38,9 +39,7 @@ if (( $+commands[fd] )); then
   export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
 fi
 export FZF_DEFAULT_OPTS='--height=60% --layout=reverse --border'
-if (( $+commands[bat] )); then
-  export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers --line-range=:200 -- {}"'
-fi
+source "$LINUX_SETUP_DIR/config/shell/file-preview.sh"
 if (( $+commands[fzf] )) && [[ -t 0 ]]; then
   source <(fzf --zsh)
 fi

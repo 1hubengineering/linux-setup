@@ -123,7 +123,8 @@ def stop(ports, force=False, yes=False):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument("action", nargs="?", choices=["list", "kill"], default="list")
     parser.add_argument("ports", nargs="*", type=port_number)
     parser.add_argument("--json", action="store_true", help="List listeners as JSON")
@@ -149,5 +150,5 @@ def main(argv=None):
         print(f"dev-ports: {error}", file=sys.stderr)
         return 1
     except (KeyboardInterrupt, EOFError):
-        print("\nCancelled.")
+        print("\nCancelled.", file=sys.stderr)
         return 130

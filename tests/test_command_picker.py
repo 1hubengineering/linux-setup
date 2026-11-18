@@ -62,6 +62,7 @@ class CommandPickerTests(unittest.TestCase):
             "LINUX_SETUP_DIR": str(ROOT),
             "PATH": os.pathsep.join([str(self.bin), str(Path(sys.executable).parent), os.defpath]),
             "TERM": "xterm-256color",
+            "NO_COLOR": "1",
             "PICKER_TEST_MARKER": str(self.home / "executed"),
             "PICKER_TEST_REPORT": str(self.home / "fzf.json"),
             "PICKER_TEST_BUFFER": str(self.home / "buffer"),
@@ -154,6 +155,35 @@ print(row)
         self.assertEqual(result.stdout, body)
         report = json.loads((self.home / "fzf.json").read_text())
         self.assertIn(body, report["preview"])
+
+    @unittest.skipUnless(shutil.which("bat") or shutil.which("batcat"), "requires bat")
+    def test_preview_highlights_shell_syntax_without_coloring_inserted_text(self):
+        (self.bin / "bat").symlink_to(shutil.which("bat") or shutil.which("batcat"))
+        del self.env["NO_COLOR"]
+        result = self.shell("_dev_commands_select", LINUX_SETUP_PLAIN="0")
+        preview = json.loads((self.home / "fzf.json").read_text())["preview"]
+        self.assertIn("\x1b[", preview)
+        self.assertEqual(result.stdout, "git status --short --branch")
+        self.shell("_dev_commands_select", NO_COLOR="1")
+        self.assertNotIn("\x1b[", json.loads((self.home / "fzf.json").read_text())["preview"])
+
+    def test_bash_widget_and_list_use_live_bash_definitions(self):
+        script = '''source "$LINUX_SETUP_DIR/config/bash/aliases.sh"
+source "$LINUX_SETUP_DIR/config/shell/developer-aliases.sh"
+source "$LINUX_SETUP_DIR/config/bash/command-picker.sh"
+mycommands setup-pull
+alias gs='echo café'
+READLINE_LINE=draft
+READLINE_POINT=2
+_dev_commands_widget
+printf '%s|%d' "$READLINE_LINE" "$READLINE_POINT"
+'''
+        for cancel, expected in [("", "echo café|10"), ("1", "draft|2")]:
+            result = subprocess.run(["bash", "-O", "expand_aliases", "-c", script],
+                                    env={**self.env, "PICKER_TEST_CANCEL": cancel},
+                                    capture_output=True, text=True, check=True)
+            self.assertIn("setup-pull\talias\t", result.stdout)
+            self.assertTrue(result.stdout.endswith(expected), result.stdout)
 
     def test_function_selection_inserts_a_call_and_previews_full_body(self):
         result = self.shell("_dev_commands_select", PICKER_TEST_SELECT="sshtunnel")

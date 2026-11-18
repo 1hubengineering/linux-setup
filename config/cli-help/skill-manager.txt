@@ -1,0 +1,9 @@
+usage: skill-manager [-h] [--version] [--completion {bash,zsh,fish}]
+
+Browse, install, and remove local skills for Codex and Claude Code.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files

@@ -25,7 +25,7 @@ class UpdateTests(unittest.TestCase):
         self.other.mkdir()
         self.git('init', '--bare', '--initial-branch=main', str(self.remote))
         self.git('clone', str(self.remote), str(self.seed))
-        for path in ('bin/linux-setup-update', 'scripts/update_setup.py'):
+        for path in ('bin/linux-setup-update', 'scripts/update_setup.py', 'scripts/cli_support.py', 'VERSION', 'config/shell/developer-aliases.sh'):
             target = self.seed / path
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / path, target)
@@ -72,6 +72,19 @@ class UpdateTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines()[-1], str(self.other))
         self.assertEqual((self.checkout / 'installed.txt').read_text(), 'old')
+
+    def test_setup_pull_alias_updates_checkout_without_running_installer(self):
+        self.installer('printf new > installed.txt\n')
+        self.publish()
+        result = subprocess.run(
+            ['bash', '-O', 'expand_aliases', '-c',
+             'source "$LINUX_SETUP_DIR/config/shell/developer-aliases.sh"\nsetup-pull'],
+            cwd=self.other, env=dict(self.env, LINUX_SETUP_DIR=str(self.checkout)),
+            capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.git('rev-parse', 'HEAD', cwd=self.checkout).stdout,
+                         self.git('rev-parse', 'HEAD', cwd=self.seed).stdout)
+        self.assertFalse((self.checkout / 'installed.txt').exists())
 
     def test_failed_pull_does_not_run_installation(self):
         self.remote.rename(self.root / 'offline.git')

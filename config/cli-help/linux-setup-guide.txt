@@ -1,0 +1,9 @@
+usage: linux-setup-guide [-h] [--version] [--completion {bash,zsh,fish}]
+
+Print environment-specific font and login-shell instructions; make no changes.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files

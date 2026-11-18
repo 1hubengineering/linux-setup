@@ -143,25 +143,26 @@ database server.
 
 ## Discover and use custom commands
 
-Press **Alt+X** (both lowercase and uppercase x work) or run `devcommands` to open
+Press **Alt+X** in Bash or Zsh (both lowercase and uppercase x work) to open
 the fzf picker. Type part of a shortcut, its description, or its full command.
-The preview includes the full definition, even for multiline functions. Ctrl-/
+The preview uses bat or batcat to highlight shell syntax and falls back to plain
+text if neither is installed. Shift+Up/Down scrolls multiline definitions. Ctrl-/
 toggles the preview. Enter inserts the selection into the editable prompt and
 does not execute it. An alias inserts its expansion; a function inserts its name
 and a trailing space so you can supply arguments. Selecting replaces the current
 line; Escape or Ctrl-C preserves the line and cursor. The binding works in Emacs
 and vi keymaps. If your terminal uses Alt+X for a menu, use Escape then x or the
-`devcommands` command.
+`devcommands` command in Zsh.
 
 ```sh
-devcommands docker              # Open with an initial search
-devhelp                         # Print the current reference without fzf
+devcommands docker              # Open with an initial search in Zsh
+mycommands                      # Print the current reference without fzf
 devhelp pnpm                    # Filter the printed reference by text
 ```
 
 The picker uses live shell definitions and description comments from
-`config/zsh/aliases.zsh`, `functions.zsh`, `command-picker.zsh`, and private
-`linux-setup-local/zshrc` / `zshenv`. It excludes internal helper functions and
+the active shell's managed configuration, shared developer aliases, and private
+`linux-setup-local` shell files. It excludes internal helper functions and
 shortcuts that were not loaded, including conditional aliases for absent tools.
 It does not call any of the commands to build the list. Regular aliases and named
 functions declared in these files are supported; dynamically generated commands
