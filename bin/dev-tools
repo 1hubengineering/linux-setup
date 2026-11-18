@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+from pathlib import Path as _CliPath
+import sys as _cli_sys
+_cli_sys.path.insert(0, str(_CliPath(__file__).resolve().parents[1] / "scripts"))
+from cli_support import prepare as _prepare_cli
+_prepare_cli(_CliPath(__file__).name)
 from pathlib import Path
 import runpy
 runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts/dev_tools.py"), run_name="__main__")

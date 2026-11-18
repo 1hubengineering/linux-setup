@@ -1,0 +1,22 @@
+usage: uninstall.sh [-h] [--version] [--completion {bash,zsh,fish}] [--keep-tools |
+                    --remove NAME | --all-tools | --resume] [--cache NAME]
+                    [--replacement-shell PATH] [--dry-run] [--list] [--yes]
+
+Restore terminal configuration and optionally remove setup-owned programs/caches.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --keep-tools          Restore setup configuration and keep all programs
+  --remove NAME         Remove an owned program; repeat as needed
+  --all-tools           Remove all owned programs; login-shell protection still applies
+  --resume              Resume the previously recorded uninstall plan
+  --cache NAME          Delete a displayed cache ID; repeat as needed
+  --replacement-shell PATH
+                        Registered shell to switch to before removing the current login
+                        shell
+  --dry-run             Show a plan without changing files or the login shell
+  --list                List program ownership and available cache IDs without changes
+  --yes                 Confirm the explicitly selected plan without prompting

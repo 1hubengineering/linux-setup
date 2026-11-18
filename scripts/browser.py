@@ -277,7 +277,8 @@ def doctor(info, environment):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", type=Path, default=Path.cwd(), help="project directory (default: current directory)")
     commands = parser.add_subparsers(dest="action", required=True)
     commands.add_parser("doctor", help="check the pinned browser with a local headless launch")

@@ -5,6 +5,8 @@ import shutil
 import subprocess
 import sys
 
+from cli_support import can_prompt
+
 
 def visible(value):
     return "".join(char if char.isprintable() else " " for char in str(value))
@@ -28,7 +30,7 @@ def select(title, choices, *, multi=False, default=0, selected=(), allow_skip=Fa
     """Return choice values; None means cancel and [] means nothing checked."""
     if not choices:
         return [] if multi else None
-    if not sys.stdin.isatty() or not sys.stdout.isatty():
+    if not can_prompt():
         raise RuntimeError("This menu requires an interactive terminal. Use --help for command-line options.")
     default = min(max(default, 0), len(choices) - 1)
     selected_indices = {i for i, (_, value) in enumerate(choices) if value in selected}

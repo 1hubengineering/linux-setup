@@ -31,7 +31,7 @@ class KeyboardMenuTests(unittest.TestCase):
         )
         child, master = pty.fork()
         if child == 0:
-            os.execve(sys.executable, [sys.executable, "-c", code], {**os.environ, "TERM": "xterm-256color"})
+            os.execve(sys.executable, [sys.executable, "-c", code], {**os.environ, "TERM": "xterm-256color", "CI": ""})
         fcntl.ioctl(master, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 100, 0, 0))
         captured, sent = b"", False
         deadline = time.monotonic() + 8

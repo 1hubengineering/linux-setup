@@ -14,8 +14,10 @@ export EDITOR="${EDITOR:-vi}"
 export VISUAL="${VISUAL:-$EDITOR}"
 source "$LINUX_SETUP_DIR/config/bash/aliases.sh"
 source "$LINUX_SETUP_DIR/config/shell/developer-aliases.sh"
+[[ ! -r "$LINUX_SETUP_DIR/config/completions/linux-setup.bash" ]] || source "$LINUX_SETUP_DIR/config/completions/linux-setup.bash"
+# Restart Bash to reload your configuration.
 alias reload='exec bash'
-# exec replaces this shell, instead of creating a nested session.
+# Switch the current session between Bash and Zsh.
 alias shell='exec shell-toggle --current bash'
 command -v uv >/dev/null && eval "$(uv generate-shell-completion bash)"
 command -v uvx >/dev/null && eval "$(uvx --generate-shell-completion bash)"
@@ -26,9 +28,11 @@ if command -v fd >/dev/null; then
   export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
 fi
 export FZF_DEFAULT_OPTS='--height=60% --layout=reverse --border'
+source "$LINUX_SETUP_DIR/config/shell/file-preview.sh"
 if command -v fzf >/dev/null && [[ -t 0 ]]; then
   eval "$(fzf --bash)"
 fi
+source "$LINUX_SETUP_DIR/config/bash/command-picker.sh"
 # ble.sh is optional; Oh My Posh requires it for Bash transient prompts.
 if [[ -r "$XDG_DATA_HOME/blesh/ble.sh" ]]; then
   source "$XDG_DATA_HOME/blesh/ble.sh" --noattach

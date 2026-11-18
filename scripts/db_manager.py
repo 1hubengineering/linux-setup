@@ -419,7 +419,8 @@ def manage(pg, kind, database=None):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument("file", nargs="?", default=".env", help="Dotenv file (default: .env)")
     parser.add_argument("-f", "--env-file", help="Explicit dotenv file path")
     parser.add_argument("--var", action="append", help="Read only this variable; repeat for multiple variables. By default, discover URL names including DB_URL, DATABASE_URL, TEST_DB_URL, and TEST_DATABASE_URL")

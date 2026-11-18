@@ -73,4 +73,6 @@ def print_guide(zsh=None):
 
 
 if __name__ == "__main__":
+    from cli_support import ArgumentParser
+    ArgumentParser(description=__doc__).parse_args()
     print_guide()

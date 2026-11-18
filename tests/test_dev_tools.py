@@ -17,6 +17,11 @@ import shell_manager
 
 
 class DeveloperTests(unittest.TestCase):
+    def setUp(self):
+        environment = patch.dict(os.environ, {"CI": ""})
+        environment.start()
+        self.addCleanup(environment.stop)
+
     def test_existing_authentication_never_runs_login(self):
         with patch.object(sys.stdin, 'isatty', return_value=True), patch.object(dev_tools.shutil, 'which', side_effect=lambda n: '/bin/' + n), patch.object(dev_tools.subprocess, 'run', return_value=Mock(returncode=0)) as run:
             dev_tools.authenticate()

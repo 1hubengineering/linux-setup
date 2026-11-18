@@ -18,7 +18,8 @@ def select_shell(requested, current):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument('shell', nargs='?', choices=['bash', 'zsh'])
     parser.add_argument('--default', action='store_true', help='Change the login shell rather than this session')
     parser.add_argument('--current', choices=['bash', 'zsh'], help=argparse.SUPPRESS)
@@ -45,6 +46,9 @@ def main(argv=None):
 if __name__ == '__main__':
     try:
         sys.exit(main())
+    except KeyboardInterrupt:
+        print('\nCancelled.', file=sys.stderr)
+        sys.exit(130)
     except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
         print(f'shell-toggle: {error}', file=sys.stderr)
         sys.exit(1)

@@ -154,14 +154,16 @@ To move a checkout later, move/copy it to its persistent destination and rerun
 
 ## Update an existing installation
 
-From any directory in your configured Zsh terminal:
+From any directory in your configured Bash or Zsh terminal:
 
 ```sh
-update
+setup-pull  # Pull the latest setup files
+update      # Pull and run the installer
 ```
 
-The alias locates this checkout, runs `git pull --ff-only`, then runs the updated
-installer. Your working directory stays the same. Other shells can run
+Both aliases locate the setup checkout and run `git pull --ff-only` on its
+tracking branch. Only `update` also starts the installer. Your working directory
+stays the same. Scripts can use `linux-setup-update --pull-only` or
 `linux-setup-update`. Git conflicts, diverged history, or a failed pull stop the
 command before installation. Resolve the Git problem and retry. A failed
 installation can also be retried with `update`.

@@ -4,18 +4,23 @@ from pathlib import Path
 import subprocess
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__, epilog="Your current directory is preserved. Git must be able to fast-forward the checkout's tracking branch.")
-    parser.parse_args(argv)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__, epilog="Your current directory is preserved. Git must be able to fast-forward the checkout's tracking branch.")
+    parser.add_argument("--pull-only", action="store_true", help="Pull setup changes and skip the installer")
+    args = parser.parse_args(argv)
     if not (ROOT / ".git").exists():
         print(f"linux-setup-update: {ROOT} is not a Git checkout. Clone the repository to enable updates.", file=sys.stderr)
         return 1
     try:
         print(f"Updating linux-setup in {ROOT} ...", flush=True)
         subprocess.run(["git", "-C", str(ROOT), "pull", "--ff-only"], check=True)
+        if args.pull_only:
+            return 0
         print("Running the updated installer ...", flush=True)
         subprocess.run(["bash", str(ROOT / "install.sh")], cwd=ROOT, check=True)
     except subprocess.CalledProcessError as error:

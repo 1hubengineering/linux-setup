@@ -1,0 +1,17 @@
+usage: theme-manager [-h] [--version] [--completion {bash,zsh,fish}]
+                     {list,current,reset,use} ...
+
+Choose and save an Oh My Posh theme for this device.
+
+positional arguments:
+  {list,current,reset,use}
+    list                List included themes and the online theme list
+    current             Show the saved theme selection
+    reset               Restore the included quick-term theme
+    use                 Save a theme name, local JSON path, or HTTPS URL
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files

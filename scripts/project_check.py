@@ -305,7 +305,8 @@ def check_project(path=".", *, network=False):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument("path", nargs="?", default=".", metavar="PATH")
     parser.add_argument("--network", action="store_true", help="Explicitly probe npm registry HTTPS using configured proxy/CA trust")
     parser.add_argument("--json", action="store_true", help="Print structured check results")

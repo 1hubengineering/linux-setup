@@ -1,0 +1,22 @@
+usage: dev-db [-h] [--version] [--completion {bash,zsh,fish}] [-f ENV_FILE] [--var VAR]
+              [--maintenance-db MAINTENANCE_DB] [--connections]
+              [file]
+
+Keyboard-driven PostgreSQL database/schema management through psql.
+
+positional arguments:
+  file                  Dotenv file (default: .env)
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  -f, --env-file ENV_FILE
+                        Explicit dotenv file path
+  --var VAR             Read only this variable; repeat for multiple variables. By
+                        default, discover URL names including DB_URL, DATABASE_URL,
+                        TEST_DB_URL, and TEST_DATABASE_URL
+  --maintenance-db MAINTENANCE_DB
+                        Database for server-level operations
+  --connections         List redacted connection labels without connecting

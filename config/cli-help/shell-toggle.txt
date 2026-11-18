@@ -1,0 +1,14 @@
+usage: shell-toggle [-h] [--version] [--completion {bash,zsh,fish}] [--default]
+                    [{bash,zsh}]
+
+Select a session shell or change the login shell using chsh.
+
+positional arguments:
+  {bash,zsh}
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --completion {bash,zsh,fish}
+                        Print a shell completion script without changing files
+  --default             Change the login shell rather than this session

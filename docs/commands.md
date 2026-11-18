@@ -2,19 +2,23 @@
 
 [User guides](README.md) · [Terminal shortcuts](terminal.md)
 
-Press **Alt+X** or run `devcommands` to search custom commands by name or
-description. Enter places the selected command in your editable prompt. Review
-its arguments before running it. Esc cancels. If Alt+X is intercepted by your
-terminal, press Escape followed by x.
+Run `mycommands` in Bash or Zsh for a table of active shortcuts. Add a search
+term to match names, descriptions, or definitions. Piping the list produces four
+tab-separated fields per row (shortcut, type, description, and full command).
+
+Press **Alt+X** to search the same catalog interactively. The preview shows the
+full shell definition with bat syntax highlighting. Shift+Up/Down scrolls it,
+Ctrl+/ hides or shows it, and Enter puts the selection on your command line for
+editing. Esc cancels. If your terminal intercepts Alt+X, press Escape followed by x.
 
 ```sh
-devcommands docker                 # Open the picker with a search
-devhelp pnpm                       # Print matching command descriptions
+mycommands docker                  # List Docker shortcuts
+devcommands docker                 # Open the Zsh picker with an initial search
 ```
 
 ## Managers and setup
 
-The short names below work in the configured Zsh terminal. For scripts or other
+The short names below work in the configured Bash and Zsh terminals. For scripts or other
 shells, use these full command names:
 
 | Short name | Full command |
@@ -29,6 +33,7 @@ Run `reload` after updating to load new shortcuts.
 
 | Command | Use it for | Guide |
 | --- | --- | --- |
+| `setup-pull` / `linux-setup-update --pull-only` | Pull setup changes from the checkout's tracking branch | [Updates](installation.md#update-an-existing-installation) |
 | `update` / `linux-setup-update` | Pull the latest setup and rerun installation from any directory | [Updates](installation.md#update-an-existing-installation) |
 | `theme` | Browse, save, or reset a prompt theme | [Themes](themes.md) |
 | `github` | Add, switch, list, and remove GitHub profiles | [GitHub accounts](github-accounts.md) |

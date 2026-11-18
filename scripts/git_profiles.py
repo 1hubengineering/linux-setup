@@ -172,7 +172,8 @@ def menu():
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    from cli_support import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="action")
     sub.add_parser("menu", help="Open the keyboard-driven account manager (default)")
     sub.add_parser("add", help="Add an account and its Git author details")
@@ -200,8 +201,8 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except KeyboardInterrupt:
-        print("\nCancelled.")
-        sys.exit(0)
+        print("\nCancelled.", file=sys.stderr)
+        sys.exit(130)
     except (RuntimeError, OSError, subprocess.CalledProcessError, ValueError, EOFError) as error:
         print(f"git-profile: {error}", file=sys.stderr)
         sys.exit(1)

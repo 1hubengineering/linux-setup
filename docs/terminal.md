@@ -27,6 +27,7 @@
 | `doctor` / `dev-doctor` | Check installed tools and shell integration |
 | `linuxsetup` / `devsetup` | Enter this repository |
 | `update` | Pull setup changes and rerun installation from any directory |
+| `setup-pull` | Pull setup changes from any directory |
 | `reload` | Restart Zsh after config changes |
 | `gs`, `gd`, `gds`, `gl` | Git status, diff, staged diff, recent graph |
 | `ga`, `gc`, `gsw`, `gfetch` | Git add, commit, switch, fetch |
@@ -34,23 +35,24 @@
 | Ctrl-T | Select files with fzf and bat previews |
 | Alt-C | Choose a directory with fzf |
 | Alt-X / `devcommands [QUERY]` | Search custom aliases/functions and insert a selection for editing |
-| `devhelp [TEXT]` | List custom commands, descriptions, and full definitions |
+| `mycommands [TEXT]` / `devhelp [TEXT]` | Browse a table of shortcuts or pipe their full definitions |
 | Right arrow | Accept an autosuggestion |
 
 Standard commands such as `ls`, `cat`, `cd`, and `rm` keep their normal meanings.
 Dot-prefixed commands are navigation shortcuts: `..`, `...`, and `....`.
 
-Press **Alt+X** in Zsh to open the command picker. Search by shortcut, description,
+Press **Alt+X** in Bash or Zsh to open the command picker. Search by shortcut, description,
 or any part of the full command; the preview shows the entire alias expansion or
 function definition. Enter replaces the current command line with the selection
 without executing it. Aliases insert their expanded command; functions insert
 their name followed by a space for arguments. Edit it, then press Enter yourself
 when ready. Escape or Ctrl-C leaves your original command line unchanged.
-`devcommands` opens the same picker from a typed command; `devhelp` prints the list.
-If your terminal intercepts Alt+X, press Escape followed by x, or use `devcommands`.
+Use Shift+Up/Down to scroll the highlighted preview or Ctrl+/ to toggle it.
+In Zsh, `devcommands` also opens the picker from a typed command.
+If your terminal intercepts Alt+X, press Escape followed by x.
 
 The catalogue reads the active definitions of shortcuts declared in this repo's
-Zsh files and your private `linux-setup-local/zshrc` and `zshenv`. Add a description
+active shell files and your private `linux-setup-local` shell configuration. Add a description
 comment directly above each `alias name='command'` or `name() { ... }`, then
 `reload`; new commands appear automatically. Optional tool shortcuts still need
 their corresponding tools installed. See the [workflow guide](developer-workflow.md)

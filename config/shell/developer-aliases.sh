@@ -1,3 +1,8 @@
+# Fast-forward the linux-setup checkout from its tracking branch without installing.
+alias setup-pull='"$LINUX_SETUP_DIR/bin/linux-setup-update" --pull-only'
+# List live commands or filter them by name, description, or definition.
+alias mycommands='devhelp'
+
 # Install optional developer tools or explicitly update them.
 alias devtools='dev-tools'
 # Authenticate Codex, preserving an existing login.

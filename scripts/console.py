@@ -13,7 +13,7 @@ def plain():
 
 def interactive(stream=None):
     stream = sys.stdout if stream is None else stream
-    return not plain() and stream.isatty() and os.environ.get('TERM', '') not in ('', 'dumb')
+    return not plain() and not os.environ.get('CI') and stream.isatty() and os.environ.get('TERM', '') not in ('', 'dumb')
 
 
 def unicode_output(stream):
@@ -57,7 +57,7 @@ def color(value, code, stream):
 
 
 def section(title, *, stream=None):
-    stream = sys.stdout if stream is None else stream
+    stream = sys.stderr if stream is None else stream
     title = clean(title)
     if plain():
         print('\n' + title, file=stream, flush=True)
@@ -69,7 +69,7 @@ def section(title, *, stream=None):
 
 
 def status(kind, message, *, stream=None):
-    stream = sys.stdout if stream is None else stream
+    stream = sys.stderr if stream is None else stream
     label, mark, code = {
         'ok': ('OK', '✓', '32'), 'kept': ('KEPT', '•', '36'),
         'warn': ('ATTENTION', '!', '33'), 'error': ('INCOMPLETE', '✗', '31'),
@@ -120,15 +120,16 @@ def table(headers, rows, *, stream=None):
     border(2)
 
 
-def progress(done, total, label='Steps checked'):
+def progress(done, total, label='Steps checked', *, stream=None):
+    stream = sys.stderr if stream is None else stream
     if total <= 0:
         return
     done = min(done, total)
     if plain():
-        print(f'{done}/{total} {label}', flush=True)
+        print(f'{done}/{total} {label}', file=stream, flush=True)
         return
     filled = int(20 * done / total)
-    print(f'[{"#" * filled}{"." * (20 - filled)}] {done}/{total} {label}', flush=True)
+    print(f'[{"#" * filled}{"." * (20 - filled)}] {done}/{total} {label}', file=stream, flush=True)
 
 
 @contextmanager
