@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b9f3ab">
+  <meta name="description" content="Set up Zsh, tmux, Oh My Posh, and everyday developer tools on Ubuntu, Debian, and WSL.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Linux Setup · A better Linux terminal">
+  <meta property="og:description" content="A repeatable terminal setup for Ubuntu, Debian, and WSL.">
+  <meta property="og:url" content="https://1hubengineering.github.io/linux-setup/">
+  <meta property="og:image" content="https://1hubengineering.github.io/linux-setup/assets/quick-term.png">
+  <meta property="og:image:alt" content="The Quick-term Zsh prompt with Git context and a command reference.">
+  <title>Linux Setup · A better Linux terminal</title>
+  <link rel="canonical" href="https://1hubengineering.github.io/linux-setup/">
+  <link rel="icon" href="assets/linux-setup-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400..700&amp;display=swap">
+  <link rel="stylesheet" href="site.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="0" height="0">
+    <symbol id="icon-terminal" viewBox="0 0 24 24"><path d="m4 6 6 6-6 6m10 0h6"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="icon-external" viewBox="0 0 24 24"><path d="M6 18 18 6M8 6h10v10"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 4H6a2 2 0 0 0-2 2v10"/></symbol>
+    <symbol id="icon-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5m-18 4 9 5 9-5"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></symbol>
+    <symbol id="icon-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 7v10m12-10a6 6 0 0 1-6 6H6"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2a10 10 0 0 0-3.162 19.487c.5.092.682-.217.682-.482 0-.237-.009-.866-.014-1.7-2.782.604-3.369-1.341-3.369-1.341-.455-1.157-1.11-1.465-1.11-1.465-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.528 2.341 1.087 2.91.831.091-.647.35-1.087.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.58 9.58 0 0 1 12 6.829c.85.004 1.705.115 2.504.337 1.909-1.294 2.748-1.025 2.748-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.338 4.687-4.566 4.935.359.31.679.92.679 1.855 0 1.339-.012 2.42-.012 2.749 0 .268.18.579.688.48A10 10 0 0 0 12 2Z"/></symbol>
+  </svg>
+
+  <div class="opening" id="top">
+    <header class="site-header wrap">
+      <a class="brand" href="#top" aria-label="Linux Setup home">
+        <img src="assets/linux-setup-mark.svg" width="36" height="36" alt="">
+        <span>linux-setup</span>
+      </a>
+      <nav class="navigation" aria-label="Main navigation">
+        <a href="#preview">Preview</a>
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#docs">Docs</a>
+      </nav>
+      <a class="button button-outline github-link" href="https://github.com/1hubengineering/linux-setup">
+        <svg class="icon" aria-hidden="true"><use href="#icon-github"/></svg> GitHub
+        <svg class="icon link-arrow" aria-hidden="true"><use href="#icon-external"/></svg>
+      </a>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <section class="wrap hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">A better Linux<br class="hero-break"> terminal<span>.</span></h1>
+          <p>Zsh, tmux, Oh My Posh, and the tools you reach for every day. Set them up once, then get to work.</p>
+          <div class="hero-actions">
+            <a class="button button-dark" href="#install">Install Linux Setup <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+            <a class="button button-outline" href="#preview">See it in action</a>
+          </div>
+        </div>
+
+        <figure class="hero-example">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <span class="window-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>~/projects/my-app</span>
+              <span class="terminal-shell">zsh</span>
+            </div>
+            <div class="terminal-content">
+              <div class="terminal-context">
+                <span class="terminal-path">~/projects/my-app</span>
+                <span class="terminal-git"><svg class="icon" aria-hidden="true"><use href="#icon-branch"/></svg> main</span>
+              </div>
+              <p class="terminal-line"><span class="terminal-caret" aria-hidden="true">❯</span> devhelp pnpm</p>
+              <dl class="terminal-results">
+                <div><dt>pd</dt><dd>Run the development script</dd></div>
+                <div><dt>pb</dt><dd>Build the project</dd></div>
+                <div><dt>pcheck</dt><dd>Run project checks</dd></div>
+                <div><dt>pt</dt><dd>Run tests</dd></div>
+              </dl>
+              <p class="terminal-line" aria-hidden="true"><span class="terminal-caret">❯</span> <span class="terminal-cursor"></span></p>
+            </div>
+            <div class="terminal-footer"><span><kbd>Alt</kbd> + <kbd>X</kbd> command picker</span><span>Quick-term</span></div>
+          </div>
+          <figcaption>Example session with the Quick-term prompt</figcaption>
+        </figure>
+
+        <div class="platforms">
+          <svg class="icon" aria-hidden="true"><use href="#icon-terminal"/></svg>
+          <span>Built for <strong>Ubuntu</strong>, <strong>Debian</strong>, and <strong>WSL</strong></span>
+          <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/installation.md#supported-systems">Supported systems <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="preview" aria-labelledby="preview-title">
+        <div class="wrap">
+          <div class="section-heading">
+            <p class="section-label">TERMINAL PREVIEWS</p>
+            <h2 id="preview-title">Take it for a spin.</h2>
+            <p>See what finding a command, changing your prompt, or switching GitHub accounts looks like.</p>
+          </div>
+
+          <div class="preview">
+            <div class="preview-tabs" role="tablist" aria-label="Terminal previews" hidden>
+              <button type="button" role="tab" id="tab-picker" aria-controls="panel-picker">Commands</button>
+              <button type="button" role="tab" id="tab-themes" aria-controls="panel-themes">Themes</button>
+              <button type="button" role="tab" id="tab-git" aria-controls="panel-git">Profiles</button>
+            </div>
+
+            <section class="preview-panel" id="panel-picker" aria-labelledby="picker-title">
+              <div class="preview-copy">
+                <p class="command-label"><kbd>Alt</kbd> + <kbd>X</kbd></p>
+                <h3 id="picker-title">Find a command.</h3>
+                <p>Search by shortcut or description. Enter inserts the full command into your prompt so you can review or edit it before running it.</p>
+                <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/commands.md">Command reference <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+              </div>
+              <a class="preview-image" href="assets/command-picker.png" aria-label="Open the full-size command picker preview">
+                <img src="assets/command-picker.png" width="2255" height="1418" loading="lazy" decoding="async" alt="The fzf command picker filtered to Docker commands, with the full definition of the selected command alongside.">
+              </a>
+            </section>
+
+            <section class="preview-panel" id="panel-themes" aria-labelledby="themes-title">
+              <div class="preview-copy">
+                <p class="command-label"><code>theme</code></p>
+                <h3 id="themes-title">Make the prompt yours.</h3>
+                <p>Choose from Oh My Posh themes with different layouts for Git, working directories, and command timing.</p>
+                <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/themes.md">Theme guide <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+              </div>
+              <a class="preview-image" href="assets/custom-themes.png" aria-label="Open the full-size prompt theme preview">
+                <img src="assets/custom-themes.png" width="2255" height="1556" loading="lazy" decoding="async" alt="Six prompt styles showing the same Git branch and working directory in different layouts.">
+              </a>
+            </section>
+
+            <section class="preview-panel" id="panel-git" aria-labelledby="git-title">
+              <div class="preview-copy">
+                <p class="command-label"><code>github</code></p>
+                <h3 id="git-title">Switch GitHub profiles.</h3>
+                <p>Switch the active GitHub CLI account and set the commit author for your current repository.</p>
+                <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/github-accounts.md">GitHub account guide <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+              </div>
+              <div class="profile-example">
+                <p><span aria-hidden="true">❯</span> <code>github list</code></p>
+                <ul>
+                  <li><strong>dev-personal</strong> <span>Personal profile</span></li>
+                  <li><strong>dev-work</strong> <span>Work profile</span></li>
+                </ul>
+                <p><span aria-hidden="true">❯</span> <code>github use dev-work</code></p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alternate" id="features" aria-labelledby="features-title">
+        <div class="wrap">
+          <div class="section-heading">
+            <p class="section-label">INCLUDED TOOLS</p>
+            <h2 id="features-title">What comes with it.</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="feature">
+              <svg class="icon feature-icon" aria-hidden="true"><use href="#icon-terminal"/></svg>
+              <h3>A configured shell</h3>
+              <p>Use Zsh with completions and an Oh My Posh prompt, or switch between Zsh and Bash.</p>
+              <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/fonts-and-shell.md">Fonts and shell <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+            </article>
+            <article class="feature">
+              <svg class="icon feature-icon" aria-hidden="true"><use href="#icon-search"/></svg>
+              <h3>Commands in reach</h3>
+              <p>Find project shortcuts with fzf, start a named tmux session, or inspect which process is using a port.</p>
+              <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/terminal.md">Terminal workflow <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+            </article>
+            <article class="feature">
+              <svg class="icon feature-icon" aria-hidden="true"><use href="#icon-layers"/></svg>
+              <h3>Project tools</h3>
+              <p>Check a checkout before running it, set up browser testing, and manage PostgreSQL databases from the terminal.</p>
+              <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/developer-workflow.md">Developer workflow <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+            </article>
+            <article class="feature">
+              <svg class="icon feature-icon" aria-hidden="true"><use href="#icon-check"/></svg>
+              <h3>Install what you choose</h3>
+              <p>Review tools and optional agent integrations before applying your plan. Setup backs up configuration it replaces.</p>
+              <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/setup-wizard.md">Setup wizard <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="install" aria-labelledby="install-title">
+        <div class="wrap install-layout">
+          <div class="section-heading">
+            <p class="section-label">QUICK START</p>
+            <h2 id="install-title">Set up your terminal.</h2>
+            <p>Use Ubuntu or Debian, including inside WSL. Run the installer as your normal user and keep the checkout so your configuration links stay in place.</p>
+            <a class="text-link" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/installation.md">Full installation guide <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+          </div>
+          <ol class="install-steps">
+            <li>
+              <h3>Prepare your system</h3>
+              <div class="snippet">
+                <pre><code id="prepare-command">sudo apt update &amp;&amp; sudo apt upgrade
+sudo apt install --no-install-recommends git curl ca-certificates python3</code></pre>
+                <button class="copy-button" type="button" data-copy="prepare-command" hidden>
+                  <svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <span>Copy</span><span class="visually-hidden"> prerequisite commands</span>
+                </button>
+              </div>
+            </li>
+            <li>
+              <h3>Clone, check, and install</h3>
+              <div class="snippet">
+                <pre><code id="install-command">git clone https://github.com/1hubengineering/linux-setup.git ~/linux-setup
+cd ~/linux-setup
+./install.sh --preflight &amp;&amp; ./install.sh --dry-run &amp;&amp; ./install.sh</code></pre>
+                <button class="copy-button" type="button" data-copy="install-command" hidden>
+                  <svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <span>Copy</span><span class="visually-hidden"> clone and install commands</span>
+                </button>
+              </div>
+            </li>
+            <li>
+              <h3>Start Zsh and check your setup</h3>
+              <div class="snippet">
+                <pre><code id="start-command">export PATH="$HOME/.local/bin:$PATH"
+exec zsh</code></pre>
+                <button class="copy-button" type="button" data-copy="start-command" hidden>
+                  <svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <span>Copy</span><span class="visually-hidden"> shell startup commands</span>
+                </button>
+              </div>
+              <p class="step-note">After Zsh starts, run <code>doctor</code> to check your tools and shell integrations.</p>
+            </li>
+          </ol>
+          <p class="visually-hidden" id="copy-status" role="status" aria-atomic="true"></p>
+        </div>
+      </section>
+
+      <section class="section docs-section" id="docs" aria-labelledby="docs-title">
+        <div class="wrap docs-layout">
+          <div class="section-heading">
+            <p class="section-label">USER GUIDES</p>
+            <h2 id="docs-title">Keep it running.</h2>
+            <p>Find the tools, commands, and recovery steps you need as your setup changes.</p>
+            <a class="button button-dark" href="https://github.com/1hubengineering/linux-setup/blob/main/docs/README.md">Browse all guides <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+          </div>
+          <ul class="guide-links">
+            <li><a href="https://github.com/1hubengineering/linux-setup/blob/main/docs/tools.md">Included tools <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a></li>
+            <li><a href="https://github.com/1hubengineering/linux-setup/blob/main/docs/installation.md#update-an-existing-installation">Update an installation <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a></li>
+            <li><a href="https://github.com/1hubengineering/linux-setup/blob/main/docs/recovery.md">Rerun and recovery <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a></li>
+            <li><a href="https://github.com/1hubengineering/linux-setup/blob/main/docs/troubleshooting.md">Troubleshooting <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-layout">
+      <a class="brand" href="#top" aria-label="Linux Setup home">
+        <img src="assets/linux-setup-mark.svg" width="36" height="36" alt="">
+        <span>linux-setup</span>
+      </a>
+      <nav aria-label="Project links">
+        <a href="https://github.com/1hubengineering/linux-setup">Source</a>
+        <a href="https://github.com/1hubengineering/linux-setup/issues">Report an issue</a>
+        <a href="https://github.com/1hubengineering/linux-setup/blob/main/NOTICE.md">Third-party notices</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

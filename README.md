@@ -5,7 +5,7 @@ profiles, and an optional AI skill manager. Built for Ubuntu/Debian, including W
 
 [![Validate setup](https://github.com/1hubengineering/linux-setup/actions/workflows/test.yml/badge.svg)](https://github.com/1hubengineering/linux-setup/actions/workflows/test.yml)
 
-[Install](#install) · [User guides](docs/README.md) · [Terminal previews](docs/previews.md)
+[Website](https://1hubengineering.github.io/linux-setup/) · [Install](#install) · [User guides](docs/README.md) · [Terminal previews](docs/previews.md)
 
 ![Quick-term prompt with Git context and a command reference](docs/assets/quick-term.png)
 

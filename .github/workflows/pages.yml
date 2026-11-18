@@ -1,0 +1,56 @@
+name: Publish GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/pages.yml
+      - docs/index.html
+      - docs/site.css
+      - docs/site.js
+      - docs/assets/command-picker.png
+      - docs/assets/custom-themes.png
+      - docs/assets/linux-setup-mark.svg
+      - docs/assets/quick-term.png
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Package site files
+        run: |
+          mkdir -p _site/assets
+          cp docs/{index.html,site.css,site.js} _site/
+          cp docs/assets/{command-picker.png,custom-themes.png,linux-setup-mark.svg,quick-term.png} _site/assets/
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
